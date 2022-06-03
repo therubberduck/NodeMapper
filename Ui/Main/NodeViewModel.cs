@@ -7,6 +7,7 @@ namespace NodeMapper.Ui.Main
     public class NodeViewModel
     {
         private Node _selectedNode;
+        private Edge _selectedEdge;
 
         public Node SelectedNode
         {
@@ -16,12 +17,27 @@ namespace NodeMapper.Ui.Main
                 _selectedNode = value;
                 if (!_selectedNode.Edges.Contains(SelectedEdge))
                 {
-                    SelectedEdge = _selectedNode.Edges.Any() ? _selectedNode.Edges.First() : null;                    
+                    SelectedEdge = _selectedNode.Edges.Any() ? _selectedNode.Edges.First() : null;
                 }
             }
         }
 
-        public Edge SelectedEdge { get; set; }
+        public Edge SelectedEdge
+        {
+            get => _selectedEdge;
+            set
+            {
+                if (_selectedEdge != null)
+                {
+                    _selectedEdge.Attr.Color = Color.Black;
+                }
+                _selectedEdge = value;
+                if (_selectedEdge != null)
+                {
+                    _selectedEdge.Attr.Color = Color.DarkGray;
+                }
+            }
+        }
 
         public string NodeName => SelectedNode != null ? SelectedNode.LabelText : "No Node Selected";
 

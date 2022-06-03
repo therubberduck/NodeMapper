@@ -61,10 +61,10 @@ namespace NodeMapper
             _graphViewModel.SaveGraph();
             MessageBox.Show("Db Saved");
         }
+        
 
         private void GraphControl_OnMouseUp(object sender, MsaglMouseEventArgs  e)
         {
-
             graphControl.GraphViewer.ScreenToSource(e);
             
             var nodeSelected = _graphViewModel.SelectNode(graphControl.GraphViewer.ScreenToSource(e));
@@ -72,7 +72,17 @@ namespace NodeMapper
             {
                 _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
                 UpdateNodePanelFromViewModel();
+                graphControl.Update();
             }
+        }
+
+        private void LstEdges_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var edge = (lstEdges.SelectedItem as NodeViewModel.EdgeItem)?.Edge;
+            
+            if(edge == null || edge == _nodeViewModel.SelectedEdge) return;
+            _nodeViewModel.SelectedEdge = edge;
+            graphControl.Update();
         }
 
         private void UpdateNodePanelFromViewModel()
@@ -92,16 +102,6 @@ namespace NodeMapper
                     break;
                 }
             }
-        }
-
-        private void LstEdges_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var edge = (lstEdges.SelectedItem as NodeViewModel.EdgeItem)?.Edge;
-            if (edge != null && edge != _nodeViewModel.SelectedEdge)
-            {
-                _nodeViewModel.SelectedEdge = edge;                
-            }
-            
         }
     }
 }

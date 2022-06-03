@@ -7,7 +7,7 @@
         xmlns:ui="clr-namespace:NodeMapper.Ui"
         xmlns:uiMain="clr-namespace:NodeMapper.Ui.Main"
         mc:Ignorable="d"
-        Title="NodeMapper" Height="400" Width="525" WindowStartupLocation="CenterOwner">
+        Title="NodeMapper" Height="800" Width="800" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="FrameworkElement" x:Key="DefaultControl">
             <Setter Property="Margin" Value="8" />
@@ -15,36 +15,63 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" x:Name="nodePanel">
-            <ui:EditableTextBlock x:Name="txtName"
-                                  Style="{StaticResource DefaultControl}"
-                                  LabelText="_Name:"/>
-            <ui:EditableTextBlock x:Name="txtDescription"
-                                  Style="{StaticResource DefaultControl}"
-                                  LabelText="_Description:"/>
-            <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
-                      SelectionMode="Single"
-                      SelectionChanged="LstEdges_OnSelectionChanged"/>
-            <Button
-                Style="{StaticResource DefaultControl}"
-                Click="btnRemoveEdge_Click">
-                Remove Edge
-            </Button>
-            <Button
-                Style="{StaticResource DefaultControl}"
-                Click="btnCreateNode_Click">
-                Add Node
-            </Button>
-            <Button
-                Style="{StaticResource DefaultControl}"
-                Click="btnSave_Click">
-                Save Graph
-            </Button>
-        </StackPanel>
+        <Grid Grid.Column="0" x:Name="nodePanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <ui:EditableTextBlock x:Name="txtName"
+                                      Style="{StaticResource DefaultControl}"
+                                      LabelText="_Name:" />
+                <ui:EditableTextBlock x:Name="txtDescription"
+                                      Style="{StaticResource DefaultControl}"
+                                      LabelText="_Description:" />
+                <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
+                          SelectionMode="Single"
+                          SelectionChanged="LstEdges_OnSelectionChanged" />
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button Grid.Column="0" Grid.Row="0"
+                        Style="{StaticResource DefaultControl}"
+                        Click="btnRemoveEdge_Click">
+                    Add Edge
+                </Button>
+                <Button Grid.Column="1" Grid.Row="0"
+                        Style="{StaticResource DefaultControl}"
+                        Click="btnRemoveEdge_Click">
+                    Remove Edge
+                </Button>
+                <Button Grid.Column="0" Grid.Row="1"
+                        Style="{StaticResource DefaultControl}"
+                        Click="btnCreateNode_Click">
+                    Add Node
+                </Button>
+                <Button Grid.Column="1" Grid.Row="1"
+                        Style="{StaticResource DefaultControl}"
+                        Click="btnCreateNode_Click">
+                    Remove Node
+                </Button>
+                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+                        Style="{StaticResource DefaultControl}"
+                        Click="btnSave_Click">
+                    Save Graph
+                </Button>
+            </Grid>
+        </Grid>
 
         <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Grid.Column="1" />
     </Grid>
