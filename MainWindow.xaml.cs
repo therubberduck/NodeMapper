@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using Microsoft.Msagl.Core.Geometry.Curves;
+using Microsoft.Msagl.Core.Layout;
+using Microsoft.Msagl.Core.Routing;
+using Microsoft.Msagl.Layout.Layered;
 using NodeMapper.Ui.Main;
 
 namespace NodeMapper
@@ -14,8 +19,8 @@ namespace NodeMapper
         {
             InitializeComponent();
 
-            // _graphViewModel.CreateNewEdge();
-            // graphControl.Graph = _graphViewModel.Graph;
+            _graphViewModel.CreateNewEdge();
+            graphControl.Graph = _graphViewModel.Graph;
         }
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)

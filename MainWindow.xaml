@@ -3,17 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:NodeMapper"
         xmlns:wpfGraphControl="http://mlsagl"
         xmlns:graphViewerUi="clr-namespace:NodeMapper.GraphViewerUi"
         mc:Ignorable="d"
         Title="NodeMapper" Height="400" Width="525" WindowStartupLocation="CenterOwner">
-    <StackPanel>
-        <!-- <GViewer x:Name="graphControl"/> -->
-        <!-- <wpfGraphControl:AutomaticGraphLayoutControl x:Name="graphControl" Height="300" /> -->
-        <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Height="300" />
-        <!-- <DockPanel Height="300" Name="graphPanel"></DockPanel> -->
-        <Button Click="btnCreateNode_Click">Add Node</Button>
-        <TextBlock Name="txtNotification"/>
-    </StackPanel>
+    <Window.Resources>
+        <Style TargetType="FrameworkElement" x:Key="DefaultControl">
+            <Setter Property="Margin" Value="8"/>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultControl}" x:Key="DefaultTextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0">
+            <TextBlock Style="{StaticResource DefaultTextBlock}">
+                This is the description of the node. It may be a bit longer.
+            </TextBlock>
+            <Button 
+                Style="{StaticResource DefaultControl}"
+                Click="btnCreateNode_Click">
+                Add Node
+            </Button>
+        </StackPanel>
+        
+        <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Grid.Column="1" />
+    </Grid>
 </Window>

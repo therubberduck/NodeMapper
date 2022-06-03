@@ -1,5 +1,8 @@
 ﻿using System;
+using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
+using Microsoft.Msagl.Layout.Layered;
+using Microsoft.Msagl.Layout.MDS;
 
 namespace NodeMapper.Ui.Main
 {
@@ -10,7 +13,17 @@ namespace NodeMapper.Ui.Main
         
         public GraphViewModel()
         {
+            var settings = new SugiyamaLayoutSettings();
+            settings.EdgeRoutingSettings = new EdgeRoutingSettings
+                { EdgeRoutingMode = EdgeRoutingMode.RectilinearToCenter };
+            Graph.LayoutAlgorithmSettings = settings;
             Graph.Attr.LayerDirection = LayerDirection.LR;
+            
+            Graph.AddEdge("1", "2");
+            Graph.AddEdge("2", "3");
+            Graph.AddEdge("1", "4");
+            Graph.AddEdge("4", "5");
+            Graph.AddEdge("5", "2");
         }
         public void CreateNewEdge()
         {
