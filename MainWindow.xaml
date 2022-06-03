@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NodeMapper"
+        xmlns:wpfGraphControl="http://mlsagl"
+        xmlns:graphViewerUi="clr-namespace:NodeMapper.GraphViewerUi"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="NodeMapper" Height="400" Width="525" WindowStartupLocation="CenterOwner">
+    <StackPanel>
+        <!-- <GViewer x:Name="graphControl"/> -->
+        <!-- <wpfGraphControl:AutomaticGraphLayoutControl x:Name="graphControl" Height="300" /> -->
+        <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Height="300" />
+        <!-- <DockPanel Height="300" Name="graphPanel"></DockPanel> -->
+        <Button Click="btnCreateNode_Click">Add Node</Button>
+        <TextBlock Name="txtNotification"/>
+    </StackPanel>
 </Window>
