@@ -1,33 +1,48 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
 using Microsoft.Msagl.Layout.MDS;
+using NodeMapper.DataRepository;
 
 namespace NodeMapper.Ui.Main
 {
     public class GraphViewModel
     {
-        public readonly Graph Graph = new Graph();
         private readonly Random _rand = new Random();
+        private DbRepository _repo = new DbRepository();
+        
+        public readonly Graph Graph;
+        public Node SelectedNode = null; 
         
         public GraphViewModel()
         {
+            Graph = _repo.LoadGraph();
             var settings = new SugiyamaLayoutSettings();
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
                 { EdgeRoutingMode = EdgeRoutingMode.RectilinearToCenter };
             Graph.LayoutAlgorithmSettings = settings;
             Graph.Attr.LayerDirection = LayerDirection.LR;
-            
-            Graph.AddEdge("1", "2");
-            Graph.AddEdge("2", "3");
-            Graph.AddEdge("1", "4");
-            Graph.AddEdge("4", "5");
-            Graph.AddEdge("5", "2");
+
+            if (Graph.Nodes.Any())
+            {
+                SelectedNode = Graph.Nodes.First();
+            }
+            else
+            {
+                Graph.AddEdge("1", "2");
+                Graph.AddEdge("2", "3");
+                Graph.AddEdge("3", "1");
+                Graph.AddEdge("3", "2");
+                SelectedNode = Graph.Nodes.First();
+            }
+
+
         }
         public void CreateNewEdge()
         {
-            
             var node1 = _rand.Next(1,11).ToString();
             var node2 = _rand.Next(1,11).ToString();
             Graph.AddEdge(node1, node2);
@@ -43,6 +58,25 @@ namespace NodeMapper.Ui.Main
             node.Label.Text = name;
             Graph.AddNode(node);
             return node;
+        }
+
+        public void SaveGraph()
+        {
+            _repo.SaveGraph(Graph);
+        }
+
+        public bool SelectNode(Point point)
+        {
+            foreach (var graphNode in Graph.Nodes)
+            {
+                if (graphNode.BoundingBox.Contains(point))
+                {
+                    SelectedNode = graphNode;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

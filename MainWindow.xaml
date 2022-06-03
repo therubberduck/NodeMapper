@@ -3,37 +3,47 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:local="clr-namespace:NodeMapper"
-        xmlns:wpfGraphControl="http://mlsagl"
         xmlns:graphViewerUi="clr-namespace:NodeMapper.GraphViewerUi"
+        xmlns:ui="clr-namespace:NodeMapper.Ui"
+        xmlns:uiMain="clr-namespace:NodeMapper.Ui.Main"
         mc:Ignorable="d"
         Title="NodeMapper" Height="400" Width="525" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="FrameworkElement" x:Key="DefaultControl">
-            <Setter Property="Margin" Value="8"/>
-        </Style>
-        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultControl}" x:Key="DefaultTextBlock">
-            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="8" />
         </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        
-        <StackPanel Grid.Column="0">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">
-                This is the description of the node. It may be a bit longer.
-            </TextBlock>
-            <Button 
+
+        <StackPanel Grid.Column="0" x:Name="nodePanel">
+            <StackPanel.Resources>
+                <ObjectDataProvider x:Key="ViewModel" ObjectType="{x:Type uiMain:NodeViewModel}"/>
+            </StackPanel.Resources>
+            <StackPanel.DataContext>
+                <Binding Source="{StaticResource ViewModel}"/>
+            </StackPanel.DataContext>
+            <ui:EditableTextBlock x:Name="txtDescription"
+                                  Style="{StaticResource DefaultControl}"
+                                  LabelText="_Description:"
+                                  Text="{Binding Path=NodeDescription, UpdateSourceTrigger=PropertyChanged}">
+            </ui:EditableTextBlock>
+            <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"/>
+            <Button
                 Style="{StaticResource DefaultControl}"
                 Click="btnCreateNode_Click">
                 Add Node
             </Button>
+            <Button
+                Style="{StaticResource DefaultControl}"
+                Click="btnSave_Click">
+                Save
+            </Button>
         </StackPanel>
-        
+
         <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Grid.Column="1" />
     </Grid>
 </Window>

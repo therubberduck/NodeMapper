@@ -1,16 +1,20 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 
 namespace NodeMapper.GraphViewerUi
 {
     public partial class MyGraphLayoutControl {
-        public GraphViewer GraphViewer;
+        public readonly GraphViewer GraphViewer = new GraphViewer();
         
         public MyGraphLayoutControl() {
             InitializeComponent();
             Loaded += (s, e) => SetGraph();
+            
+            GraphViewer.BindToPanel(dockPanel);
         }
+
         public Graph Graph {
             get => (Graph)GetValue(GraphProperty);
             set => SetValue(GraphProperty, value);
@@ -21,21 +25,10 @@ namespace NodeMapper.GraphViewerUi
 
         public void Update()
         {
-            var graph = Graph;
-            Graph = null;
-            Graph = graph;
+            GraphViewer.Graph = Graph;
         }
         
         private void SetGraph() {
-            if (Graph == null) {
-                dockPanel.Children.Clear();
-                GraphViewer = null;
-                return;
-            }
-            if (GraphViewer == null) {
-                GraphViewer = new GraphViewer();
-                GraphViewer.BindToPanel(dockPanel);
-            }
             GraphViewer.Graph = Graph;
         }
     }
