@@ -1,9 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Msagl.Drawing;
-using NodeMapper.Ui.Main;
 
-namespace NodeMapper
+namespace NodeMapper.Ui.Main
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -58,8 +60,12 @@ namespace NodeMapper
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
+            frmWorking.Visibility = Visibility.Visible;
+            AllowUIToUpdate();
+            
             _graphViewModel.SaveGraph();
-            MessageBox.Show("Db Saved");
+            
+            frmWorking.Visibility = Visibility.Collapsed;
         }
         
 
@@ -78,11 +84,29 @@ namespace NodeMapper
 
         private void LstEdges_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var edge = (lstEdges.SelectedItem as NodeViewModel.EdgeItem)?.Edge;
+            var edge = (lstEdges.SelectedItem as EdgeItem)?.Edge;
             
             if(edge == null || edge == _nodeViewModel.SelectedEdge) return;
+            _newItemSelected = true;
             _nodeViewModel.SelectedEdge = edge;
+            
+            edgeEditorPanel.ShowEdit(_graphViewModel.Graph, edge, EdgeEditorPanelCallback);
+            btnAddEdge.Visibility = Visibility.Collapsed;
+            
             graphControl.Update();
+        }
+
+        private bool _newItemSelected = false;
+        private void LstEdges_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!_newItemSelected)
+            {
+                _nodeViewModel.SelectedEdge = null;
+                lstEdges.SelectedIndex = -1;
+                edgeEditorPanel.Hide();
+                btnAddEdge.Visibility = Visibility.Visible;
+            }
+            _newItemSelected = false;
         }
 
         private void UpdateNodePanelFromViewModel()
@@ -94,7 +118,7 @@ namespace NodeMapper
             {
                 lstEdges.Items.Add(edgeItem);                
             }
-            foreach (NodeViewModel.EdgeItem item in lstEdges.Items)
+            foreach (EdgeItem item in lstEdges.Items)
             {
                 if (item.Edge == _nodeViewModel.SelectedEdge)
                 {
@@ -102,6 +126,45 @@ namespace NodeMapper
                     break;
                 }
             }
+        }
+
+        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
+        {
+            edgeEditorPanel.ShowCreate(_graphViewModel.Graph, EdgeEditorPanelCallback);
+            btnAddEdge.Visibility = Visibility.Collapsed;
+        }
+
+        private void EdgeEditorPanelCallback(bool successful, Edge newSelectedEdge)
+        {
+            edgeEditorPanel.Hide();
+            btnAddEdge.Visibility = Visibility.Visible;
+
+            if (successful)
+            {
+                _nodeViewModel.SelectedEdge = newSelectedEdge;
+                UpdateNodePanelFromViewModel();
+                graphControl.Update();
+
+                if (newSelectedEdge != null)
+                {
+                    edgeEditorPanel.ShowEdit(_graphViewModel.Graph, newSelectedEdge, EdgeEditorPanelCallback);
+                    btnAddEdge.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void AllowUIToUpdate()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(delegate (object parameter)
+            {
+                frame.Continue = false;
+                return null;
+            }), null);
+
+            Dispatcher.PushFrame(frame);
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+                new Action(delegate { }));
         }
     }
 }

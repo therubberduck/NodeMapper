@@ -4,7 +4,7 @@ using Microsoft.Msagl.Drawing;
 
 namespace NodeMapper.Ui.Main
 {
-    public class NodeViewModel
+    public partial class NodeViewModel
     {
         private Node _selectedNode;
         private Edge _selectedEdge;
@@ -15,10 +15,10 @@ namespace NodeMapper.Ui.Main
             set
             {
                 _selectedNode = value;
-                if (!_selectedNode.Edges.Contains(SelectedEdge))
-                {
-                    SelectedEdge = _selectedNode.Edges.Any() ? _selectedNode.Edges.First() : null;
-                }
+                // if (!_selectedNode.Edges.Contains(SelectedEdge))
+                // {
+                //     SelectedEdge = _selectedNode.Edges.Any() ? _selectedNode.Edges.First() : null;
+                // }
             }
         }
 
@@ -46,19 +46,5 @@ namespace NodeMapper.Ui.Main
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
             ? SelectedNode.Edges.Select(e => new EdgeItem(e))
             : Enumerable.Empty<EdgeItem>();
-
-        public class EdgeItem
-        {
-            public readonly Edge Edge;
-            public EdgeItem(Edge e)
-            {
-                Edge = e;
-            }
-
-            public override string ToString()
-            {
-                return Edge.Source + " to " + Edge.Target;
-            }
-        }
     }
 }
