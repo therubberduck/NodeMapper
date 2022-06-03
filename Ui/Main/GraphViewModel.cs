@@ -4,7 +4,6 @@ using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
-using Microsoft.Msagl.Layout.MDS;
 using NodeMapper.DataRepository;
 
 namespace NodeMapper.Ui.Main
@@ -15,14 +14,14 @@ namespace NodeMapper.Ui.Main
         private DbRepository _repo = new DbRepository();
         
         public readonly Graph Graph;
-        public Node SelectedNode = null; 
+        public Node SelectedNode; 
         
         public GraphViewModel()
         {
             Graph = _repo.LoadGraph();
             var settings = new SugiyamaLayoutSettings();
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
-                { EdgeRoutingMode = EdgeRoutingMode.RectilinearToCenter };
+                { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
             Graph.LayoutAlgorithmSettings = settings;
             Graph.Attr.LayerDirection = LayerDirection.LR;
 
@@ -38,8 +37,6 @@ namespace NodeMapper.Ui.Main
                 Graph.AddEdge("3", "2");
                 SelectedNode = Graph.Nodes.First();
             }
-
-
         }
         public void CreateNewEdge()
         {
@@ -77,6 +74,11 @@ namespace NodeMapper.Ui.Main
             }
 
             return false;
+        }
+
+        public void RemoveEdge(Edge edgeToRemove)
+        {
+            Graph.RemoveEdge(edgeToRemove);
         }
     }
 }

@@ -20,18 +20,17 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" x:Name="nodePanel">
-            <StackPanel.Resources>
-                <ObjectDataProvider x:Key="ViewModel" ObjectType="{x:Type uiMain:NodeViewModel}"/>
-            </StackPanel.Resources>
-            <StackPanel.DataContext>
-                <Binding Source="{StaticResource ViewModel}"/>
-            </StackPanel.DataContext>
             <ui:EditableTextBlock x:Name="txtDescription"
                                   Style="{StaticResource DefaultControl}"
-                                  LabelText="_Description:"
-                                  Text="{Binding Path=NodeDescription, UpdateSourceTrigger=PropertyChanged}">
-            </ui:EditableTextBlock>
-            <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"/>
+                                  LabelText="_Description:"/>
+            <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
+                      SelectionMode="Single"
+                      SelectionChanged="LstEdges_OnSelectionChanged"/>
+            <Button
+                Style="{StaticResource DefaultControl}"
+                Click="btnRemoveEdge_Click">
+                Remove Edge
+            </Button>
             <Button
                 Style="{StaticResource DefaultControl}"
                 Click="btnCreateNode_Click">
@@ -40,7 +39,7 @@
             <Button
                 Style="{StaticResource DefaultControl}"
                 Click="btnSave_Click">
-                Save
+                Save Graph
             </Button>
         </StackPanel>
 

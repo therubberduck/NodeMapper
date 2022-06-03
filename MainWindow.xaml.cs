@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Msagl.Drawing;
 using NodeMapper.Ui.Main;
 
@@ -18,8 +19,20 @@ namespace NodeMapper
 
             graphControl.Graph = _graphViewModel.Graph;
             (graphControl.GraphViewer as IViewer).MouseUp += GraphControl_OnMouseUp;
-            
+
+            _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
             UpdateNodePanelFromViewModel();
+        }
+
+        private void btnRemoveEdge_Click(object sender, RoutedEventArgs e)
+        {
+            var edgeToRemove = _nodeViewModel.SelectedEdge;
+            if (edgeToRemove != null)
+            {
+                _graphViewModel.RemoveEdge(edgeToRemove);
+                UpdateNodePanelFromViewModel();
+                graphControl.Update();
+            }
         }
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)
@@ -40,7 +53,7 @@ namespace NodeMapper
             graphControl.GraphViewer.ScreenToSource(e);
             
             var nodeSelected = _graphViewModel.SelectNode(graphControl.GraphViewer.ScreenToSource(e));
-            if (nodeSelected)
+            if (nodeSelected && _nodeViewModel.SelectedNode != _graphViewModel.SelectedNode)
             {
                 _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
                 UpdateNodePanelFromViewModel();
@@ -54,6 +67,23 @@ namespace NodeMapper
             foreach (var edgeItem in _nodeViewModel.EdgeItems)
             {
                 lstEdges.Items.Add(edgeItem);                
+            }
+            foreach (NodeViewModel.EdgeItem item in lstEdges.Items)
+            {
+                if (item.Edge == _nodeViewModel.SelectedEdge)
+                {
+                    lstEdges.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        private void LstEdges_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var edge = (lstEdges.SelectedItem as NodeViewModel.EdgeItem)?.Edge;
+            if (edge != null && edge != _nodeViewModel.SelectedEdge)
+            {
+                _nodeViewModel.SelectedEdge = edge;                
             }
             
         }

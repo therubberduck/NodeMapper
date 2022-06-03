@@ -1,12 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Msagl.Drawing;
-using NodeMapper.GraphViewerUi;
 
 namespace NodeMapper.Ui
 {
-    public partial class EditableTextBlock : UserControl
+    public partial class EditableTextBlock
     {
         public EditableTextBlock()
         {
