@@ -20,8 +20,23 @@ namespace NodeMapper
             graphControl.Graph = _graphViewModel.Graph;
             (graphControl.GraphViewer as IViewer).MouseUp += GraphControl_OnMouseUp;
 
+            txtName.textBox.TextChanged += UpDateName_OnTextChanged;
+            txtDescription.textBox.TextChanged += UpDateDescription_OnTextChanged;
+
             _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
             UpdateNodePanelFromViewModel();
+        }
+
+        private void UpDateName_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            _nodeViewModel.SelectedNode.LabelText = txtName.Text;
+            graphControl.Update();
+        }
+
+        private void UpDateDescription_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            _nodeViewModel.SelectedNode.UserData = txtDescription.Text;
+            graphControl.Update();
         }
 
         private void btnRemoveEdge_Click(object sender, RoutedEventArgs e)
@@ -62,6 +77,7 @@ namespace NodeMapper
 
         private void UpdateNodePanelFromViewModel()
         {
+            txtName.Text = _nodeViewModel.NodeName;
             txtDescription.Text = _nodeViewModel.NodeDescription;
             lstEdges.Items.Clear();
             foreach (var edgeItem in _nodeViewModel.EdgeItems)

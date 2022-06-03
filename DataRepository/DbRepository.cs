@@ -17,10 +17,9 @@ namespace NodeMapper.DataRepository
             var nodes = _db.Node.GetAll();
 
             var graph = new Graph();
-            foreach (var nodeStore in nodes)
+            foreach (var node in nodes)
             {
-                graph.AddNode(nodeStore.Node);
-                //nodeStore.Node.GeometryNode.Center = nodeStore.Center;
+                graph.AddNode(node);
             }
 
             foreach (var edge in edges)

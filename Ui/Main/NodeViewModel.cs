@@ -23,7 +23,9 @@ namespace NodeMapper.Ui.Main
 
         public Edge SelectedEdge { get; set; }
 
-        public string NodeDescription => SelectedNode != null ? SelectedNode.LabelText : "None Selected";
+        public string NodeName => SelectedNode != null ? SelectedNode.LabelText : "No Node Selected";
+
+        public string NodeDescription => SelectedNode != null ? (SelectedNode.UserData as string) : "";
 
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
             ? SelectedNode.Edges.Select(e => new EdgeItem(e))

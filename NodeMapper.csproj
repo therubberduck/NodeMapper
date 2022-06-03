@@ -69,7 +69,6 @@
         <Compile Include="DataRepository\Schema\DbNode.cs" />
         <Compile Include="DataRepository\UpdateSchema.cs" />
         <Compile Include="DrawingUtilsForSamples.cs" />
-        <Compile Include="Model\NodeStore.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />
         <Compile Include="SqliteDatabase\DbModule.cs" />
         <Compile Include="SqliteDatabase\DbObjectModule.cs" />
@@ -118,6 +117,9 @@
     <ItemGroup>
         <None Include="App.config" />
         <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Model" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

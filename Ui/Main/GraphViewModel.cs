@@ -23,7 +23,7 @@ namespace NodeMapper.Ui.Main
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
                 { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
             Graph.LayoutAlgorithmSettings = settings;
-            Graph.Attr.LayerDirection = LayerDirection.LR;
+            Graph.Attr.LayerDirection = LayerDirection.None;
 
             if (Graph.Nodes.Any())
             {
@@ -31,10 +31,19 @@ namespace NodeMapper.Ui.Main
             }
             else
             {
-                Graph.AddEdge("1", "2");
-                Graph.AddEdge("2", "3");
-                Graph.AddEdge("3", "1");
-                Graph.AddEdge("3", "2");
+                var nodeVillage = Graph.AddNode("Village");
+                var nodeHill = Graph.AddNode("Hill");
+                var nodeForest = Graph.AddNode("Forest");
+
+                nodeVillage.UserData = "This is an isolated village.";
+                nodeHill.UserData = "A ruined table lies at the top this hill.";
+                nodeForest.UserData = "Rumors of a werewolf are connected to this forest.";
+
+                Graph.AddEdge(nodeVillage.Id, "4h", nodeHill.Id);
+                Graph.AddEdge(nodeVillage.Id, "4h", nodeForest.Id);
+                Graph.AddEdge(nodeForest.Id, "2h", nodeHill.Id);
+                Graph.AddEdge(nodeHill.Id, "2h", nodeForest.Id);
+                
                 SelectedNode = Graph.Nodes.First();
             }
         }

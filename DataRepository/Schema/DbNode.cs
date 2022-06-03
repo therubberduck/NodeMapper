@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using GraphMapper.Model;
-using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Drawing;
 using NodeMapper.SqliteDatabase;
 using DrawingNode = Microsoft.Msagl.Drawing.Node;
 
 namespace NodeMapper.DataRepository.Schema
 {
-    public class DbNode : DbObjectModule<NodeStore>
+    public class DbNode : DbObjectModule<Node>
     {
         public DbNode(SqliteDbInterface dbInterface, SqLiteDb db) : base(dbInterface, db)
         {
@@ -19,23 +17,21 @@ namespace NodeMapper.DataRepository.Schema
         {
             new DbColumn(Id, DbColumn.Integer, true),
             new DbColumn(NodeId, DbColumn.Text),
-            new DbColumn(PosX, DbColumn.Real),
-            new DbColumn(PosY, DbColumn.Real),
             new DbColumn(Shape, DbColumn.Integer),
             new DbColumn(FillColor, DbColumn.Text),
             new DbColumn(LabelText, DbColumn.Text),
             new DbColumn(FontColor, DbColumn.Text),
             new DbColumn(FontSize, DbColumn.Real),
+            new DbColumn(UserData, DbColumn.Text),
         };
 
         public const string NodeId = "NodeId";
-        public const string PosX = "X";
-        public const string PosY = "Y";
         public const string Shape = "Shape";
         public const string FillColor = "Color";
         public const string LabelText = "LabelText";
         public const string FontColor = "FontColor";
         public const string FontSize = "FontSize";
+        public const string UserData = "UserData";
 
         public void InsertAll(IEnumerable<Node> nodes)
         {
@@ -44,41 +40,38 @@ namespace NodeMapper.DataRepository.Schema
                 Insert(node);
             }
         }
-        
-        public long Insert(Node node)
+
+        private long Insert(Node node)
         {
             var nodeId = node.Id;
-            var posX = node.Pos.X;
-            var posY = node.Pos.Y;
             var shape = (int) node.Attr.Shape;
             var fillColor = DbColorConverter.DbStringFromColor(node.Attr.FillColor);
             var labelText = node.Label.Text;
             var fontColor = DbColorConverter.DbStringFromColor(node.Label.FontColor);
             var fontSize = node.Label.FontSize;
-
+            var userData = node.UserData as string;
+        
             return Db.Insert(TableName, new[]
             {
-                NodeId, PosX, PosY, Shape, FillColor, LabelText, FontColor, FontSize
+                NodeId, Shape, FillColor, LabelText, FontColor, FontSize, UserData
             }, new object[]
             {
-                nodeId, posX, posY, shape, fillColor, labelText, fontColor, fontSize
+                nodeId, shape, fillColor, labelText, fontColor, fontSize, userData
             });
         }
 
-        protected override NodeStore MakeObject(object[] dbObject)
+        protected override Node MakeObject(object[] dbObject)
         {
             var reader = new DbResultReader(dbObject);
             reader.ReadLong();
             var nodeId = reader.ReadString();
-            var posX = reader.ReadFloat();
-            var posY = reader.ReadFloat();
             var shapeInt = reader.ReadInt();
             var fillColorString = reader.ReadString();
             var labelText = reader.ReadString();
             var fontColorString = reader.ReadString();
             var fontSize = reader.ReadFloat();
+            var userData = reader.ReadString();
 
-            var point = new Point(posX, posY);
             var shape = (Shape)shapeInt;
             var fillColor = DbColorConverter.ColorFromDbString(fillColorString);
             var fontColor = DbColorConverter.ColorFromDbString(fontColorString);
@@ -89,8 +82,9 @@ namespace NodeMapper.DataRepository.Schema
             node.Label.Text = labelText;
             node.Label.FontColor = fontColor;
             node.Label.FontSize = fontSize;
+            node.UserData = userData;
             
-            return new NodeStore(point, node);
+            return node;
         }
     }
 }

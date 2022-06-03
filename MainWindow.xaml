@@ -20,6 +20,9 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" x:Name="nodePanel">
+            <ui:EditableTextBlock x:Name="txtName"
+                                  Style="{StaticResource DefaultControl}"
+                                  LabelText="_Name:"/>
             <ui:EditableTextBlock x:Name="txtDescription"
                                   Style="{StaticResource DefaultControl}"
                                   LabelText="_Description:"/>
