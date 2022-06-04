@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="NodeMapper.Ui.Main.NodeDetailPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NodeMapper.Ui.Main"
+             xmlns:ui="clr-namespace:NodeMapper.Ui"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Grid.Row="0">
+        <ui:EditableTextBlock x:Name="txtName"
+                              Style="{StaticResource DefaultControl}"
+                              LabelText="_Name:" />
+        <ui:EditableTextBlock x:Name="txtDescription"
+                              Style="{StaticResource DefaultControl}"
+                              LabelText="_Description:" />
+        <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
+                  SelectionMode="Single"
+                  SelectionChanged="LstEdges_OnSelectionChanged"
+                  MouseUp="LstEdges_OnMouseUp"/>
+    </StackPanel>
+</UserControl>

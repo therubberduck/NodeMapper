@@ -2,31 +2,29 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Msagl.Drawing;
+using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
 {
-    public partial class EdgeEditorPanel : Grid
+    public partial class EdgeEditorPanel
     {
-        public delegate void Result(bool successful, Edge selectedEdge);
-
-        private Graph _graph;
-        private Edge _selectedEdge;
-        private Result _currentCallback;
+        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
+        private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
         
         public EdgeEditorPanel()
         {
             InitializeComponent();
             
+            _nodeViewModel.OnEdgeSelected += OnEdgeSelected;
+            _nodeViewModel.OnEdgeDeselected += OnEdgeDeselected;
+            
             btnRemoveEdge.Click += BtnRemoveEdge_Click;
             btnCancel.Click += btnCancel_Click;
         }
 
-        public void ShowCreate(Graph graph, Result callback)
+        public void ShowCreate()
         {
-            _graph = graph;
-            _currentCallback = callback;
-            
-            var nodes = graph.Nodes.Select(node => new NodeItem(node));
+            var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
             foreach (var nodeItem in nodes)
             {
                 cmbEdgeEditFrom.Items.Add(nodeItem);
@@ -50,31 +48,28 @@ namespace NodeMapper.Ui.Main
         {
             var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.Node.Id;
             var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.Node.Id;
-            var newEdge = _graph.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
-            
-            _currentCallback.Invoke(true, newEdge);
+            var newEdge = _graphProvider.Graph.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
+
+            _nodeViewModel.SelectedEdge = newEdge;
+            _nodeViewModel.UpdateGraph();
         }
 
-        public void ShowEdit(Graph graph, Edge edge, Result callback)
+        private void OnEdgeSelected(Edge edge)
         {
-            _graph = graph;
-            _selectedEdge = edge;
-            _currentCallback = callback;
-            
-            var nodes = graph.Nodes.Select(node => new NodeItem(node));
+            var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
             foreach (var nodeItem in nodes)
             {
                 cmbEdgeEditFrom.Items.Add(nodeItem);
                 cmbEdgeEditTo.Items.Add(nodeItem);
             }
 
-            if (edge.Label != null)
+            if (_nodeViewModel.SelectedEdge.Label != null)
             {
-                txtEdgeName.Text = edge.LabelText;
+                txtEdgeName.Text = _nodeViewModel.SelectedEdge.LabelText;
             }
                 
-            SelectNodeInComboBox(cmbEdgeEditFrom, edge.SourceNode);
-            SelectNodeInComboBox(cmbEdgeEditTo, edge.TargetNode);
+            SelectNodeInComboBox(cmbEdgeEditFrom, _nodeViewModel.SelectedEdge.SourceNode);
+            SelectNodeInComboBox(cmbEdgeEditTo, _nodeViewModel.SelectedEdge.TargetNode);
             
             btnAddEdge.Content = "Edit Edge";
             btnAddEdge.Click += EditEdge;
@@ -97,44 +92,41 @@ namespace NodeMapper.Ui.Main
 
         private void EditEdge(object sender, RoutedEventArgs e)
         {
-            if (_selectedEdge.Label == null)
+            var selectedEdge = _nodeViewModel.SelectedEdge;
+            if (selectedEdge.Label == null)
             {
-                _selectedEdge.Label = new Microsoft.Msagl.Drawing.Label();
+                selectedEdge.Label = new Microsoft.Msagl.Drawing.Label();
             }
 
-            if (_selectedEdge.LabelText != txtEdgeName.Text || 
+            if (selectedEdge.LabelText != txtEdgeName.Text || 
                 cmbEdgeEditFrom.SelectedItem != null || 
                 cmbEdgeEditTo.SelectedItem != null ||
-                _selectedEdge.SourceNode.LabelText != cmbEdgeEditFrom.Text ||
-                _selectedEdge.TargetNode.LabelText != cmbEdgeEditTo.Text)
+                selectedEdge.SourceNode.LabelText != cmbEdgeEditFrom.Text ||
+                selectedEdge.TargetNode.LabelText != cmbEdgeEditTo.Text)
             {
-                _graph.RemoveEdge(_selectedEdge);
+                _graphProvider.Graph.RemoveEdge(selectedEdge);
                 AddEdge();
             }
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
-            _graph.RemoveEdge(_selectedEdge);
-            _currentCallback.Invoke(true, null);
+            _graphProvider.Graph.RemoveEdge(_nodeViewModel.SelectedEdge);
+            _nodeViewModel.SelectedEdge = null;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            _currentCallback.Invoke(false, _selectedEdge);
+            _nodeViewModel.SelectedEdge = null;
         }
 
-        public void Hide()
+        private void OnEdgeDeselected()
         {
             Visibility = Visibility.Collapsed;
             
             txtEdgeName.Text = "";
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
-            
-            _currentCallback = null;
-            _selectedEdge = null;
-            _graph = null;
         }
     }
 }

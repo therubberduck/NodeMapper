@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:graphViewerUi="clr-namespace:NodeMapper.GraphViewerUi"
         xmlns:ui="clr-namespace:NodeMapper.Ui"
         xmlns:uiMain="clr-namespace:NodeMapper.Ui.Main"
         mc:Ignorable="d"
@@ -20,54 +19,12 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0">
-                <ui:EditableTextBlock x:Name="txtName"
-                                      Style="{StaticResource DefaultControl}"
-                                      LabelText="_Name:" />
-                <ui:EditableTextBlock x:Name="txtDescription"
-                                      Style="{StaticResource DefaultControl}"
-                                      LabelText="_Description:" />
-                <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
-                          SelectionMode="Single"
-                          SelectionChanged="LstEdges_OnSelectionChanged"
-                          MouseUp="LstEdges_OnMouseUp"/>
-            </StackPanel>
+            <uiMain:NodeDetailPanel Grid.Row="0"/>
             <uiMain:EdgeEditorPanel Grid.Row="1" x:Name="edgeEditorPanel" Visibility="Collapsed"/>
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.Row="1" x:Name="btnAddEdge"
-                        Style="{StaticResource DefaultControl}"
-                        Click="btnAddEdge_Click">
-                    Add Edge
-                </Button>
-                <Button Grid.Column="0" Grid.Row="2"
-                        Style="{StaticResource DefaultControl}"
-                        Click="btnCreateNode_Click">
-                    Add Node
-                </Button>
-                <Button Grid.Column="1" Grid.Row="2"
-                        Style="{StaticResource DefaultControl}"
-                        Click="btnRemoveNode_Click">
-                    Remove Node
-                </Button>
-                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"
-                        Style="{StaticResource DefaultControl}"
-                        Click="btnSave_Click">
-                    Save Graph
-                </Button>
-            </Grid>
+            <uiMain:ButtonPanel Grid.Row="2" x:Name="buttonPanel"/>
         </Grid>
 
-        <graphViewerUi:MyGraphLayoutControl x:Name="graphControl" Grid.Column="1" />
+        <uiMain:GraphControl x:Name="graphControl" Grid.Column="1" />
         
         <Frame Grid.Column="0" Grid.ColumnSpan="2" x:Name="frmWorking" Visibility="Collapsed">
             <Frame.Background><SolidColorBrush Color="Black" Opacity="0.2"/></Frame.Background>

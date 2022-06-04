@@ -1,4 +1,4 @@
-﻿<ScrollViewer x:Class="NodeMapper.GraphViewerUi.MyGraphLayoutControl"
+﻿<ScrollViewer x:Class="NodeMapper.Ui.Main.GraphControl"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel x:Name="dockPanel"/>

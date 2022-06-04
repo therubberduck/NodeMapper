@@ -10,7 +10,6 @@ namespace NodeMapper.Ui.Main
 {
     public class GraphViewModel
     {
-        private readonly Random _rand = new Random();
         private DbRepository _repo = new DbRepository();
         
         public readonly Graph Graph;

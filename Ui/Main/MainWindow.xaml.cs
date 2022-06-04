@@ -1,184 +1,43 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Msagl.Drawing;
 
 namespace NodeMapper.Ui.Main
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow
     {
-        private readonly GraphViewModel _graphViewModel = new GraphViewModel();
-        private readonly NodeViewModel _nodeViewModel = new NodeViewModel();
-        
+        private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            graphControl.Graph = _graphViewModel.Graph;
-            (graphControl.GraphViewer as IViewer).MouseUp += GraphControl_OnMouseUp;
+            graphControl.OnNodeSelection += graphControl_OnNodeSelection;
+            _nodeViewModel.UpdateGraph += () => graphControl.Update();
 
-            txtName.textBox.TextChanged += UpDateName_OnTextChanged;
-            txtDescription.textBox.TextChanged += UpDateDescription_OnTextChanged;
-
-            _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
-            UpdateNodePanelFromViewModel();
+            buttonPanel.OnShowProgressOverlay += () => { frmWorking.Visibility = Visibility.Visible; };
+            buttonPanel.OnHideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
+            buttonPanel.EdgeEditorPanel = edgeEditorPanel;
         }
 
-        private void UpDateName_OnTextChanged(object sender, TextChangedEventArgs e)
+        private void graphControl_OnNodeSelection(Node nodeSelected)
         {
-            _nodeViewModel.SelectedNode.LabelText = txtName.Text;
-            _nodeViewModel.SelectedNode.Id = txtName.Text;
-            graphControl.Update();
-        }
-
-        private void UpDateDescription_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            _nodeViewModel.SelectedNode.UserData = txtDescription.Text;
-            graphControl.Update();
-        }
-
-        private void btnRemoveEdge_Click(object sender, RoutedEventArgs e)
-        {
-            var edgeToRemove = _nodeViewModel.SelectedEdge;
-            if (edgeToRemove != null)
+            if (nodeSelected != null && _nodeViewModel.SelectedNode != nodeSelected)
             {
-                _graphViewModel.RemoveEdge(edgeToRemove);
-                UpdateNodePanelFromViewModel();
-                graphControl.Update();
-            }
-        }
-
-        private void btnCreateNode_Click(object sender, RoutedEventArgs e)
-        {
-            var newNode = _graphViewModel.CreateNewEdge(_nodeViewModel.SelectedNode);
-            _nodeViewModel.SelectedNode = newNode;
-            graphControl.Update();
-            UpdateNodePanelFromViewModel();
-        }
-
-        private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
-        {
-            if (graphControl.Graph.Nodes.Count() == 1)
-            {
-                MessageBox.Show("You cannot delete the last node.");
-                return;
-            }
-            
-            graphControl.Graph.RemoveNode(_nodeViewModel.SelectedNode);
-            _nodeViewModel.SelectedNode = graphControl.Graph.Nodes.First();
-            graphControl.Update();
-            UpdateNodePanelFromViewModel();
-        }
-
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            frmWorking.Visibility = Visibility.Visible;
-            AllowUIToUpdate();
-            
-            _graphViewModel.SaveGraph();
-            
-            frmWorking.Visibility = Visibility.Collapsed;
-        }
-        
-
-        private void GraphControl_OnMouseUp(object sender, MsaglMouseEventArgs  e)
-        {
-            graphControl.GraphViewer.ScreenToSource(e);
-            
-            var nodeSelected = _graphViewModel.SelectNode(graphControl.GraphViewer.ScreenToSource(e));
-            if (nodeSelected && _nodeViewModel.SelectedNode != _graphViewModel.SelectedNode)
-            {
-                _nodeViewModel.SelectedNode = _graphViewModel.SelectedNode;
-                UpdateNodePanelFromViewModel();
-                graphControl.Update();
-            }
-        }
-
-        private void LstEdges_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var edge = (lstEdges.SelectedItem as EdgeItem)?.Edge;
-            
-            if(edge == null || edge == _nodeViewModel.SelectedEdge) return;
-            _newItemSelected = true;
-            _nodeViewModel.SelectedEdge = edge;
-            
-            edgeEditorPanel.ShowEdit(_graphViewModel.Graph, edge, EdgeEditorPanelCallback);
-            btnAddEdge.Visibility = Visibility.Collapsed;
-            
-            graphControl.Update();
-        }
-
-        private bool _newItemSelected = false;
-        private void LstEdges_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (!_newItemSelected)
-            {
-                _nodeViewModel.SelectedEdge = null;
-                lstEdges.SelectedIndex = -1;
-                edgeEditorPanel.Hide();
-                btnAddEdge.Visibility = Visibility.Visible;
-            }
-            _newItemSelected = false;
-        }
-
-        private void UpdateNodePanelFromViewModel()
-        {
-            txtName.Text = _nodeViewModel.NodeName;
-            txtDescription.Text = _nodeViewModel.NodeDescription;
-            lstEdges.Items.Clear();
-            foreach (var edgeItem in _nodeViewModel.EdgeItems)
-            {
-                lstEdges.Items.Add(edgeItem);                
-            }
-            foreach (EdgeItem item in lstEdges.Items)
-            {
-                if (item.Edge == _nodeViewModel.SelectedEdge)
-                {
-                    lstEdges.SelectedItem = item;
-                    break;
-                }
-            }
-        }
-
-        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
-        {
-            edgeEditorPanel.ShowCreate(_graphViewModel.Graph, EdgeEditorPanelCallback);
-            btnAddEdge.Visibility = Visibility.Collapsed;
-        }
-
-        private void EdgeEditorPanelCallback(bool successful, Edge newSelectedEdge)
-        {
-            edgeEditorPanel.Hide();
-            btnAddEdge.Visibility = Visibility.Visible;
-
-            if (successful)
-            {
-                _nodeViewModel.SelectedEdge = newSelectedEdge;
-                UpdateNodePanelFromViewModel();
-                graphControl.Update();
-
-                if (newSelectedEdge != null)
-                {
-                    edgeEditorPanel.ShowEdit(_graphViewModel.Graph, newSelectedEdge, EdgeEditorPanelCallback);
-                    btnAddEdge.Visibility = Visibility.Collapsed;
-                }
+                _nodeViewModel.SelectedNode = nodeSelected;
             }
         }
 
         private void AllowUIToUpdate()
         {
             DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(delegate (object parameter)
-            {
-                frame.Continue = false;
-                return null;
-            }), null);
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(
+                delegate(object parameter)
+                {
+                    frame.Continue = false;
+                    return null;
+                }), null);
 
             Dispatcher.PushFrame(frame);
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
