@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,6 +33,7 @@ namespace NodeMapper.Ui.Main
         private void UpDateName_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             _nodeViewModel.SelectedNode.LabelText = txtName.Text;
+            _nodeViewModel.SelectedNode.Id = txtName.Text;
             graphControl.Update();
         }
 
@@ -54,8 +56,24 @@ namespace NodeMapper.Ui.Main
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)
         {
-            _graphViewModel.CreateNewEdge();
+            var newNode = _graphViewModel.CreateNewEdge(_nodeViewModel.SelectedNode);
+            _nodeViewModel.SelectedNode = newNode;
             graphControl.Update();
+            UpdateNodePanelFromViewModel();
+        }
+
+        private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
+        {
+            if (graphControl.Graph.Nodes.Count() == 1)
+            {
+                MessageBox.Show("You cannot delete the last node.");
+                return;
+            }
+            
+            graphControl.Graph.RemoveNode(_nodeViewModel.SelectedNode);
+            _nodeViewModel.SelectedNode = graphControl.Graph.Nodes.First();
+            graphControl.Update();
+            UpdateNodePanelFromViewModel();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

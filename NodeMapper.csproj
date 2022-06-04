@@ -68,7 +68,6 @@
         <Compile Include="DataRepository\Schema\DbEdge.cs" />
         <Compile Include="DataRepository\Schema\DbNode.cs" />
         <Compile Include="DataRepository\UpdateSchema.cs" />
-        <Compile Include="DrawingUtilsForSamples.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />
         <Compile Include="SqliteDatabase\DbModule.cs" />
         <Compile Include="SqliteDatabase\DbObjectModule.cs" />

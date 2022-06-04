@@ -47,11 +47,10 @@ namespace NodeMapper.Ui.Main
                 SelectedNode = Graph.Nodes.First();
             }
         }
-        public void CreateNewEdge()
+        public Node CreateNewEdge(Node selectedNode)
         {
-            var node1 = _rand.Next(1,11).ToString();
-            var node2 = _rand.Next(1,11).ToString();
-            Graph.AddEdge(node1, node2);
+            var newEdge = Graph.AddEdge(selectedNode.Id, "New Node");
+            return newEdge.TargetNode;
         }
 
         public Node AddNode(string name)
