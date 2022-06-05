@@ -7,10 +7,10 @@ namespace NodeMapper.Ui.Main
 {
     public partial class GraphControl
     {
-        public delegate void GraphControl_OnNodeSelection(Node node);
-        public GraphControl_OnNodeSelection OnNodeSelection;
-        public delegate void GraphControl_OnEdgeSelection(Edge edge);
-        public GraphControl_OnEdgeSelection OnEdgeSelection;
+        public delegate void NodeSelectionDelegate(Node node);
+        public NodeSelectionDelegate NodeSelection;
+        public delegate void EdgeSelectionDelegate(Edge edge);
+        public EdgeSelectionDelegate EdgeSelection;
         
         private readonly GraphViewer _graphViewer = new GraphViewer();
         private readonly GraphProvider _provider = GraphProvider.Instance;
@@ -29,20 +29,17 @@ namespace NodeMapper.Ui.Main
             var item = _graphViewer.ObjectUnderMouseCursor;
             if (item is VNode node)
             {
-                OnNodeSelection?.Invoke(node.Node);
+                NodeSelection?.Invoke(node.Node);
             }
             else if (item is IViewerEdge edge)
             {
-                OnEdgeSelection?.Invoke(edge.Edge);   
+                EdgeSelection?.Invoke(edge.Edge);   
             }
-            // var point = _graphViewer.ScreenToSource(e);
-            // var node = _provider.SelectNodeAt(point);
-            // OnNodeSelection(node);
         }
 
         public void Reload()
         {
-            _graphViewer.Graph = _provider.Graph;
+            _graphViewer.Graph = _provider.GraphViewerGraph;
             Invalidate();
         }
 
@@ -53,7 +50,6 @@ namespace NodeMapper.Ui.Main
 
         private void Invalidate()
         {
-            _provider.RedoBorders();
             _graphViewer.Invalidate();
         }
     }

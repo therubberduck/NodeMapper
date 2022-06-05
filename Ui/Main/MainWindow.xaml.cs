@@ -13,8 +13,8 @@ namespace NodeMapper.Ui.Main
         {
             InitializeComponent();
 
-            graphControl.OnNodeSelection += graphControl_OnNodeSelection;
-            graphControl.OnEdgeSelection += graphControl_OnEdgeSelection;
+            graphControl.NodeSelection += graphControl_OnNodeSelection;
+            graphControl.EdgeSelection += graphControl_OnEdgeSelection;
             _nodeViewModel.ReloadGraph += () => graphControl.Reload();
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
 

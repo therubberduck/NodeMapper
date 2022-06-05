@@ -24,7 +24,7 @@ namespace NodeMapper.Ui.Main
 
         public void ShowCreate()
         {
-            var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
+            var nodes = _nodeViewModel.AllNodeItems;
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
@@ -55,7 +55,7 @@ namespace NodeMapper.Ui.Main
         {
             var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.Node.Id;
             var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.Node.Id;
-            var newEdge = _graphProvider.Graph.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
+            var newEdge = _graphProvider.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
 
             _nodeViewModel.SelectedEdge = newEdge;
             _nodeViewModel.UpdateNodeDetails();
@@ -64,7 +64,7 @@ namespace NodeMapper.Ui.Main
 
         private void OnEdgeSelected(Edge edge)
         {
-            var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
+            var nodes = _nodeViewModel.AllNodeItems;
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
@@ -114,15 +114,16 @@ namespace NodeMapper.Ui.Main
                 selectedEdge.SourceNode.LabelText != cmbEdgeEditFrom.Text ||
                 selectedEdge.TargetNode.LabelText != cmbEdgeEditTo.Text)
             {
-                _graphProvider.Graph.RemoveEdge(selectedEdge);
+                _graphProvider.RemoveEdge(selectedEdge);
                 AddEdge();
             }
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
-            _graphProvider.Graph.RemoveEdge(_nodeViewModel.SelectedEdge);
+            _graphProvider.RemoveEdge(_nodeViewModel.SelectedEdge);
             _nodeViewModel.SelectedEdge = null;
+            _nodeViewModel.ReloadGraph();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

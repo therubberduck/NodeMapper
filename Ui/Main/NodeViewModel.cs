@@ -109,10 +109,12 @@ namespace NodeMapper.Ui.Main
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
             ? SelectedNode.Edges.Select(e => new EdgeItem(e))
             : Enumerable.Empty<EdgeItem>();
-        
+
+        public IEnumerable<NodeItem> AllNodeItems => _graphProvider.AllNodes.Select(n => new NodeItem(n));
+
         public void Init()
         {
-            SelectedNode = _graphProvider.Graph.Nodes.First();
+            SelectedNode = _graphProvider.FirstNode;
         }
     }
 }

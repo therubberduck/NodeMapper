@@ -5,7 +5,7 @@ using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
 {
-    public partial class ButtonPanel : UserControl
+    public partial class ButtonPanel
     {
         
         public delegate void ShowProgressOverlayDelegate();
@@ -37,14 +37,15 @@ namespace NodeMapper.Ui.Main
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
         {
-            if (_graphProvider.Graph.Nodes.Count() == 1)
+            if (_graphProvider.NodeCount == 1)
             {
                 MessageBox.Show("You cannot delete the last node.");
                 return;
             }
-            
-            _graphProvider.Graph.RemoveNode(_nodeViewModel.SelectedNode);
-            _nodeViewModel.SelectedNode = _graphProvider.Graph.Nodes.First();
+
+            var neighbor = _graphProvider.GetNeighborNode(_nodeViewModel.SelectedNode);
+            _graphProvider.RemoveNode(_nodeViewModel.SelectedNode);
+            _nodeViewModel.SelectedNode = neighbor;
             _nodeViewModel.ReloadGraph();
         }
 
