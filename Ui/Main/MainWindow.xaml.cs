@@ -18,7 +18,11 @@ namespace NodeMapper.Ui.Main
             _nodeViewModel.ReloadGraph += () => graphControl.Reload();
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
 
-            buttonPanel.OnShowProgressOverlay += () => { frmWorking.Visibility = Visibility.Visible; };
+            buttonPanel.OnShowProgressOverlay += () =>
+            {
+                frmWorking.Visibility = Visibility.Visible;
+                AllowUIToUpdate();
+            };
             buttonPanel.OnHideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
         }

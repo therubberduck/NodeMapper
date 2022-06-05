@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using NodeMapper.Model;
 
@@ -30,20 +31,21 @@ namespace NodeMapper.Ui.Main
         {
             var newNode = _graphProvider.CreateNeNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
             _nodeViewModel.SelectedNode = newNode;
+            _nodeViewModel.SelectedEdge = newNode.Edges.First();
             _nodeViewModel.ReloadGraph();
         }
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
         {
-            // if (graphControl.Graph.Nodes.Count() == 1)
-            // {
-            //     MessageBox.Show("You cannot delete the last node.");
-            //     return;
-            // }
-            //
-            // graphControl.Graph.RemoveNode(_nodeViewModel.SelectedNode);
-            // _nodeViewModel.SelectedNode = graphControl.Graph.Nodes.First();
-            // graphControl.Update();
+            if (_graphProvider.Graph.Nodes.Count() == 1)
+            {
+                MessageBox.Show("You cannot delete the last node.");
+                return;
+            }
+            
+            _graphProvider.Graph.RemoveNode(_nodeViewModel.SelectedNode);
+            _nodeViewModel.SelectedNode = _graphProvider.Graph.Nodes.First();
+            _nodeViewModel.ReloadGraph();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

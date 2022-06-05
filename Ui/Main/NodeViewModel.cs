@@ -42,6 +42,9 @@ namespace NodeMapper.Ui.Main
         public delegate void EdgeDeselectedDelegate();
         public EdgeDeselectedDelegate OnEdgeDeselected;
         
+        public delegate void UpdateNodeDetailsDelegate();
+        public UpdateNodeDetailsDelegate UpdateNodeDetails;
+        
         public delegate void ReloadGraphDelegate();
         public ReloadGraphDelegate ReloadGraph;
         
@@ -58,11 +61,20 @@ namespace NodeMapper.Ui.Main
                     _selectedNode.Attr.FillColor = Color.White;
                 }
                 _selectedNode = value;
-                OnNodeSelected(value);
                 if (_selectedNode != null)
                 {
                     _selectedNode.Attr.FillColor = Color.Aquamarine;
+                    
+                    if (_selectedEdge != null && _selectedEdge.SourceNode != value && _selectedEdge.TargetNode != value)
+                    {
+                        SelectedEdge = null;
+                    }
                 }
+                else
+                {
+                    SelectedEdge = null;
+                }
+                OnNodeSelected(value);
             }
         }
 

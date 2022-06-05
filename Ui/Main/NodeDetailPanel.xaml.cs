@@ -13,6 +13,7 @@ namespace NodeMapper.Ui.Main
         {
             InitializeComponent();
 
+            _nodeViewModel.UpdateNodeDetails += () => OnNodeSelected(_nodeViewModel.SelectedNode);
             _nodeViewModel.OnNodeSelected += OnNodeSelected;
             _nodeViewModel.OnEdgeSelected += OnEdgeSelected;
             _nodeViewModel.OnEdgeDeselected += OnEdgeDeselected;

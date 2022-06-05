@@ -25,10 +25,17 @@ namespace NodeMapper.Ui.Main
         public void ShowCreate()
         {
             var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
+            cmbEdgeEditFrom.Items.Clear();
+            cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
             {
                 cmbEdgeEditFrom.Items.Add(nodeItem);
                 cmbEdgeEditTo.Items.Add(nodeItem);
+
+                if (nodeItem.Node == _nodeViewModel.SelectedNode)
+                {
+                    cmbEdgeEditFrom.SelectedItem = nodeItem;
+                }
             }
 
             btnAddEdge.Content = "Add Edge";
@@ -51,12 +58,15 @@ namespace NodeMapper.Ui.Main
             var newEdge = _graphProvider.Graph.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
 
             _nodeViewModel.SelectedEdge = newEdge;
-            _nodeViewModel.UpdateGraph();
+            _nodeViewModel.UpdateNodeDetails();
+            _nodeViewModel.ReloadGraph();
         }
 
         private void OnEdgeSelected(Edge edge)
         {
             var nodes = _graphProvider.Graph.Nodes.Select(node => new NodeItem(node));
+            cmbEdgeEditFrom.Items.Clear();
+            cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
             {
                 cmbEdgeEditFrom.Items.Add(nodeItem);
