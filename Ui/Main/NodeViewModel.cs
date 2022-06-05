@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Msagl.Drawing;
 using NodeMapper.Model;
+using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.Ui.Main
 {
@@ -85,13 +86,13 @@ namespace NodeMapper.Ui.Main
             {
                 if (_selectedEdge != null)
                 {
-                    _selectedEdge.Attr.Color = Color.Black;
+                    //_selectedEdge.Attr.Color = Color.Black;
                 }
                 _selectedEdge = value;
                 if (_selectedEdge != null)
                 {
                     OnEdgeSelected(value);
-                    _selectedEdge.Attr.Color = Color.DarkGray;
+                    //_selectedEdge.Attr.Color = Color.DarkGray;
                 }
                 else
                 {
@@ -107,7 +108,7 @@ namespace NodeMapper.Ui.Main
         public string NodeDescription => SelectedNode != null ? (SelectedNode.UserData as string) : "";
 
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
-            ? SelectedNode.Edges.Select(e => new EdgeItem(e))
+            ? _graphProvider.GetEdgesForNode(SelectedNode).Select(e => new EdgeItem(e))
             : Enumerable.Empty<EdgeItem>();
 
         public IEnumerable<NodeItem> AllNodeItems => _graphProvider.AllNodes.Select(n => new NodeItem(n));

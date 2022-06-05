@@ -15,6 +15,7 @@ namespace NodeMapper.DataRepository.Schema
         public override DbColumn[] AllColumns => new[]
         {
             new DbColumn(Id, DbColumn.Integer, true),
+            new DbColumn(EdgeId, DbColumn.Text),
             new DbColumn(SourceId, DbColumn.Text),
             new DbColumn(TargetId, DbColumn.Text),
             new DbColumn(EdgeColor, DbColumn.Text),
@@ -25,6 +26,7 @@ namespace NodeMapper.DataRepository.Schema
             new DbColumn(FontSize, DbColumn.Real),
         };
 
+        public const string EdgeId = "edgeId";
         public const string SourceId = "sourceId";
         public const string TargetId = "targetId";
         public const string EdgeColor = "Color";
@@ -44,6 +46,7 @@ namespace NodeMapper.DataRepository.Schema
         
         public long Insert(Edge edge)
         {
+            var edgeId = edge.Attr.Id;
             var sourceId = edge.Source;
             var targetId = edge.Target;
             var edgeColor = DbColorConverter.DbStringFromColor(edge.Attr.Color);
@@ -66,10 +69,10 @@ namespace NodeMapper.DataRepository.Schema
 
             return Db.Insert(TableName, new[]
             {
-                SourceId, TargetId, EdgeColor, ShapeAtSource, ShapeAtTarget, LabelText, FontColor, FontSize
+                EdgeId, SourceId, TargetId, EdgeColor, ShapeAtSource, ShapeAtTarget, LabelText, FontColor, FontSize
             }, new object[]
             {
-                sourceId, targetId, edgeColor, shapeAtSource, shapeAtTarget, labelText, fontColor, fontSize
+                edgeId, sourceId, targetId, edgeColor, shapeAtSource, shapeAtTarget, labelText, fontColor, fontSize
             });
         }
 
@@ -77,6 +80,7 @@ namespace NodeMapper.DataRepository.Schema
         {
             var reader = new DbResultReader(dbObject);
             reader.ReadLong();
+            var edgeId = reader.ReadString();
             var sourceId = reader.ReadString();
             var targetId = reader.ReadString();
             var edgeColorString = reader.ReadString();
@@ -89,6 +93,7 @@ namespace NodeMapper.DataRepository.Schema
             var fontSize = reader.ReadFloat();
 
             var edge = new Edge(sourceId, labelText, targetId);
+            edge.Attr.Id = edgeId;
             edge.Attr.Color = edgeColor;
             edge.Attr.ArrowheadAtSource = (ArrowStyle)shapeAtSource;
             edge.Attr.ArrowheadAtTarget = (ArrowStyle)shapeAtTarget;

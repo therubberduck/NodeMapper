@@ -1,11 +1,11 @@
-﻿using System.Net.Mime;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Msagl.Drawing;
+using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.Ui.Main
 {
-    public partial class NodeDetailPanel : UserControl
+    public partial class NodeDetailPanel
     {
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
 
@@ -36,7 +36,7 @@ namespace NodeMapper.Ui.Main
 
             foreach (EdgeItem item in lstEdges.Items)
             {
-                if (item.Edge == _nodeViewModel.SelectedEdge)
+                if (item.Edge.EdgeId == _nodeViewModel.SelectedEdge?.EdgeId)
                 {
                     lstEdges.SelectedItem = item;
                     break;
@@ -89,6 +89,7 @@ namespace NodeMapper.Ui.Main
             _nodeViewModel.SelectedEdge = edge;
         }
 
+        // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _newItemSelected = false;
 
         private void LstEdges_OnMouseUp(object sender, MouseButtonEventArgs e)

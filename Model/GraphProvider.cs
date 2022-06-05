@@ -34,6 +34,16 @@ namespace NodeMapper.Model
             {
                 CreateBasicGraph();
             }
+            else
+            {
+                foreach (var graphNode in _graph.Nodes)
+                {
+                    if (graphNode.Label != null)
+                    {
+                        graphNode.Label.UserData = graphNode.Attr.Id;
+                    }
+                }
+            }
         }
 
         private void CreateBasicGraph()
@@ -46,10 +56,14 @@ namespace NodeMapper.Model
             nodeHill.UserData = "A ruined table lies at the top this hill.";
             nodeForest.UserData = "Rumors of a werewolf are connected to this forest.";
 
-            _graph.AddEdge(nodeVillage.Id, "4h", nodeHill.Id);
-            _graph.AddEdge(nodeVillage.Id, "4h", nodeForest.Id);
-            _graph.AddEdge(nodeForest.Id, "2h", nodeHill.Id);
-            _graph.AddEdge(nodeHill.Id, "2h", nodeForest.Id);
+            var edge1 = _graph.AddEdge(nodeVillage.Id, "4h", nodeHill.Id);
+            edge1.Attr.Id = "1";
+            var edge2 = _graph.AddEdge(nodeVillage.Id, "4h", nodeForest.Id);
+            edge2.Attr.Id = "2";
+            var edge3 = _graph.AddEdge(nodeForest.Id, "2h", nodeHill.Id);
+            edge3.Attr.Id = "3";
+            var edge4 = _graph.AddEdge(nodeHill.Id, "2h", nodeForest.Id);
+            edge4.Attr.Id = "4";
         }
 
         public void SaveGraph()
@@ -69,10 +83,15 @@ namespace NodeMapper.Model
             _graph.RemoveNode(node);
         }
 
+        public Node GetNode(string nodeId)
+        {
+            return _graph.FindNode(nodeId);
+        }
+
         public Node GetNeighborNode(Node node)
         {
             if (!node.Edges.Any()) return null;
-            
+
             var firstEdge = node.Edges.First();
             // ReSharper disable once PossibleUnintendedReferenceComparison
             return firstEdge.SourceNode == node ? firstEdge.TargetNode : firstEdge.SourceNode;
@@ -80,12 +99,40 @@ namespace NodeMapper.Model
 
         public Edge AddEdge(string nodeFromId, string text, string nodeToId)
         {
-            return _graph.AddEdge(nodeFromId, text, nodeToId);
+            var graphEdge = _graph.AddEdge(nodeFromId, text, nodeToId);
+            return MakeEdge(graphEdge);
         }
 
         public void RemoveEdge(Edge edge)
         {
-            _graph.RemoveEdge(edge);
+            var graphEdge = _graph.EdgeById(edge.EdgeId);
+            _graph.RemoveEdge(graphEdge);
+        }
+
+        public Edge GetEdge(string edgeId)
+        {
+            return MakeEdge(_graph.EdgeById(edgeId));
+        }
+
+        public IEnumerable<Edge> GetEdgesForNode(Node node)
+        {
+            return node.Edges.Select(MakeEdge);
+        }
+
+        public Edge FirstEdgeOf(Node node)
+        {
+            var graphEdge = node.Edges.First();
+            return MakeEdge(graphEdge);
+        }
+
+        private Edge MakeEdge(Microsoft.Msagl.Drawing.Edge graphEdge)
+        {
+            return new Edge(
+                graphEdge.Attr.Id,
+                graphEdge.Source,
+                graphEdge.Target,
+                graphEdge.Label != null ? graphEdge.LabelText : ""
+            );
         }
     }
 }

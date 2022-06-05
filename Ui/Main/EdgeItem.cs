@@ -1,4 +1,4 @@
-﻿using Microsoft.Msagl.Drawing;
+﻿using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
 {
@@ -12,7 +12,7 @@ namespace NodeMapper.Ui.Main
 
         public override string ToString()
         {
-            return Edge.Source + " to " + Edge.Target;
+            return Edge.SourceNode.LabelText + " to " + Edge.TargetNode.LabelText;
         }
     }
 }

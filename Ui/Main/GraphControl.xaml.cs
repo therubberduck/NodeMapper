@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using Microsoft.Msagl.Drawing;
+﻿using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using NodeMapper.Model;
+using Edge = Microsoft.Msagl.Drawing.Edge;
 
 namespace NodeMapper.Ui.Main
 {
@@ -9,7 +9,7 @@ namespace NodeMapper.Ui.Main
     {
         public delegate void NodeSelectionDelegate(Node node);
         public NodeSelectionDelegate NodeSelection;
-        public delegate void EdgeSelectionDelegate(Edge edge);
+        public delegate void EdgeSelectionDelegate(string edgeId);
         public EdgeSelectionDelegate EdgeSelection;
         
         private readonly GraphViewer _graphViewer = new GraphViewer();
@@ -33,7 +33,11 @@ namespace NodeMapper.Ui.Main
             }
             else if (item is IViewerEdge edge)
             {
-                EdgeSelection?.Invoke(edge.Edge);   
+                EdgeSelection?.Invoke(edge.Edge.Attr.Id);   
+            }
+            else if (item.DrawingObject is Label label && label.Owner is Edge labelEdge)
+            {
+                EdgeSelection?.Invoke(labelEdge.Attr.Id);
             }
         }
 

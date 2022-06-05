@@ -2,11 +2,14 @@
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Msagl.Drawing;
+using NodeMapper.Model;
+using Edge = Microsoft.Msagl.Drawing.Edge;
 
 namespace NodeMapper.Ui.Main
 {
     public partial class MainWindow
     {
+        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
 
         public MainWindow()
@@ -18,12 +21,12 @@ namespace NodeMapper.Ui.Main
             _nodeViewModel.ReloadGraph += () => graphControl.Reload();
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
 
-            buttonPanel.OnShowProgressOverlay += () =>
+            buttonPanel.ShowProgressOverlay += () =>
             {
                 frmWorking.Visibility = Visibility.Visible;
                 AllowUIToUpdate();
             };
-            buttonPanel.OnHideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
+            buttonPanel.HideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
         }
 
@@ -40,18 +43,18 @@ namespace NodeMapper.Ui.Main
             }
         }
 
-        private void graphControl_OnEdgeSelection(Edge edgeSelected)
+        private void graphControl_OnEdgeSelection(string edgeId)
         {
-            if (_nodeViewModel.SelectedEdge != edgeSelected)
+            if (_nodeViewModel.SelectedEdge?.EdgeId == edgeId) return;
+            
+            var edgeSelected = _graphProvider.GetEdge(edgeId);
+            if (_nodeViewModel.SelectedNode.Id != edgeSelected.SourceId &&
+                _nodeViewModel.SelectedNode.Id != edgeSelected.TargetId)
             {
-                if (_nodeViewModel.SelectedNode != edgeSelected.SourceNode &&
-                    _nodeViewModel.SelectedNode != edgeSelected.TargetNode)
-                {
-                    _nodeViewModel.SelectedNode = edgeSelected.SourceNode;
-                }
-
-                _nodeViewModel.SelectedEdge = edgeSelected;
+                _nodeViewModel.SelectedNode = edgeSelected.SourceNode;
             }
+
+            _nodeViewModel.SelectedEdge = edgeSelected;
         }
 
         private void AllowUIToUpdate()

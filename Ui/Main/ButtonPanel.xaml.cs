@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
@@ -9,10 +8,10 @@ namespace NodeMapper.Ui.Main
     {
         
         public delegate void ShowProgressOverlayDelegate();
-        public ShowProgressOverlayDelegate OnShowProgressOverlay;
+        public ShowProgressOverlayDelegate ShowProgressOverlay;
         
         public delegate void HideProgressOverlayDelegate();
-        public HideProgressOverlayDelegate OnHideProgressOverlay;
+        public HideProgressOverlayDelegate HideProgressOverlay;
         
         public EdgeEditorPanel EdgeEditorPanel { private get; set; }
         
@@ -31,7 +30,7 @@ namespace NodeMapper.Ui.Main
         {
             var newNode = _graphProvider.CreateNeNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
             _nodeViewModel.SelectedNode = newNode;
-            _nodeViewModel.SelectedEdge = newNode.Edges.First();
+            _nodeViewModel.SelectedEdge = _graphProvider.FirstEdgeOf(newNode);
             _nodeViewModel.ReloadGraph();
         }
 
@@ -51,11 +50,11 @@ namespace NodeMapper.Ui.Main
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            OnShowProgressOverlay();
+            ShowProgressOverlay();
             
             _graphProvider.SaveGraph();
 
-            OnHideProgressOverlay();
+            HideProgressOverlay();
         }
 
         private void btnAddEdge_Click(object sender, RoutedEventArgs e)

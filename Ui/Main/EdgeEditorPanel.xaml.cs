@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Msagl.Drawing;
 using NodeMapper.Model;
+using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.Ui.Main
 {
@@ -73,13 +73,10 @@ namespace NodeMapper.Ui.Main
                 cmbEdgeEditTo.Items.Add(nodeItem);
             }
 
-            if (_nodeViewModel.SelectedEdge.Label != null)
-            {
-                txtEdgeName.Text = _nodeViewModel.SelectedEdge.LabelText;
-            }
+            txtEdgeName.Text = edge.LabelText;
                 
-            SelectNodeInComboBox(cmbEdgeEditFrom, _nodeViewModel.SelectedEdge.SourceNode);
-            SelectNodeInComboBox(cmbEdgeEditTo, _nodeViewModel.SelectedEdge.TargetNode);
+            SelectNodeInComboBox(cmbEdgeEditFrom, edge.SourceNode);
+            SelectNodeInComboBox(cmbEdgeEditTo, edge.TargetNode);
             
             btnAddEdge.Content = "Edit Edge";
             btnAddEdge.Click += EditEdge;
@@ -103,11 +100,7 @@ namespace NodeMapper.Ui.Main
         private void EditEdge(object sender, RoutedEventArgs e)
         {
             var selectedEdge = _nodeViewModel.SelectedEdge;
-            if (selectedEdge.Label == null)
-            {
-                selectedEdge.Label = new Microsoft.Msagl.Drawing.Label();
-            }
-
+            
             if (selectedEdge.LabelText != txtEdgeName.Text || 
                 cmbEdgeEditFrom.SelectedItem != null || 
                 cmbEdgeEditTo.SelectedItem != null ||
