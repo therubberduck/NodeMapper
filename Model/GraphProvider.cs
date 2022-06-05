@@ -27,7 +27,7 @@ namespace NodeMapper.Model
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
                 { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
             Graph.LayoutAlgorithmSettings = settings;
-            Graph.Attr.LayerDirection = LayerDirection.None;
+            Graph.Attr.LayerDirection = LayerDirection.TB;
 
             if (!Graph.Nodes.Any())
             {
@@ -64,7 +64,16 @@ namespace NodeMapper.Model
         public Node CreateNeNodeWithEdgeFrom(Node node)
         {
             var newEdge = Graph.AddEdge(node.Id, "New Node");
+            Graph.GeometryGraph.UpdateBoundingBox();
             return newEdge.TargetNode;
+        }
+
+        public void RedoBorders()
+        {
+            // foreach (var node in Graph.Nodes)
+            // {
+            //     node.Attr.ClearStyles();
+            // }
         }
     }
 }

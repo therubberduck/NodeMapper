@@ -14,6 +14,8 @@ namespace NodeMapper.Ui.Main
             InitializeComponent();
 
             graphControl.OnNodeSelection += graphControl_OnNodeSelection;
+            graphControl.OnEdgeSelection += graphControl_OnEdgeSelection;
+            _nodeViewModel.ReloadGraph += () => graphControl.Reload();
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
 
             buttonPanel.OnShowProgressOverlay += () => { frmWorking.Visibility = Visibility.Visible; };
@@ -21,11 +23,30 @@ namespace NodeMapper.Ui.Main
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
         }
 
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            graphControl.Reload();
+        }
+
         private void graphControl_OnNodeSelection(Node nodeSelected)
         {
             if (nodeSelected != null && _nodeViewModel.SelectedNode != nodeSelected)
             {
                 _nodeViewModel.SelectedNode = nodeSelected;
+            }
+        }
+
+        private void graphControl_OnEdgeSelection(Edge edgeSelected)
+        {
+            if (_nodeViewModel.SelectedEdge != edgeSelected)
+            {
+                if (_nodeViewModel.SelectedNode != edgeSelected.SourceNode &&
+                    _nodeViewModel.SelectedNode != edgeSelected.TargetNode)
+                {
+                    _nodeViewModel.SelectedNode = edgeSelected.SourceNode;
+                }
+
+                _nodeViewModel.SelectedEdge = edgeSelected;
             }
         }
 

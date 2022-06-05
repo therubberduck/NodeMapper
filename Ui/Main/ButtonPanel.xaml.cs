@@ -30,7 +30,7 @@ namespace NodeMapper.Ui.Main
         {
             var newNode = _graphProvider.CreateNeNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
             _nodeViewModel.SelectedNode = newNode;
-            _nodeViewModel.UpdateGraph();
+            _nodeViewModel.ReloadGraph();
         }
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)

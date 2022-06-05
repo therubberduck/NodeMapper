@@ -6,6 +6,7 @@
         xmlns:ui="clr-namespace:NodeMapper.Ui"
         xmlns:uiMain="clr-namespace:NodeMapper.Ui.Main"
         mc:Ignorable="d"
+        Loaded="MainWindow_OnLoaded"
         Title="NodeMapper" Height="800" Width="800" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.ColumnDefinitions>

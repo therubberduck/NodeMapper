@@ -6,6 +6,9 @@ namespace NodeMapper.Ui
 {
     public partial class EditableTextBlock
     {
+        public delegate void TextUpdatedDelegate(string newText);
+        public TextUpdatedDelegate TextUpdated;
+        
         public EditableTextBlock()
         {
             InitializeComponent();
@@ -73,6 +76,7 @@ namespace NodeMapper.Ui
         private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             Text = textBox.Text;
+            TextUpdated?.Invoke(Text);
         }
     }
 }
