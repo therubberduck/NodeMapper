@@ -9,16 +9,16 @@ namespace NodeMapper.Ui.Main
 {
     public partial class MainWindow
     {
-        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
+        private readonly GraphManager _graphManager = GraphManager.Instance;
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            _graphManager.InitEdges();
             graphControl.NodeSelection += graphControl_OnNodeSelection;
             graphControl.EdgeSelection += graphControl_OnEdgeSelection;
-            _nodeViewModel.ReloadGraph += () => graphControl.Reload();
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
 
             buttonPanel.ShowProgressOverlay += () =>
@@ -47,7 +47,7 @@ namespace NodeMapper.Ui.Main
         {
             if (_nodeViewModel.SelectedEdge?.EdgeId == edgeId) return;
             
-            var edgeSelected = _graphProvider.GetEdge(edgeId);
+            var edgeSelected = _graphManager.GetEdge(edgeId);
             if (_nodeViewModel.SelectedNode.Id != edgeSelected.SourceId &&
                 _nodeViewModel.SelectedNode.Id != edgeSelected.TargetId)
             {

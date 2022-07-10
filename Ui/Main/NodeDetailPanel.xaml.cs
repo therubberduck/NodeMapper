@@ -67,7 +67,7 @@ namespace NodeMapper.Ui.Main
             {
                 selectedNode.LabelText = newText;
                 selectedNode.Id = newText;
-                _nodeViewModel.ReloadGraph?.Invoke();
+                //_nodeViewModel.ReloadGraph?.Invoke();
             }
         }
 
@@ -76,7 +76,7 @@ namespace NodeMapper.Ui.Main
             if (_nodeViewModel.SelectedNode.LabelText != txtDescription.Text)
             {
                 _nodeViewModel.SelectedNode.UserData = txtDescription.Text;
-                _nodeViewModel.ReloadGraph?.Invoke();
+                //_nodeViewModel.ReloadGraph?.Invoke();
             }
         }
 

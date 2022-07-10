@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
@@ -15,7 +14,7 @@ namespace NodeMapper.Ui.Main
         
         public EdgeEditorPanel EdgeEditorPanel { private get; set; }
         
-        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
+        private readonly GraphManager _graphManager = GraphManager.Instance;
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
         
         public ButtonPanel()
@@ -28,31 +27,29 @@ namespace NodeMapper.Ui.Main
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)
         {
-            var newNode = _graphProvider.CreateNeNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
+            var newNode = _graphManager.CreateNewNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
             _nodeViewModel.SelectedNode = newNode;
-            _nodeViewModel.SelectedEdge = _graphProvider.FirstEdgeOf(newNode);
-            _nodeViewModel.ReloadGraph();
+            _nodeViewModel.SelectedEdge = _graphManager.FirstEdgeOf(newNode);
         }
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
         {
-            if (_graphProvider.NodeCount == 1)
+            if (_graphManager.NodeCount == 1)
             {
                 MessageBox.Show("You cannot delete the last node.");
                 return;
             }
 
-            var neighbor = _graphProvider.GetNeighborNode(_nodeViewModel.SelectedNode);
-            _graphProvider.RemoveNode(_nodeViewModel.SelectedNode);
+            var neighbor = _graphManager.GetNeighborNode(_nodeViewModel.SelectedNode);
+            _graphManager.RemoveNode(_nodeViewModel.SelectedNode);
             _nodeViewModel.SelectedNode = neighbor;
-            _nodeViewModel.ReloadGraph();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             ShowProgressOverlay();
             
-            _graphProvider.SaveGraph();
+            _graphManager.SaveGraph();
 
             HideProgressOverlay();
         }

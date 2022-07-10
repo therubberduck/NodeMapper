@@ -1,4 +1,6 @@
-﻿using Microsoft.Msagl.Drawing;
+﻿using System.Collections.Generic;
+using Microsoft.Msagl.Drawing;
+using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.DataRepository
 {
@@ -11,41 +13,22 @@ namespace NodeMapper.DataRepository
             _db = DbInterface.GetDevInterface();
         }
 
-        public Graph LoadGraph()
+        public List<Node> LoadNodes()
         {
-            var edges = _db.Edge.GetAll();
-            var nodes = _db.Node.GetAll();
-
-            var graph = new Graph();
-            foreach (var node in nodes)
-            {
-                graph.AddNode(node);
-            }
-
-            foreach (var edge in edges)
-            {
-                var newEdge = graph.AddEdge(edge.Source, edge.LabelText, edge.Target);
-                newEdge.Attr.ArrowheadAtSource = edge.Attr.ArrowheadAtSource;
-                newEdge.Attr.ArrowheadAtTarget = edge.Attr.ArrowheadAtTarget;
-                newEdge.Attr.Color = edge.Attr.Color;
-                newEdge.Attr.ArrowheadAtSource = edge.Attr.ArrowheadAtSource;
-                newEdge.Attr.ArrowheadAtTarget = edge.Attr.ArrowheadAtTarget;
-                if (newEdge.Label != null)
-                {
-                    newEdge.Label.FontColor = edge.Label.FontColor;
-                    newEdge.Label.FontSize = edge.Label.FontSize;
-                }
-            }
-
-            return graph;
+            return _db.Node.GetAll();
         }
 
-        public void SaveGraph(Graph graph)
+        public IEnumerable<Edge> LoadEdges()
+        {
+            return _db.Edge.GetAll();
+        }
+
+        public void SaveGraph(IEnumerable<Node> nodes, IEnumerable<Edge> edges)
         {
             _db.Node.ClearTable();
             _db.Edge.ClearTable();
-            _db.Node.InsertAll(graph.Nodes);
-            _db.Edge.InsertAll(graph.Edges);
+            _db.Node.InsertAll(nodes);
+            _db.Edge.InsertAll(edges);
         }
     }
 }

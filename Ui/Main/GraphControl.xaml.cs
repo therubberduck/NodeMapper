@@ -13,13 +13,16 @@ namespace NodeMapper.Ui.Main
         public EdgeSelectionDelegate EdgeSelection;
         
         private readonly GraphViewer _graphViewer = new GraphViewer();
-        private readonly GraphProvider _provider = GraphProvider.Instance;
+        private readonly MsaglGraphProvider _provider = MsaglGraphProvider.Instance;
 
         public GraphControl() {
             InitializeComponent();
             
             _graphViewer.BindToPanel(dockPanel);
             _graphViewer.LayoutEditingEnabled = false;
+
+            _provider.ReloadGraph += Reload;
+            _provider.InvalidateGraph += Invalidate;
             
             (_graphViewer as IViewer).MouseUp += OnMouseUp;
         }
@@ -43,7 +46,7 @@ namespace NodeMapper.Ui.Main
 
         public void Reload()
         {
-            _graphViewer.Graph = _provider.GraphViewerGraph;
+            _graphViewer.Graph = _provider.GetGraph();
             Invalidate();
         }
 

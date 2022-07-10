@@ -4,7 +4,7 @@ namespace NodeMapper.Model
 {
     public class Edge
     {
-        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
+        private readonly GraphManager _graphManager = GraphManager.Instance;
 
         public delegate void LabelTextChangedDelegate(string newText);
 
@@ -54,8 +54,8 @@ namespace NodeMapper.Model
             }
         }
 
-        public Node SourceNode => _graphProvider.GetNode(_sourceId);
-        public Node TargetNode => _graphProvider.GetNode(_targetId);
+        public Node SourceNode => _graphManager.GetNode(_sourceId);
+        public Node TargetNode => _graphManager.GetNode(_targetId);
         
         public Edge(string edgeId, string sourceId, string targetId, string labelText)
         {

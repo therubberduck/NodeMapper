@@ -29,7 +29,7 @@ namespace NodeMapper.Ui.Main
             }
         }
 
-        private GraphProvider _graphProvider = GraphProvider.Instance;
+        private GraphManager _graphManager = GraphManager.Instance;
         
         private Node _selectedNode;
         private Edge _selectedEdge;
@@ -45,9 +45,6 @@ namespace NodeMapper.Ui.Main
         
         public delegate void UpdateNodeDetailsDelegate();
         public UpdateNodeDetailsDelegate UpdateNodeDetails;
-        
-        public delegate void ReloadGraphDelegate();
-        public ReloadGraphDelegate ReloadGraph;
         
         public delegate void UpdateGraphDelegate();
         public UpdateGraphDelegate UpdateGraph;
@@ -108,14 +105,14 @@ namespace NodeMapper.Ui.Main
         public string NodeDescription => SelectedNode != null ? (SelectedNode.UserData as string) : "";
 
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
-            ? _graphProvider.GetEdgesForNode(SelectedNode).Select(e => new EdgeItem(e))
+            ? _graphManager.GetEdgesForNode(SelectedNode).Select(e => new EdgeItem(e))
             : Enumerable.Empty<EdgeItem>();
 
-        public IEnumerable<NodeItem> AllNodeItems => _graphProvider.AllNodes.Select(n => new NodeItem(n));
+        public IEnumerable<NodeItem> AllNodeItems => _graphManager.AllNodes.Select(n => new NodeItem(n));
 
         public void Init()
         {
-            SelectedNode = _graphProvider.FirstNode;
+            SelectedNode = _graphManager.FirstNode;
         }
     }
 }

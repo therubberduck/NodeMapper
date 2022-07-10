@@ -8,7 +8,7 @@ namespace NodeMapper.Ui.Main
 {
     public partial class EdgeEditorPanel
     {
-        private readonly GraphProvider _graphProvider = GraphProvider.Instance;
+        private readonly GraphManager _graphManager = GraphManager.Instance;
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
         
         public EdgeEditorPanel()
@@ -55,11 +55,10 @@ namespace NodeMapper.Ui.Main
         {
             var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.Node.Id;
             var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.Node.Id;
-            var newEdge = _graphProvider.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
+            var newEdge = _graphManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
 
             _nodeViewModel.SelectedEdge = newEdge;
             _nodeViewModel.UpdateNodeDetails();
-            _nodeViewModel.ReloadGraph();
         }
 
         private void OnEdgeSelected(Edge edge)
@@ -107,16 +106,15 @@ namespace NodeMapper.Ui.Main
                 selectedEdge.SourceNode.LabelText != cmbEdgeEditFrom.Text ||
                 selectedEdge.TargetNode.LabelText != cmbEdgeEditTo.Text)
             {
-                _graphProvider.RemoveEdge(selectedEdge);
+                _graphManager.RemoveEdge(selectedEdge);
                 AddEdge();
             }
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
-            _graphProvider.RemoveEdge(_nodeViewModel.SelectedEdge);
+            _graphManager.RemoveEdge(_nodeViewModel.SelectedEdge);
             _nodeViewModel.SelectedEdge = null;
-            _nodeViewModel.ReloadGraph();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

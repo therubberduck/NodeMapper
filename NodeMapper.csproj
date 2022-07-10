@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
@@ -69,7 +69,8 @@
         <Compile Include="DataRepository\Schema\DbNode.cs" />
         <Compile Include="DataRepository\UpdateSchema.cs" />
         <Compile Include="Model\Edge.cs" />
-        <Compile Include="Model\GraphProvider.cs" />
+        <Compile Include="Model\GraphManager.cs" />
+        <Compile Include="Model\MsaglGraphProvider.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />
         <Compile Include="SqliteDatabase\DbModule.cs" />
         <Compile Include="SqliteDatabase\DbObjectModule.cs" />
@@ -88,7 +89,6 @@
           <DependentUpon>EdgeEditorPanel.xaml</DependentUpon>
         </Compile>
         <Compile Include="Ui\Main\EdgeItem.cs" />
-        <Compile Include="Ui\Main\GraphViewModel.cs" />
         <Compile Include="Ui\Main\MainWindow.xaml.cs">
           <DependentUpon>MainWindow.xaml</DependentUpon>
           <SubType>Code</SubType>

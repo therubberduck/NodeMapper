@@ -82,6 +82,7 @@ namespace NodeMapper.DataRepository.Schema
             node.Label.Text = labelText;
             node.Label.FontColor = fontColor;
             node.Label.FontSize = fontSize;
+            node.Label.UserData = nodeId;
             node.UserData = userData;
             
             return node;
