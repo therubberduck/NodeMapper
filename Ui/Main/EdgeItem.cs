@@ -12,7 +12,7 @@ namespace NodeMapper.Ui.Main
 
         public override string ToString()
         {
-            return Edge.SourceNode.LabelText + " to " + Edge.TargetNode.LabelText;
+            return Edge.SourceNode.Title + " to " + Edge.TargetNode.Title;
         }
     }
 }

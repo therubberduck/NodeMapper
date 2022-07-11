@@ -7,7 +7,7 @@ namespace NodeMapper.Ui.Main
 {
     public partial class GraphControl
     {
-        public delegate void NodeSelectionDelegate(Node node);
+        public delegate void NodeSelectionDelegate(string nodeId);
         public NodeSelectionDelegate NodeSelection;
         public delegate void EdgeSelectionDelegate(string edgeId);
         public EdgeSelectionDelegate EdgeSelection;
@@ -32,7 +32,7 @@ namespace NodeMapper.Ui.Main
             var item = _graphViewer.ObjectUnderMouseCursor;
             if (item is VNode node)
             {
-                NodeSelection?.Invoke(node.Node);
+                NodeSelection?.Invoke(node.Node.Id);
             }
             else if (item is IViewerEdge edge)
             {
@@ -46,7 +46,7 @@ namespace NodeMapper.Ui.Main
 
         public void Reload()
         {
-            _graphViewer.Graph = _provider.GetGraph();
+            _graphViewer.Graph = _provider.GetNewGraph();
             Invalidate();
         }
 

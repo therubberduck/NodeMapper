@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Msagl.Drawing;
 using NodeMapper.Model;
-using Edge = Microsoft.Msagl.Drawing.Edge;
 
 namespace NodeMapper.Ui.Main
 {
@@ -14,9 +12,9 @@ namespace NodeMapper.Ui.Main
 
         public MainWindow()
         {
+            _graphManager.InitEdges();
             InitializeComponent();
 
-            _graphManager.InitEdges();
             graphControl.NodeSelection += graphControl_OnNodeSelection;
             graphControl.EdgeSelection += graphControl_OnEdgeSelection;
             _nodeViewModel.UpdateGraph += () => graphControl.Update();
@@ -35,12 +33,12 @@ namespace NodeMapper.Ui.Main
             graphControl.Reload();
         }
 
-        private void graphControl_OnNodeSelection(Node nodeSelected)
+        private void graphControl_OnNodeSelection(string nodeId)
         {
-            if (nodeSelected != null && _nodeViewModel.SelectedNode != nodeSelected)
-            {
-                _nodeViewModel.SelectedNode = nodeSelected;
-            }
+            if (_nodeViewModel.SelectedNode.NodeId == nodeId) return;
+
+            var newlySelectedNode = _graphManager.GetNode(nodeId);
+            _nodeViewModel.SelectedNode = newlySelectedNode;
         }
 
         private void graphControl_OnEdgeSelection(string edgeId)
@@ -48,8 +46,8 @@ namespace NodeMapper.Ui.Main
             if (_nodeViewModel.SelectedEdge?.EdgeId == edgeId) return;
             
             var edgeSelected = _graphManager.GetEdge(edgeId);
-            if (_nodeViewModel.SelectedNode.Id != edgeSelected.SourceId &&
-                _nodeViewModel.SelectedNode.Id != edgeSelected.TargetId)
+            if (_nodeViewModel.SelectedNode.NodeId != edgeSelected.SourceId &&
+                _nodeViewModel.SelectedNode.NodeId != edgeSelected.TargetId)
             {
                 _nodeViewModel.SelectedNode = edgeSelected.SourceNode;
             }

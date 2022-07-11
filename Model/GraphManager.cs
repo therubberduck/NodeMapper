@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NodeMapper.DataRepository;
-using DrawingNode = Microsoft.Msagl.Drawing.Node;
 
 namespace NodeMapper.Model
 {
@@ -24,7 +23,7 @@ namespace NodeMapper.Model
         private readonly DbRepository _repo = new DbRepository();
 
         private readonly List<int> _nodeIds = new List<int>();
-        private readonly List<DrawingNode> _nodes;
+        private readonly List<Node> _nodes;
         public IEnumerable<Node> AllNodes =>_nodes;
         public Node FirstNode => _nodes.First();
         public int NodeCount => _nodes.Count;
@@ -33,12 +32,12 @@ namespace NodeMapper.Model
         private List<Edge> _edges;
         public IEnumerable<Edge> Edges => _edges;
 
-        public GraphManager()
+        private GraphManager()
         {
             _nodes = _repo.LoadNodes();
             foreach (var node in _nodes)
             {
-                _nodeIds.Add(int.Parse(node.Id));                
+                _nodeIds.Add(int.Parse(node.NodeId));                
             }
             
             _edges = _repo.LoadEdges().ToList();
@@ -47,14 +46,14 @@ namespace NodeMapper.Model
                 _edgeIds.Add(int.Parse(edge.EdgeId));
             }
             
-            if (!_nodes.Any())
-            {
-                CreateNodes();
-            }
         }
 
         public void InitEdges()
         {
+            if (!_nodes.Any())
+            {
+                CreateNodes();
+            }
             if (!_edges.Any())
             {
                 CreateEdges();
@@ -71,22 +70,22 @@ namespace NodeMapper.Model
         private void CreateEdges()
         {
             _edges = new List<Edge>();
-            Node lastNode = null, secondLastNode = null;
-            foreach (var graphNode in _nodes)
+            string lastNodeId = null, secondLastNodeId = null;
+            foreach (var node in _nodes)
             {
-                if (lastNode != null)
+                if (lastNodeId != null)
                 {
-                    _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNode.Id, graphNode.Id, "4h"));
-                    if (secondLastNode != null)
+                    _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNodeId, node.NodeId, "4h"));
+                    if (secondLastNodeId != null)
                     {
-                        _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNode.Id, secondLastNode.Id, "3h"));
+                        _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNodeId, secondLastNodeId, "3h"));
                     }
-                    secondLastNode = lastNode;
+                    secondLastNodeId = lastNodeId;
                 }
-                lastNode = graphNode;
+                lastNodeId = node.NodeId;
             }
 
-            _graphProvider.ReloadGraph();
+            _graphProvider.ReloadGraph?.Invoke();
         }
 
         public void SaveGraph()
@@ -94,11 +93,11 @@ namespace NodeMapper.Model
             _repo.SaveGraph(_nodes, _edges);
         }
 
-        public Node CreateNewNodeWithEdgeFrom(Node node)
+        public Node CreateNewNodeWithEdgeFrom(string nodeId)
         {
             var newNode = CreateNode("New Node");
 
-            AddEdge(node.Id, "", newNode.Id);
+            AddEdge(nodeId, "", newNode.NodeId);
 
             _graphProvider.ReloadGraph();
             return newNode;
@@ -106,10 +105,7 @@ namespace NodeMapper.Model
 
         public Node CreateNode(string title, string body = "")
         {
-            var newNode = new Node(GetNextNodeId().ToString());
-            newNode.LabelText = title;
-            newNode.Label.UserData = newNode.Attr.Id;
-            newNode.UserData = body;
+            var newNode = new Node(GetNextNodeId().ToString(), title, body);
             _nodes.Add(newNode);
             return newNode;
         }
@@ -117,14 +113,14 @@ namespace NodeMapper.Model
         public void RemoveNode(Node node)
         {
             _nodes.Remove(node);
-            _nodeIds.Remove(int.Parse(node.Id));
+            _nodeIds.Remove(int.Parse(node.NodeId));
 
             _graphProvider.ReloadGraph();
         }
 
         public Node GetNode(string nodeId)
         {
-            return _nodes.Find(node => node.Id == nodeId);
+            return _nodes.Find(node => node.NodeId == nodeId);
         }
 
         public Node GetNeighborNode(Node node)
@@ -146,10 +142,10 @@ namespace NodeMapper.Model
             return newEdge;
         }
 
-        public void RemoveEdge(Edge edge)
+        public void RemoveEdge(string edgeId)
         {
-            _edges.Remove(edge);
-            _edgeIds.Remove(int.Parse(edge.EdgeId));
+            _edges.RemoveAll( e => e.EdgeId == edgeId);
+            _edgeIds.Remove(int.Parse(edgeId));
 
             _graphProvider.ReloadGraph();
         }
@@ -159,9 +155,9 @@ namespace NodeMapper.Model
             return _edges.Find(edge => edge.EdgeId == edgeId);
         }
 
-        public IEnumerable<Edge> GetEdgesForNode(Node node)
+        public IEnumerable<Edge> GetEdgesForNode(string nodeId)
         {
-            return _edges.FindAll(edge => Equals(edge.SourceNode, node) || Equals(edge.TargetNode, node));
+            return _edges.FindAll(edge => Equals(edge.SourceNode.NodeId, nodeId) || Equals(edge.TargetNode.NodeId, nodeId));
         }
 
         public Edge FirstEdgeOf(Node node)

@@ -7,15 +7,12 @@ namespace NodeMapper.Model
         private readonly GraphManager _graphManager = GraphManager.Instance;
 
         public delegate void LabelTextChangedDelegate(string newText);
-
         public LabelTextChangedDelegate LabelTextChanged;
 
         public delegate void SourceIdChangedDelegate(string newId);
-
         public SourceIdChangedDelegate SourceIdChanged;
 
         public delegate void TargetIdChangedDelegate(string newId);
-
         public TargetIdChangedDelegate TargetIdChanged;
 
         private string _labelText;
@@ -30,7 +27,7 @@ namespace NodeMapper.Model
             set
             {
                 _labelText = value;
-                LabelTextChanged(value);
+                LabelTextChanged?.Invoke(value);
             }
         }
 
@@ -40,7 +37,7 @@ namespace NodeMapper.Model
             set
             {
                 _sourceId = value;
-                SourceIdChanged(value);
+                SourceIdChanged?.Invoke(value);
             }
         }
 
@@ -50,7 +47,7 @@ namespace NodeMapper.Model
             set
             {
                 _targetId = value;
-                TargetIdChanged(value);
+                TargetIdChanged?.Invoke(value);
             }
         }
 

@@ -27,7 +27,7 @@ namespace NodeMapper.Ui.Main
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)
         {
-            var newNode = _graphManager.CreateNewNodeWithEdgeFrom(_nodeViewModel.SelectedNode);
+            var newNode = _graphManager.CreateNewNodeWithEdgeFrom(_nodeViewModel.SelectedNode.NodeId);
             _nodeViewModel.SelectedNode = newNode;
             _nodeViewModel.SelectedEdge = _graphManager.FirstEdgeOf(newNode);
         }

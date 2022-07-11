@@ -1,4 +1,4 @@
-﻿using Microsoft.Msagl.Drawing;
+﻿using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
 {
@@ -10,9 +10,11 @@ namespace NodeMapper.Ui.Main
             Node = n;
         }
 
+        public string NodeId => Node.NodeId;
+
         public override string ToString()
         {
-            return Node.LabelText;
+            return Node.Title;
         }
     }
 }

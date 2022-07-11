@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Msagl.Drawing;
-using Edge = NodeMapper.Model.Edge;
+using NodeMapper.Model;
 
 namespace NodeMapper.Ui.Main
 {
     public partial class NodeDetailPanel
     {
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
+        private readonly MsaglGraphProvider _graphProvider = MsaglGraphProvider.Instance;
 
         public NodeDetailPanel()
         {
@@ -63,20 +63,19 @@ namespace NodeMapper.Ui.Main
         {
             var selectedNode = _nodeViewModel.SelectedNode;
             var newText = txtName.Text;
-            if (selectedNode.LabelText != newText && selectedNode.Id != newText)
+            if (selectedNode.Title != newText)
             {
-                selectedNode.LabelText = newText;
-                selectedNode.Id = newText;
-                //_nodeViewModel.ReloadGraph?.Invoke();
+                selectedNode.Title = newText;
+                _graphProvider.ReloadGraph();
             }
         }
 
         private void UpDateDescription_OnTextUpdated(string newText)
         {
-            if (_nodeViewModel.SelectedNode.LabelText != txtDescription.Text)
+            if (_nodeViewModel.SelectedNode.Body != txtDescription.Text)
             {
-                _nodeViewModel.SelectedNode.UserData = txtDescription.Text;
-                //_nodeViewModel.ReloadGraph?.Invoke();
+                _nodeViewModel.SelectedNode.Body = txtDescription.Text;
+                _graphProvider.ReloadGraph();
             }
         }
 

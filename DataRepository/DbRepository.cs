@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Msagl.Drawing;
+using NodeMapper.Model;
 using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.DataRepository

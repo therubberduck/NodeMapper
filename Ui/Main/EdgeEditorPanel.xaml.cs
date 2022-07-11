@@ -1,8 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Msagl.Drawing;
 using NodeMapper.Model;
-using Edge = NodeMapper.Model.Edge;
 
 namespace NodeMapper.Ui.Main
 {
@@ -32,7 +30,7 @@ namespace NodeMapper.Ui.Main
                 cmbEdgeEditFrom.Items.Add(nodeItem);
                 cmbEdgeEditTo.Items.Add(nodeItem);
 
-                if (nodeItem.Node == _nodeViewModel.SelectedNode)
+                if (nodeItem.NodeId == _nodeViewModel.SelectedNode.NodeId)
                 {
                     cmbEdgeEditFrom.SelectedItem = nodeItem;
                 }
@@ -53,8 +51,8 @@ namespace NodeMapper.Ui.Main
         
         private void AddEdge()
         {
-            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.Node.Id;
-            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.Node.Id;
+            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.NodeId;
+            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.NodeId;
             var newEdge = _graphManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId);
 
             _nodeViewModel.SelectedEdge = newEdge;
@@ -88,7 +86,7 @@ namespace NodeMapper.Ui.Main
         {
             foreach (NodeItem item in comboBox.Items)
             {
-                if (item.Node == node)
+                if (item.NodeId == node.NodeId)
                 {
                     comboBox.SelectedItem = item;
                     break;
@@ -100,20 +98,20 @@ namespace NodeMapper.Ui.Main
         {
             var selectedEdge = _nodeViewModel.SelectedEdge;
             
-            if (selectedEdge.LabelText != txtEdgeName.Text || 
+            if (selectedEdge != null && selectedEdge.LabelText != txtEdgeName.Text || 
                 cmbEdgeEditFrom.SelectedItem != null || 
                 cmbEdgeEditTo.SelectedItem != null ||
-                selectedEdge.SourceNode.LabelText != cmbEdgeEditFrom.Text ||
-                selectedEdge.TargetNode.LabelText != cmbEdgeEditTo.Text)
+                selectedEdge.SourceNode.Title != cmbEdgeEditFrom.Text ||
+                selectedEdge.TargetNode.Title != cmbEdgeEditTo.Text)
             {
-                _graphManager.RemoveEdge(selectedEdge);
+                _graphManager.RemoveEdge(selectedEdge.EdgeId);
                 AddEdge();
             }
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
-            _graphManager.RemoveEdge(_nodeViewModel.SelectedEdge);
+            _graphManager.RemoveEdge(_nodeViewModel.SelectedEdge.EdgeId);
             _nodeViewModel.SelectedEdge = null;
         }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Msagl.Drawing;
 using NodeMapper.Model;
 using Edge = NodeMapper.Model.Edge;
+using Node = NodeMapper.Model.Node;
 
 namespace NodeMapper.Ui.Main
 {
@@ -56,12 +57,12 @@ namespace NodeMapper.Ui.Main
             {
                 if (_selectedNode != null)
                 {
-                    _selectedNode.Attr.FillColor = Color.White;
+                    _selectedNode.FillColor = Color.White;
                 }
                 _selectedNode = value;
                 if (_selectedNode != null)
                 {
-                    _selectedNode.Attr.FillColor = Color.Aquamarine;
+                    _selectedNode.FillColor = Color.Aquamarine;
                     
                     if (_selectedEdge != null && _selectedEdge.SourceNode != value && _selectedEdge.TargetNode != value)
                     {
@@ -100,12 +101,12 @@ namespace NodeMapper.Ui.Main
             }
         }
 
-        public string NodeName => SelectedNode != null ? SelectedNode.LabelText : "No Node Selected";
+        public string NodeName => SelectedNode != null ? SelectedNode.Title : "No Node Selected";
 
-        public string NodeDescription => SelectedNode != null ? (SelectedNode.UserData as string) : "";
+        public string NodeDescription => SelectedNode != null ? (SelectedNode.Body as string) : "";
 
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
-            ? _graphManager.GetEdgesForNode(SelectedNode).Select(e => new EdgeItem(e))
+            ? _graphManager.GetEdgesForNode(SelectedNode.NodeId).Select(e => new EdgeItem(e))
             : Enumerable.Empty<EdgeItem>();
 
         public IEnumerable<NodeItem> AllNodeItems => _graphManager.AllNodes.Select(n => new NodeItem(n));

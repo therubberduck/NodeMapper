@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Msagl.Drawing;
+using NodeMapper.Model;
 using NodeMapper.SqliteDatabase;
-using DrawingNode = Microsoft.Msagl.Drawing.Node;
 
 namespace NodeMapper.DataRepository.Schema
 {
@@ -17,21 +16,13 @@ namespace NodeMapper.DataRepository.Schema
         {
             new DbColumn(Id, DbColumn.Integer, true),
             new DbColumn(NodeId, DbColumn.Text),
-            new DbColumn(Shape, DbColumn.Integer),
-            new DbColumn(FillColor, DbColumn.Text),
-            new DbColumn(LabelText, DbColumn.Text),
-            new DbColumn(FontColor, DbColumn.Text),
-            new DbColumn(FontSize, DbColumn.Real),
-            new DbColumn(UserData, DbColumn.Text),
+            new DbColumn(Title, DbColumn.Text),
+            new DbColumn(Body, DbColumn.Text),
         };
 
         public const string NodeId = "NodeId";
-        public const string Shape = "Shape";
-        public const string FillColor = "Color";
-        public const string LabelText = "LabelText";
-        public const string FontColor = "FontColor";
-        public const string FontSize = "FontSize";
-        public const string UserData = "UserData";
+        public const string Title = "Title";
+        public const string Body = "Body";
 
         public void InsertAll(IEnumerable<Node> nodes)
         {
@@ -43,20 +34,16 @@ namespace NodeMapper.DataRepository.Schema
 
         private long Insert(Node node)
         {
-            var nodeId = node.Id;
-            var shape = (int) node.Attr.Shape;
-            var fillColor = DbColorConverter.DbStringFromColor(node.Attr.FillColor);
-            var labelText = node.Label.Text;
-            var fontColor = DbColorConverter.DbStringFromColor(node.Label.FontColor);
-            var fontSize = node.Label.FontSize;
-            var userData = node.UserData as string;
+            var nodeId = node.NodeId;
+            var labelText = node.Title;
+            var userData = node.Body;
         
             return Db.Insert(TableName, new[]
             {
-                NodeId, Shape, FillColor, LabelText, FontColor, FontSize, UserData
+                NodeId, Title, Body
             }, new object[]
             {
-                nodeId, shape, fillColor, labelText, fontColor, fontSize, userData
+                nodeId, labelText, userData
             });
         }
 
@@ -65,25 +52,10 @@ namespace NodeMapper.DataRepository.Schema
             var reader = new DbResultReader(dbObject);
             reader.ReadLong();
             var nodeId = reader.ReadString();
-            var shapeInt = reader.ReadInt();
-            var fillColorString = reader.ReadString();
-            var labelText = reader.ReadString();
-            var fontColorString = reader.ReadString();
-            var fontSize = reader.ReadFloat();
-            var userData = reader.ReadString();
+            var title = reader.ReadString();
+            var body = reader.ReadString();
 
-            var shape = (Shape)shapeInt;
-            var fillColor = DbColorConverter.ColorFromDbString(fillColorString);
-            var fontColor = DbColorConverter.ColorFromDbString(fontColorString);
-
-            var node = new DrawingNode(nodeId);
-            node.Attr.Shape = shape;
-            node.Attr.FillColor = fillColor;
-            node.Label.Text = labelText;
-            node.Label.FontColor = fontColor;
-            node.Label.FontSize = fontSize;
-            node.Label.UserData = nodeId;
-            node.UserData = userData;
+            var node = new Node(nodeId, title, body);
             
             return node;
         }
