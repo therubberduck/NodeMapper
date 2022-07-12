@@ -30,7 +30,7 @@ namespace NodeMapper.Ui.Main
             }
         }
 
-        private GraphManager _graphManager = GraphManager.Instance;
+        private readonly GraphManager _graphManager = GraphManager.Instance;
         
         private Node _selectedNode;
         private Edge _selectedEdge;
@@ -103,7 +103,7 @@ namespace NodeMapper.Ui.Main
 
         public string NodeName => SelectedNode != null ? SelectedNode.Title : "No Node Selected";
 
-        public string NodeDescription => SelectedNode != null ? (SelectedNode.Body as string) : "";
+        public string NodeDescription => SelectedNode != null ? SelectedNode.Body : "";
 
         public IEnumerable<EdgeItem> EdgeItems => SelectedNode != null
             ? _graphManager.GetEdgesForNode(SelectedNode.NodeId).Select(e => new EdgeItem(e))

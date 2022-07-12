@@ -23,7 +23,7 @@ namespace NodeMapper.Model
         private readonly DbRepository _repo = new DbRepository();
 
         private readonly List<int> _nodeIds = new List<int>();
-        private readonly List<Node> _nodes;
+        private List<Node> _nodes;
         public IEnumerable<Node> AllNodes =>_nodes;
         public Node FirstNode => _nodes.First();
         public int NodeCount => _nodes.Count;
@@ -32,7 +32,7 @@ namespace NodeMapper.Model
         private List<Edge> _edges;
         public IEnumerable<Edge> Edges => _edges;
 
-        private GraphManager()
+        public void InitEdges()
         {
             _nodes = _repo.LoadNodes();
             foreach (var node in _nodes)
@@ -46,10 +46,6 @@ namespace NodeMapper.Model
                 _edgeIds.Add(int.Parse(edge.EdgeId));
             }
             
-        }
-
-        public void InitEdges()
-        {
             if (!_nodes.Any())
             {
                 CreateNodes();

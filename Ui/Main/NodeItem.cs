@@ -4,17 +4,17 @@ namespace NodeMapper.Ui.Main
 {
     public class NodeItem
     {
-        public readonly Node Node;
+        private readonly Node _node;
         public NodeItem(Node n)
         {
-            Node = n;
+            _node = n;
         }
 
-        public string NodeId => Node.NodeId;
+        public string NodeId => _node.NodeId;
 
         public override string ToString()
         {
-            return Node.Title;
+            return _node.Title;
         }
     }
 }

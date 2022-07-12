@@ -9,9 +9,9 @@ namespace NodeMapper.DataRepository
         public DbEdge Edge;
         public DbNode Node;
 
-        public static DbInterface GetTestInterface()
+        public static DbInterface GetProdInterface()
         {
-            return new DbInterface("test.sql", typeof(UpdateSchema));
+            return new DbInterface("nodemapper.sql", typeof(UpdateSchema));
         }
 
         public static DbInterface GetDevInterface()

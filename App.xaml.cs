@@ -8,6 +8,19 @@ namespace NodeMapper
     /// </summary>
     public partial class App
     {
+        public App()
+        {
+            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+        }
+
+        private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) {
+            var file = new System.IO.StreamWriter("errorlog.log", true);
+            file.Write($"Log Line:\n{e.Exception}\n\n\n");
+            file.Close();
+            
+            e.Handled = true;
+        }
+        
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(

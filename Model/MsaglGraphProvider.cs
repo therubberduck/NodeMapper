@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Ink;
-using Microsoft.Msagl.Core.Routing;
+﻿using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
 

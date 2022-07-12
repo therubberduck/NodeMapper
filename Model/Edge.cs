@@ -1,6 +1,4 @@
-﻿using Microsoft.Msagl.Drawing;
-
-namespace NodeMapper.Model
+﻿namespace NodeMapper.Model
 {
     public class Edge
     {

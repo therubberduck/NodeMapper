@@ -10,7 +10,11 @@ namespace NodeMapper.DataRepository
 
         public DbRepository()
         {
-            _db = DbInterface.GetDevInterface();
+            #if DEBUG
+                _db = DbInterface.GetDevInterface();
+            #else
+                _db = DbInterface.GetProdInterface();
+            #endif
         }
 
         public List<Node> LoadNodes()

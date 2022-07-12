@@ -59,7 +59,7 @@ namespace NodeMapper.Ui.Main
         {
             DispatcherFrame frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(
-                delegate(object parameter)
+                delegate
                 {
                     frame.Continue = false;
                     return null;

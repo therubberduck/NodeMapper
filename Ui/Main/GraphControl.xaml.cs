@@ -30,6 +30,8 @@ namespace NodeMapper.Ui.Main
         private void OnMouseUp(object sender, MsaglMouseEventArgs e)
         {
             var item = _graphViewer.ObjectUnderMouseCursor;
+            if (item == null) return;
+            
             if (item is VNode node)
             {
                 NodeSelection?.Invoke(node.Node.Id);
