@@ -97,15 +97,30 @@ namespace NodeMapper.Ui.Main
         private void EditEdge(object sender, RoutedEventArgs e)
         {
             var selectedEdge = _nodeViewModel.SelectedEdge;
+
+            if (selectedEdge == null) return;
             
-            if (selectedEdge != null && selectedEdge.LabelText != txtEdgeName.Text || 
-                cmbEdgeEditFrom.SelectedItem != null || 
-                cmbEdgeEditTo.SelectedItem != null ||
-                selectedEdge.SourceNode.Title != cmbEdgeEditFrom.Text ||
-                selectedEdge.TargetNode.Title != cmbEdgeEditTo.Text)
+            if (selectedEdge.LabelText != txtEdgeName.Text)
             {
-                _graphManager.RemoveEdge(selectedEdge.EdgeId);
-                AddEdge();
+                selectedEdge.LabelText = txtEdgeName.Text;
+            }
+
+            if (cmbEdgeEditFrom.SelectedItem != null)
+            {
+                var edgeFrom = cmbEdgeEditFrom.SelectedItem as NodeItem;
+                if (selectedEdge.SourceId != edgeFrom?.NodeId)
+                {
+                    selectedEdge.SourceId = edgeFrom?.NodeId;
+                }
+            }
+
+            if (cmbEdgeEditTo.SelectedItem != null)
+            {
+                var edgeTarget = cmbEdgeEditTo.SelectedItem as NodeItem;
+                if (selectedEdge.TargetId != edgeTarget?.NodeId)
+                {
+                    selectedEdge.TargetId = edgeTarget?.NodeId;
+                }
             }
         }
 
