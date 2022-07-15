@@ -62,6 +62,7 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </ApplicationDefinition>
+        <Compile Include="Model\GraphInitializer.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />
         <Compile Include="SqliteDatabase\DbModule.cs" />
         <Compile Include="SqliteDatabase\DbObjectModule.cs" />

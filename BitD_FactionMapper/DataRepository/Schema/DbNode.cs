@@ -15,7 +15,7 @@ namespace BitD_FactionMapper.DataRepository.Schema
         public override DbColumn[] AllColumns => new[]
         {
             new DbColumn(Id, DbColumn.Integer, true),
-            new DbColumn(NodeId, DbColumn.Text),
+            new DbColumn(NodeId, DbColumn.Integer),
             new DbColumn(Title, DbColumn.Text),
             new DbColumn(Body, DbColumn.Text),
         };
@@ -51,7 +51,7 @@ namespace BitD_FactionMapper.DataRepository.Schema
         {
             var reader = new DbResultReader(dbObject);
             reader.ReadLong();
-            var nodeId = reader.ReadString();
+            var nodeId = reader.ReadInt();
             var title = reader.ReadString();
             var body = reader.ReadString();
 

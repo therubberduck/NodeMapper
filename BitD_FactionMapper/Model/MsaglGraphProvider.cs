@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
@@ -44,7 +45,7 @@ namespace BitD_FactionMapper.Model
             foreach (var node in _nodeDataManager.AllNodes)
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
-                graphNode.Attr.Id = node.NodeId;
+                graphNode.Attr.Id = node.NodeId.ToString();
                 graphNode.Label.Text = node.Title;
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
@@ -52,8 +53,26 @@ namespace BitD_FactionMapper.Model
 
             foreach (var edge in _nodeDataManager.Edges)
             {
-                var graphEdge = graph.AddEdge(edge.SourceId, edge.LabelText, edge.TargetId);
-                graphEdge.Attr.Id = edge.EdgeId;
+                var graphEdge = graph.AddEdge(edge.SourceId.ToString(), edge.LabelText, edge.TargetId.ToString());
+                graphEdge.Attr.Id = edge.EdgeId.ToString();
+                switch (edge.Relation)
+                {
+                    case Edge.Relationship.Ally:
+                        graphEdge.Attr.Color = Color.DarkGreen;
+                        break;
+                    case Edge.Relationship.Friend:
+                        graphEdge.Attr.Color = Color.LightGreen;
+                        break;
+                    case Edge.Relationship.Enemy:
+                        graphEdge.Attr.Color = Color.Orange;
+                        break;
+                    case Edge.Relationship.War:
+                        graphEdge.Attr.Color = Color.Red;
+                        break;
+                    default:
+                        graphEdge.Attr.Color = Color.Black;
+                        break;
+                }
             }
 
             _graph = graph;
@@ -73,16 +92,19 @@ namespace BitD_FactionMapper.Model
                 node.Attr.Color = Color.Black;
             }
             
-            FindNode(_nodeDataManager.SelectedNode.NodeId).Attr.Color = Color.Red;
+            SelectedNode().Attr.Color = Color.Red;
 
             foreach (var edge in _graph.Edges)
             {
-                edge.Label.FontColor = Color.Black;
+                if (edge.Label != null)
+                {
+                    edge.Label.FontColor = Color.Black;
+                }
             }
 
             if (_nodeDataManager.SelectedEdge != null)
             {
-                FindEdge(_nodeDataManager.SelectedEdge.EdgeId).Label.FontColor = Color.Red;                
+                SelectedEdge().Label.FontColor = Color.Red;                
             }
 
             return _graph;
@@ -90,14 +112,19 @@ namespace BitD_FactionMapper.Model
 
         public void SelectNode(string nodeId)
         {
-            var node = _nodeDataManager.GetNode(nodeId);
+            var node = _nodeDataManager.GetNode(int.Parse(nodeId));
             _nodeDataManager.SelectedNode = node;
         }
 
         public void SelectEdge(string edgeId)
         {
-            var edge = _nodeDataManager.GetEdge(edgeId);
+            var edge = _nodeDataManager.GetEdge(int.Parse(edgeId));
             _nodeDataManager.SelectedEdge = edge;
+        }
+
+        private Microsoft.Msagl.Drawing.Edge FindEdge(string edgeId)
+        {
+            return _graph.Edges.First(e => e.Attr.Id == edgeId);
         }
 
         private Microsoft.Msagl.Drawing.Node FindNode(string nodeId)
@@ -105,9 +132,14 @@ namespace BitD_FactionMapper.Model
             return _graph.Nodes.First(n => n.Attr.Id == nodeId);
         }
 
-        private Microsoft.Msagl.Drawing.Edge FindEdge(string edgeId)
+        private Microsoft.Msagl.Drawing.Edge SelectedEdge()
         {
-            return _graph.Edges.First(e => e.Attr.Id == edgeId);
+            return FindEdge(_nodeDataManager.SelectedEdge.EdgeId.ToString());
+        }
+
+        private Microsoft.Msagl.Drawing.Node SelectedNode()
+        {
+            return FindNode(_nodeDataManager.SelectedNode.NodeId.ToString());
         }
     }
 }

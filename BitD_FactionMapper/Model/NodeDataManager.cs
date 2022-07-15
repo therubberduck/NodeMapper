@@ -86,54 +86,27 @@ namespace BitD_FactionMapper.Model
         public void LoadData()
         {
             _nodes = _repo.LoadNodes();
-            foreach (var node in _nodes)
-            {
-                _nodeIds.Add(int.Parse(node.NodeId));                
-            }
+            
             if (!_nodes.Any())
             {
                 CreateNodes();
             }
+            else
+            {
+                _edges = _repo.LoadEdges().ToList();
+            }
             
-            _edges = _repo.LoadEdges().ToList();
-            foreach (var edge in _edges)
-            {
-                _edgeIds.Add(int.Parse(edge.EdgeId));
-            }
-            if (!_edges.Any())
-            {
-                CreateEdges();
-            }
-
+            _nodeIds.AddRange(_nodes.Select(n => n.NodeId));
+            _edgeIds.AddRange(_edges.Select(e => e.EdgeId));
+            
             SelectedNode = _nodes.First();
         }
 
         private void CreateNodes()
         {
-            CreateNode("Village", "This is an isolated village.");
-            CreateNode("Hill", "A ruined stable lies at the top this hill.");
-            CreateNode("Forest", "Rumors of a werewolf are connected to this forest.");
-        }
-
-        private void CreateEdges()
-        {
-            _edges = new List<Edge>();
-            string lastNodeId = null, secondLastNodeId = null;
-            foreach (var node in _nodes)
-            {
-                if (lastNodeId != null)
-                {
-                    _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNodeId, node.NodeId, "4h", Edge.Relationship.Neutral));
-                    if (secondLastNodeId != null)
-                    {
-                        _edges.Add(new Edge(GetNextEdgeId().ToString(), lastNodeId, secondLastNodeId, "3h", Edge.Relationship.Neutral));
-                    }
-                    secondLastNodeId = lastNodeId;
-                }
-                lastNodeId = node.NodeId;
-            }
-
-            _graphProvider.ReloadGraph?.Invoke();
+            var initializer = new GraphInitializer();
+            _nodes = initializer.CreateDuskvolFactions();
+            _edges = initializer.CreateDuskvolRelations();
         }
 
         public void SaveGraph()
@@ -141,7 +114,7 @@ namespace BitD_FactionMapper.Model
             _repo.SaveGraph(_nodes, _edges);
         }
 
-        public Node CreateNewNodeWithEdgeFrom(string nodeId)
+        public Node CreateNewNodeWithEdgeFrom(int nodeId)
         {
             var newNode = CreateNode("New Node");
 
@@ -153,7 +126,7 @@ namespace BitD_FactionMapper.Model
 
         public Node CreateNode(string title, string body = "")
         {
-            var newNode = new Node(GetNextNodeId().ToString(), title, body);
+            var newNode = new Node(GetNextNodeId(), title, body);
             _nodes.Add(newNode);
             return newNode;
         }
@@ -161,12 +134,12 @@ namespace BitD_FactionMapper.Model
         public void RemoveNode(Node node)
         {
             _nodes.Remove(node);
-            _nodeIds.Remove(int.Parse(node.NodeId));
+            _nodeIds.Remove(node.NodeId);
 
             _graphProvider.ReloadGraph();
         }
 
-        public Node GetNode(string nodeId)
+        public Node GetNode(int nodeId)
         {
             return _nodes.Find(node => node.NodeId == nodeId);
         }
@@ -180,9 +153,9 @@ namespace BitD_FactionMapper.Model
             return firstEdge.SourceNode == node ? firstEdge.TargetNode : firstEdge.SourceNode;
         }
 
-        public Edge AddEdge(string nodeFromId, string text, string nodeToId, Edge.Relationship relationship)
+        public Edge AddEdge(int nodeFromId, string text, int nodeToId, Edge.Relationship relationship)
         {
-            var newEdge = new Edge(GetNextEdgeId().ToString(), nodeFromId, nodeToId, text, relationship);
+            var newEdge = new Edge(GetNextEdgeId(), nodeFromId, nodeToId, text, relationship);
             
             _edges.Add(newEdge);
 
@@ -190,20 +163,20 @@ namespace BitD_FactionMapper.Model
             return newEdge;
         }
 
-        public void RemoveEdge(string edgeId)
+        public void RemoveEdge(int edgeId)
         {
             _edges.RemoveAll( e => e.EdgeId == edgeId);
-            _edgeIds.Remove(int.Parse(edgeId));
+            _edgeIds.Remove(edgeId);
 
             _graphProvider.ReloadGraph();
         }
 
-        public Edge GetEdge(string edgeId)
+        public Edge GetEdge(int edgeId)
         {
             return _edges.Find(edge => edge.EdgeId == edgeId);
         }
 
-        public IEnumerable<Edge> GetEdgesForNode(string nodeId)
+        public IEnumerable<Edge> GetEdgesForNode(int nodeId)
         {
             return _edges.FindAll(edge => Equals(edge.SourceNode.NodeId, nodeId) || Equals(edge.TargetNode.NodeId, nodeId));
         }

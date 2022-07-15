@@ -10,7 +10,7 @@ namespace BitD_FactionMapper.Ui.Main
             _node = n;
         }
 
-        public string NodeId => _node.NodeId;
+        public int NodeId => _node.NodeId;
 
         public override string ToString()
         {

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace NodeMapper
@@ -15,7 +16,8 @@ namespace NodeMapper
 
         private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) {
             var file = new System.IO.StreamWriter("errorlog.log", true);
-            file.Write($"Log Line:\n{e.Exception}\n\n\n");
+            var dateStamp = DateTime.Now.ToString("yy/MM/dd HH:mm:ss");
+            file.Write($"Log Line({dateStamp}):\n{e.Exception}\n\n\n");
             file.Close();
             
             e.Handled = true;

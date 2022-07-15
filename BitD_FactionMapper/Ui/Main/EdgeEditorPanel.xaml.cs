@@ -78,18 +78,18 @@ namespace BitD_FactionMapper.Ui.Main
             if (cmbEdgeEditFrom.SelectedItem != null)
             {
                 var edgeFrom = cmbEdgeEditFrom.SelectedItem as NodeItem;
-                if (selectedEdge.SourceId != edgeFrom?.NodeId)
+                if (edgeFrom != null && selectedEdge.SourceId != edgeFrom.NodeId)
                 {
-                    selectedEdge.SourceId = edgeFrom?.NodeId;
+                    selectedEdge.SourceId = edgeFrom.NodeId;
                 }
             }
 
             if (cmbEdgeEditTo.SelectedItem != null)
             {
                 var edgeTarget = cmbEdgeEditTo.SelectedItem as NodeItem;
-                if (selectedEdge.TargetId != edgeTarget?.NodeId)
+                if (edgeTarget != null && selectedEdge.TargetId != edgeTarget.NodeId)
                 {
-                    selectedEdge.TargetId = edgeTarget?.NodeId;
+                    selectedEdge.TargetId = edgeTarget.NodeId;
                 }
             }
 
@@ -102,7 +102,7 @@ namespace BitD_FactionMapper.Ui.Main
                 }
             }
 
-            UpdateGraph();
+            RedrawGraph();
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
@@ -110,7 +110,7 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.RemoveEdge(_nodeDataManager.SelectedEdge.EdgeId);
             _nodeDataManager.SelectedEdge = null;
 
-            UpdateGraph();
+            RedrawGraph();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -122,8 +122,10 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void AddEdge()
         {
-            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.NodeId;
-            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.NodeId;
+            if (cmbEdgeEditFrom.SelectedItem != null && cmbEdgeEditTo.SelectedItem != null) return;
+            
+            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem).NodeId;
+            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem).NodeId;
             var relation = MapRelationship(cmbRelation.SelectedItem as string);
             var newEdge = _nodeDataManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId, relation);
 
