@@ -19,7 +19,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <main:NodeDetailPanel Grid.Row="0"/>
+            <main:NodeDetailPanel Grid.Row="0" x:Name="nodeEditorPanel"/>
             <main:EdgeEditorPanel Grid.Row="1" x:Name="edgeEditorPanel" Visibility="Collapsed"/>
             <main:ButtonPanel Grid.Row="2" x:Name="buttonPanel"/>
         </Grid>

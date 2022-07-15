@@ -6,76 +6,95 @@ namespace BitD_FactionMapper.Ui.Main
 {
     public partial class NodeDetailPanel
     {
-        private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
+        private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
+
+        public GraphControl.RedrawGraphDelegate RedrawGraph;
+        public GraphControl.UpdateGraphDelegate UpdateGraph;
 
         public NodeDetailPanel()
         {
             InitializeComponent();
 
-            _nodeViewModel.UpdateNodeDetails += () => OnNodeSelected(_nodeViewModel.SelectedNode);
-            _nodeViewModel.OnNodeSelected += OnNodeSelected;
-            _nodeViewModel.OnEdgeSelected += OnEdgeSelected;
-            _nodeViewModel.OnEdgeDeselected += OnEdgeDeselected;
-
             txtName.TextUpdated += UpDateName_OnTextUpdated;
             txtDescription.TextUpdated += UpDateDescription_OnTextUpdated;
-
-            _nodeViewModel.Init();
         }
 
-        private void OnNodeSelected(Node node)
+        public void OnNodeSelected()
         {
-            txtName.Text = _nodeViewModel.NodeName;
-            txtDescription.Text = _nodeViewModel.NodeDescription;
+            var node = _nodeDataManager.SelectedNode;
+
+            txtName.Text = node.Title;
+            txtDescription.Text = node.Body;
+            UpdateNodeEdges();
+        }
+
+        internal void OnEdgeSelected()
+        {
+            UpdateNodeEdges();
+            
+            var edge = _nodeDataManager.SelectedEdge;
+            if ((lstEdges.SelectedItem as EdgeItem)?.Edge == edge) return;
+
+            if (edge == null)
+            {
+                lstEdges.SelectedIndex = -1;
+                lstEdges.SelectedItem = null;
+                return;
+            }
+
+            foreach (EdgeItem item in lstEdges.Items)
+            {
+                if (item.Edge == _nodeDataManager.SelectedEdge)
+                {
+                    lstEdges.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        public void UpdateNodeEdges()
+        {
+            var node = _nodeDataManager.SelectedNode;
             lstEdges.Items.Clear();
-            foreach (var edgeItem in _nodeViewModel.EdgeItems)
+            foreach (var edgeItem in UiItemMapper.Map(node.Edges))
             {
                 lstEdges.Items.Add(edgeItem);
             }
 
-            foreach (EdgeItem item in lstEdges.Items)
+            if (_nodeDataManager.SelectedEdge == null)
             {
-                if (item.Edge.EdgeId == _nodeViewModel.SelectedEdge?.EdgeId)
+                lstEdges.SelectedIndex = -1;
+            }
+            else
+            {
+                foreach (EdgeItem item in lstEdges.Items)
                 {
-                    lstEdges.SelectedItem = item;
-                    break;
+                    if (item.Edge.EdgeId == _nodeDataManager.SelectedEdge.EdgeId)
+                    {
+                        lstEdges.SelectedItem = item;
+                        break;
+                    }
                 }
             }
         }
-
-        private void OnEdgeSelected(Edge edge)
-        {
-            if ((lstEdges.SelectedItem as EdgeItem)?.Edge == edge) return;
-
-            foreach (EdgeItem item in lstEdges.Items)
-            {
-                if (item.Edge == _nodeViewModel.SelectedEdge)
-                {
-                    lstEdges.SelectedItem = item;
-                    break;
-                }
-            }
-        }
-
 
         private void UpDateName_OnTextUpdated(string s)
         {
-            var selectedNode = _nodeViewModel.SelectedNode;
+            var selectedNode = _nodeDataManager.SelectedNode;
             var newText = txtName.Text;
             if (selectedNode.Title != newText)
             {
                 selectedNode.Title = newText;
-                _nodeViewModel.UpdateGraph();
-                _graphProvider.ReloadGraph();
+                RedrawGraph();
             }
         }
 
         private void UpDateDescription_OnTextUpdated(string newText)
         {
-            if (_nodeViewModel.SelectedNode.Body != txtDescription.Text)
+            if (_nodeDataManager.SelectedNode.Body != txtDescription.Text)
             {
-                _nodeViewModel.SelectedNode.Body = txtDescription.Text;
-                _graphProvider.ReloadGraph();
+                _nodeDataManager.SelectedNode.Body = txtDescription.Text;
+                RedrawGraph();
             }
         }
 
@@ -83,9 +102,10 @@ namespace BitD_FactionMapper.Ui.Main
         {
             var edge = (lstEdges.SelectedItem as EdgeItem)?.Edge;
 
-            if (edge == null || edge == _nodeViewModel.SelectedEdge) return;
+            if (edge == null || edge == _nodeDataManager.SelectedEdge) return;
+
             _newItemSelected = true;
-            _nodeViewModel.SelectedEdge = edge;
+            _nodeDataManager.SelectedEdge = edge;
         }
 
         // ReSharper disable once RedundantDefaultMemberInitializer
@@ -95,16 +115,10 @@ namespace BitD_FactionMapper.Ui.Main
         {
             if (!_newItemSelected)
             {
-                _nodeViewModel.SelectedEdge = null;
+                _nodeDataManager.SelectedEdge = null;
             }
 
             _newItemSelected = false;
-        }
-
-
-        private void OnEdgeDeselected()
-        {
-            lstEdges.SelectedIndex = -1;
         }
     }
 }

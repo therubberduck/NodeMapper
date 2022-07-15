@@ -6,22 +6,23 @@ namespace BitD_FactionMapper.Ui.Main
 {
     public partial class EdgeEditorPanel
     {
+        private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
+
+        public GraphControl.RedrawGraphDelegate RedrawGraph;
+        public GraphControl.UpdateGraphDelegate UpdateGraph;
+
         private const string Ally = "Ally";
         private const string Friend = "Friend";
         private const string Neutral = "Neutral";
         private const string Enemy = "Enemy";
         private const string War = "War";
-        
-        private readonly GraphManager _graphManager = GraphManager.Instance;
-        private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
+
+        private Edge _currentEdge;
 
         public EdgeEditorPanel()
         {
             InitializeComponent();
 
-            _nodeViewModel.OnEdgeSelected += OnEdgeSelected;
-            _nodeViewModel.OnEdgeDeselected += OnEdgeDeselected;
-            
             cmbRelation.Items.Add(Ally);
             cmbRelation.Items.Add(Friend);
             cmbRelation.Items.Add(Neutral);
@@ -34,7 +35,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         public void ShowCreate()
         {
-            var nodes = _nodeViewModel.AllNodeItems;
+            var nodes = UiItemMapper.Map(_nodeDataManager.AllNodes);
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
@@ -42,20 +43,20 @@ namespace BitD_FactionMapper.Ui.Main
                 cmbEdgeEditFrom.Items.Add(nodeItem);
                 cmbEdgeEditTo.Items.Add(nodeItem);
 
-                if (nodeItem.NodeId == _nodeViewModel.SelectedNode.NodeId)
+                if (nodeItem.NodeId == _nodeDataManager.SelectedNode.NodeId)
                 {
                     cmbEdgeEditFrom.SelectedItem = nodeItem;
                 }
             }
 
             btnAddEdge.Content = "Add Edge";
-            btnAddEdge.Click += AddEdge;
+            btnAddEdge.Click += btnAddEdge_Click;
             btnRemoveEdge.Visibility = Visibility.Hidden;
 
             Visibility = Visibility.Visible;
         }
 
-        private void AddEdge(object sender, RoutedEventArgs e)
+        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
         {
             if (cmbRelation.SelectedItem == null ||
                 cmbEdgeEditFrom.SelectedItem == null ||
@@ -63,97 +64,9 @@ namespace BitD_FactionMapper.Ui.Main
             AddEdge();
         }
 
-        private void AddEdge()
+        private void btnEditEdge_Click(object sender, RoutedEventArgs e)
         {
-            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.NodeId;
-            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.NodeId;
-            var relation = MapRelationship(cmbRelation.SelectedItem as string);
-            var newEdge = _graphManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId, relation);
-
-            _nodeViewModel.SelectedEdge = newEdge;
-            _nodeViewModel.UpdateNodeDetails();
-        }
-
-        private static Edge.Relationship MapRelationship(string text)
-        {
-            switch (text)
-            {
-                case Ally:
-                    return Edge.Relationship.Ally;
-                case Friend:
-                    return Edge.Relationship.Friend;
-                case Neutral:
-                    return Edge.Relationship.Neutral;
-                case Enemy:
-                    return Edge.Relationship.Enemy;
-                case War:
-                    return Edge.Relationship.War;
-            }
-
-            return Edge.Relationship.Neutral;
-        }
-
-        private void OnEdgeSelected(Edge edge)
-        {
-            var nodes = _nodeViewModel.AllNodeItems;
-            cmbEdgeEditFrom.Items.Clear();
-            cmbEdgeEditTo.Items.Clear();
-            foreach (var nodeItem in nodes)
-            {
-                cmbEdgeEditFrom.Items.Add(nodeItem);
-                cmbEdgeEditTo.Items.Add(nodeItem);
-            }
-
-            txtEdgeName.Text = edge.LabelText;
-
-            SelectNodeInComboBox(cmbEdgeEditFrom, edge.SourceNode);
-            SelectNodeInComboBox(cmbEdgeEditTo, edge.TargetNode);
-            SelectRelationshipInComboBox(edge.Relation);
-
-            btnAddEdge.Content = "Edit Edge";
-            btnAddEdge.Click += EditEdge;
-            btnRemoveEdge.Visibility = Visibility.Visible;
-
-            Visibility = Visibility.Visible;
-        }
-
-        private void SelectNodeInComboBox(ComboBox comboBox, Node node)
-        {
-            foreach (NodeItem item in comboBox.Items)
-            {
-                if (item.NodeId == node.NodeId)
-                {
-                    comboBox.SelectedItem = item;
-                    break;
-                }
-            }
-        }
-
-        private void SelectRelationshipInComboBox(Edge.Relationship relation)
-        {
-            switch (relation)
-            {
-                case Edge.Relationship.Ally: 
-                    cmbRelation.SelectedItem = Ally;
-                    break;
-                case Edge.Relationship.Friend:
-                    cmbRelation.SelectedItem =  Friend;
-                    break;
-                case Edge.Relationship.Neutral:
-                    cmbRelation.SelectedItem =  Neutral;
-                    break;
-                case Edge.Relationship.Enemy:
-                    cmbRelation.SelectedItem =  Enemy;
-                    break;
-                case Edge.Relationship.War:
-                    cmbRelation.SelectedItem =  War;
-                    break;
-            }
-        }
-
-        private void EditEdge(object sender, RoutedEventArgs e)
-        {
-            var selectedEdge = _nodeViewModel.SelectedEdge;
+            var selectedEdge = _nodeDataManager.SelectedEdge;
 
             if (selectedEdge == null) return;
 
@@ -188,20 +101,129 @@ namespace BitD_FactionMapper.Ui.Main
                     selectedEdge.Relation = relationship;
                 }
             }
+
+            UpdateGraph();
         }
 
         private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
-            _graphManager.RemoveEdge(_nodeViewModel.SelectedEdge.EdgeId);
-            _nodeViewModel.SelectedEdge = null;
+            _nodeDataManager.RemoveEdge(_nodeDataManager.SelectedEdge.EdgeId);
+            _nodeDataManager.SelectedEdge = null;
+
+            UpdateGraph();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            _nodeViewModel.SelectedEdge = null;
+            _nodeDataManager.SelectedEdge = null;
+
+            RedrawGraph();
         }
 
-        private void OnEdgeDeselected()
+        private void AddEdge()
+        {
+            var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem)?.NodeId;
+            var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem)?.NodeId;
+            var relation = MapRelationship(cmbRelation.SelectedItem as string);
+            var newEdge = _nodeDataManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId, relation);
+
+            _nodeDataManager.SelectedEdge = newEdge;
+            RedrawGraph();
+        }
+
+        private static Edge.Relationship MapRelationship(string text)
+        {
+            switch (text)
+            {
+                case Ally:
+                    return Edge.Relationship.Ally;
+                case Friend:
+                    return Edge.Relationship.Friend;
+                case Neutral:
+                    return Edge.Relationship.Neutral;
+                case Enemy:
+                    return Edge.Relationship.Enemy;
+                case War:
+                    return Edge.Relationship.War;
+            }
+
+            return Edge.Relationship.Neutral;
+        }
+
+        public void OnEdgeSelected()
+        {
+            if (_nodeDataManager.SelectedEdge == _currentEdge) return;
+            _currentEdge = _nodeDataManager.SelectedEdge;
+
+            if (_currentEdge == null)
+            {
+                EdgeDeselected();
+            }
+            else
+            {
+                EdgeSelected();
+            }
+        }
+
+        private void EdgeSelected()
+        {
+            var nodes = UiItemMapper.Map(_nodeDataManager.AllNodes);
+            cmbEdgeEditFrom.Items.Clear();
+            cmbEdgeEditTo.Items.Clear();
+            foreach (var nodeItem in nodes)
+            {
+                cmbEdgeEditFrom.Items.Add(nodeItem);
+                cmbEdgeEditTo.Items.Add(nodeItem);
+            }
+
+            txtEdgeName.Text = _currentEdge.LabelText;
+
+            SelectNodeInComboBox(cmbEdgeEditFrom, _currentEdge.SourceNode);
+            SelectNodeInComboBox(cmbEdgeEditTo, _currentEdge.TargetNode);
+            SelectRelationshipInComboBox(_currentEdge.Relation);
+
+            btnAddEdge.Content = "Edit Edge";
+            btnAddEdge.Click += btnEditEdge_Click;
+            btnRemoveEdge.Visibility = Visibility.Visible;
+
+            Visibility = Visibility.Visible;
+        }
+
+        private void SelectNodeInComboBox(ComboBox comboBox, Node node)
+        {
+            foreach (NodeItem item in comboBox.Items)
+            {
+                if (item.NodeId == node.NodeId)
+                {
+                    comboBox.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        private void SelectRelationshipInComboBox(Edge.Relationship relation)
+        {
+            switch (relation)
+            {
+                case Edge.Relationship.Ally:
+                    cmbRelation.SelectedItem = Ally;
+                    break;
+                case Edge.Relationship.Friend:
+                    cmbRelation.SelectedItem = Friend;
+                    break;
+                case Edge.Relationship.Neutral:
+                    cmbRelation.SelectedItem = Neutral;
+                    break;
+                case Edge.Relationship.Enemy:
+                    cmbRelation.SelectedItem = Enemy;
+                    break;
+                case Edge.Relationship.War:
+                    cmbRelation.SelectedItem = War;
+                    break;
+            }
+        }
+
+        private void EdgeDeselected()
         {
             Visibility = Visibility.Collapsed;
 

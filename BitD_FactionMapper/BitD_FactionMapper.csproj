@@ -91,7 +91,7 @@
           <DependentUpon>NodeDetailPanel.xaml</DependentUpon>
         </Compile>
         <Compile Include="Ui\Main\NodeItem.cs" />
-        <Compile Include="Ui\Main\NodeViewModel.cs" />
+        <Compile Include="Ui\Main\UiItemMapper.cs" />
         <Compile Include="App.xaml.cs">
             <DependentUpon>App.xaml</DependentUpon>
             <SubType>Code</SubType>
@@ -114,7 +114,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Model\Edge.cs" />
-        <Compile Include="Model\GraphManager.cs" />
+        <Compile Include="Model\NodeDataManager.cs" />
         <Compile Include="Model\MsaglGraphProvider.cs" />
         <Compile Include="Model\Node.cs" />
         <Compile Include="Properties\AssemblyInfo.cs">

@@ -4,7 +4,7 @@
     {
         public enum Relationship { Ally = 6, Friend = 5, Neutral = 4, Enemy = 3, War = 2}
         
-        private readonly GraphManager _graphManager = GraphManager.Instance;
+        private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
 
         public string EdgeId { get; }
 
@@ -14,8 +14,8 @@
 
         public string TargetId { get; set; }
 
-        public Node SourceNode => _graphManager.GetNode(SourceId);
-        public Node TargetNode => _graphManager.GetNode(TargetId);
+        public Node SourceNode => _nodeDataManager.GetNode(SourceId);
+        public Node TargetNode => _nodeDataManager.GetNode(TargetId);
 
         public Relationship Relation { get; set; }
 

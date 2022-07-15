@@ -4,20 +4,25 @@ using BitD_FactionMapper.DataRepository;
 
 namespace BitD_FactionMapper.Model
 {
-    public class GraphManager
+    public class NodeDataManager
     {
-        private static GraphManager _instance;
+        private static NodeDataManager _instance;
         private static readonly object Padlock = new object();
-        public static GraphManager Instance
+        public static NodeDataManager Instance
         {
             get
             {
                 lock (Padlock)
                 {
-                    return _instance ?? (_instance = new GraphManager());
+                    return _instance ?? (_instance = new NodeDataManager());
                 }
             }
         }
+        
+        public delegate void EdgeSelectionDelegate();
+        public EdgeSelectionDelegate EdgeSelected;
+        public delegate void NodeSelectionDelegate();
+        public NodeSelectionDelegate NodeSelected;
 
         private readonly MsaglGraphProvider _graphProvider = MsaglGraphProvider.Instance;
         private readonly DbRepository _repo = new DbRepository();
@@ -25,19 +30,69 @@ namespace BitD_FactionMapper.Model
         private readonly List<int> _nodeIds = new List<int>();
         private List<Node> _nodes;
         public IEnumerable<Node> AllNodes =>_nodes;
-        public Node FirstNode => _nodes.First();
         public int NodeCount => _nodes.Count;
 
         private readonly List<int> _edgeIds = new List<int>();
         private List<Edge> _edges;
         public IEnumerable<Edge> Edges => _edges;
 
-        public void InitEdges()
+        public Node PreviousSelectedNode { get; private set; }
+        private Node _selectedNode;
+        public Node SelectedNode
+        {
+            get => _selectedNode;
+            set
+            {
+                PreviousSelectedNode = _selectedNode;
+                _selectedNode = value;
+                if (_selectedNode != null)
+                {
+                    // Only keep SelectedEdge if either end connects to the newly selected node
+                    if (SelectedEdge != null && SelectedEdge.SourceNode != value && SelectedEdge.TargetNode != value)
+                    {
+                        SelectedEdge = null;
+                    }
+                }
+                else
+                {
+                    SelectedEdge = null;
+                }
+
+                NodeSelected();
+            }
+        }
+
+        private Edge _selectedEdge;
+        public Edge SelectedEdge
+        {
+            get => _selectedEdge;
+            set
+            {
+                _selectedEdge = value;
+
+                if (_selectedEdge != null)
+                {
+                    // If SelectedNode is not at either end of this edge, change the SelectedNode
+                    if (_selectedNode.NodeId != value.SourceId &&
+                        _selectedNode.NodeId != value.TargetId)
+                    {
+                        SelectedNode = value.SourceNode;
+                    }
+                }
+                EdgeSelected();
+            }
+        }
+
+        public void LoadData()
         {
             _nodes = _repo.LoadNodes();
             foreach (var node in _nodes)
             {
                 _nodeIds.Add(int.Parse(node.NodeId));                
+            }
+            if (!_nodes.Any())
+            {
+                CreateNodes();
             }
             
             _edges = _repo.LoadEdges().ToList();
@@ -45,15 +100,12 @@ namespace BitD_FactionMapper.Model
             {
                 _edgeIds.Add(int.Parse(edge.EdgeId));
             }
-            
-            if (!_nodes.Any())
-            {
-                CreateNodes();
-            }
             if (!_edges.Any())
             {
                 CreateEdges();
             }
+
+            SelectedNode = _nodes.First();
         }
 
         private void CreateNodes()

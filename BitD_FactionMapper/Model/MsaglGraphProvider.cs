@@ -10,7 +10,7 @@ namespace BitD_FactionMapper.Model
         private static MsaglGraphProvider _instance;
         public static MsaglGraphProvider Instance => _instance ?? (_instance = new MsaglGraphProvider());
 
-        private GraphManager _graphManager;
+        private NodeDataManager _nodeDataManager;
 
         public delegate void ReloadGraphDelegate();
 
@@ -29,9 +29,9 @@ namespace BitD_FactionMapper.Model
 
         public Graph GetNewGraph()
         {
-            if (_graphManager == null)
+            if (_nodeDataManager == null)
             {
-                _graphManager = GraphManager.Instance;
+                _nodeDataManager = NodeDataManager.Instance;
             }
 
             var graph = new Graph();
@@ -41,7 +41,7 @@ namespace BitD_FactionMapper.Model
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
 
-            foreach (var node in _graphManager.AllNodes)
+            foreach (var node in _nodeDataManager.AllNodes)
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId;
@@ -49,13 +49,9 @@ namespace BitD_FactionMapper.Model
                 graphNode.Label.Text = node.Title;
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
-                node.FillColorChanged += delegate(Color color)
-                {
-                    graphNode.Attr.FillColor = color;
-                };
             }
 
-            foreach (var edge in _graphManager.Edges)
+            foreach (var edge in _nodeDataManager.Edges)
             {
                 var graphEdge = graph.AddEdge(edge.SourceId, edge.LabelText, edge.TargetId);
                 graphEdge.Attr.Id = edge.EdgeId;
@@ -66,10 +62,29 @@ namespace BitD_FactionMapper.Model
             return graph;
         }
 
+        
+        public Graph GetUpdatedGraph()
+        {
+            // Update colors and such
+            throw new System.NotImplementedException();
+        }
+
         public void MarkNodeSelected(string deSelectedId, string selectedId)
         {
             _graph.Nodes.First(n => n.Attr.Id == deSelectedId).Attr.Color = Color.Black;
             _graph.Nodes.First(n => n.Attr.Id == selectedId).Attr.Color = Color.Red;
+        }
+
+        public void SelectNode(string nodeId)
+        {
+            var node = _nodeDataManager.GetNode(nodeId);
+            _nodeDataManager.SelectedNode = node;
+        }
+
+        public void SelectEdge(string edgeId)
+        {
+            var edge = _nodeDataManager.GetEdge(edgeId);
+            _nodeDataManager.SelectedEdge = edge;
         }
     }
 }

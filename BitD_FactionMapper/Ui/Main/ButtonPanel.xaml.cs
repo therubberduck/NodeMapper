@@ -6,6 +6,9 @@ namespace BitD_FactionMapper.Ui.Main
     public partial class ButtonPanel
     {
         
+        public GraphControl.RedrawGraphDelegate RedrawGraph;
+        public GraphControl.UpdateGraphDelegate UpdateGraph;
+        
         public delegate void ShowProgressOverlayDelegate();
         public ShowProgressOverlayDelegate ShowProgressOverlay;
         
@@ -14,42 +17,54 @@ namespace BitD_FactionMapper.Ui.Main
         
         public EdgeEditorPanel EdgeEditorPanel { private get; set; }
         
-        private readonly GraphManager _graphManager = GraphManager.Instance;
-        private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
+        private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
         
         public ButtonPanel()
         {
             InitializeComponent();
+        }
 
-            _nodeViewModel.OnEdgeSelected += edge => btnAddEdge.Visibility = Visibility.Collapsed;
-            _nodeViewModel.OnEdgeDeselected += () => btnAddEdge.Visibility = Visibility.Visible;
+        public void OnEdgeSelected()
+        {
+            if (_nodeDataManager.SelectedEdge == null)
+            {
+                btnAddEdge.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnAddEdge.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void btnCreateNode_Click(object sender, RoutedEventArgs e)
         {
-            var newNode = _graphManager.CreateNewNodeWithEdgeFrom(_nodeViewModel.SelectedNode.NodeId);
-            _nodeViewModel.SelectedNode = newNode;
-            _nodeViewModel.SelectedEdge = _graphManager.FirstEdgeOf(newNode);
+            var newNode = _nodeDataManager.CreateNewNodeWithEdgeFrom(_nodeDataManager.SelectedNode.NodeId);
+            _nodeDataManager.SelectedNode = newNode;
+            _nodeDataManager.SelectedEdge = _nodeDataManager.FirstEdgeOf(newNode);
+
+            UpdateGraph();
         }
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
         {
-            if (_graphManager.NodeCount == 1)
+            if (_nodeDataManager.NodeCount == 1)
             {
                 MessageBox.Show("You cannot delete the last node.");
                 return;
             }
 
-            var neighbor = _graphManager.GetNeighborNode(_nodeViewModel.SelectedNode);
-            _graphManager.RemoveNode(_nodeViewModel.SelectedNode);
-            _nodeViewModel.SelectedNode = neighbor;
+            var neighbor = _nodeDataManager.GetNeighborNode(_nodeDataManager.SelectedNode);
+            _nodeDataManager.RemoveNode(_nodeDataManager.SelectedNode);
+            _nodeDataManager.SelectedNode = neighbor;
+
+            UpdateGraph();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             ShowProgressOverlay();
             
-            _graphManager.SaveGraph();
+            _nodeDataManager.SaveGraph();
 
             HideProgressOverlay();
         }

@@ -7,10 +7,8 @@ namespace BitD_FactionMapper.Ui.Main
 {
     public partial class GraphControl
     {
-        public delegate void NodeSelectionDelegate(string nodeId);
-        public NodeSelectionDelegate NodeSelection;
-        public delegate void EdgeSelectionDelegate(string edgeId);
-        public EdgeSelectionDelegate EdgeSelection;
+        public delegate void RedrawGraphDelegate();
+        public delegate void UpdateGraphDelegate();
         
         private readonly GraphViewer _graphViewer = new GraphViewer();
         private readonly MsaglGraphProvider _provider = MsaglGraphProvider.Instance;
@@ -20,9 +18,6 @@ namespace BitD_FactionMapper.Ui.Main
             
             _graphViewer.BindToPanel(dockPanel);
             _graphViewer.LayoutEditingEnabled = false;
-
-            _provider.ReloadGraph += Reload;
-            _provider.InvalidateGraph += Invalidate;
             
             (_graphViewer as IViewer).MouseUp += OnMouseUp;
         }
@@ -34,31 +29,27 @@ namespace BitD_FactionMapper.Ui.Main
             
             if (item is VNode node)
             {
-                NodeSelection?.Invoke(node.Node.Id);
+                _provider.SelectNode(node.Node.Attr.Id);
             }
             else if (item is IViewerEdge edge)
             {
-                EdgeSelection?.Invoke(edge.Edge.Attr.Id);   
+                _provider.SelectEdge(edge.Edge.Attr.Id); 
             }
             else if (item.DrawingObject is Label label && label.Owner is Edge labelEdge)
             {
-                EdgeSelection?.Invoke(labelEdge.Attr.Id);
+                _provider.SelectEdge(labelEdge.Attr.Id);
             }
         }
 
-        public void Reload()
+        public void RedrawGraph()
         {
             _graphViewer.Graph = _provider.GetNewGraph();
-            Invalidate();
+            _graphViewer.Invalidate();
         }
 
-        public void Update()
+        public void UpdateGraph()
         {
-            Invalidate();
-        }
-
-        private void Invalidate()
-        {
+            _graphViewer.Graph = _provider.GetUpdatedGraph();
             _graphViewer.Invalidate();
         }
     }
