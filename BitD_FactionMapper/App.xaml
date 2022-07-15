@@ -1,0 +1,10 @@
+﻿<Application x:Class="BitD_FactionMapper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Ui/Main/MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="FrameworkElement" x:Key="DefaultControl">
+            <Setter Property="Margin" Value="8" />
+        </Style>
+    </Application.Resources>
+</Application>

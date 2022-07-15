@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="BitD_FactionMapper.Ui.EditableTextBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             MouseUp="EditableTextBlock_OnMouseUp"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" x:Name="label"
+               Target="{Binding ElementName=textBox}"/>
+        <TextBlock Grid.Row="1" x:Name="textBlock"
+                   TextWrapping="Wrap"/>
+        <TextBox Grid.Row="1" x:Name="textBox" Visibility="Collapsed"
+                 TextWrapping="Wrap"
+                 GotFocus="TextBox_OnGotFocus"
+                 LostFocus="TextBox_OnLostFocus"
+                 TextChanged="TextBox_OnTextChanged"/>
+    </Grid>
+</UserControl>

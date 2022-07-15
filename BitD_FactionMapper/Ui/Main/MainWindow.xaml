@@ -1,0 +1,33 @@
+﻿<Window x:Class="BitD_FactionMapper.Ui.Main.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:main="clr-namespace:BitD_FactionMapper.Ui.Main"
+        mc:Ignorable="d"
+        Loaded="MainWindow_OnLoaded"
+        Title="NodeMapper" Height="800" Width="800" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" x:Name="nodePanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <main:NodeDetailPanel Grid.Row="0"/>
+            <main:EdgeEditorPanel Grid.Row="1" x:Name="edgeEditorPanel" Visibility="Collapsed"/>
+            <main:ButtonPanel Grid.Row="2" x:Name="buttonPanel"/>
+        </Grid>
+
+        <main:GraphControl x:Name="graphControl" Grid.Column="1" />
+        
+        <Frame Grid.Column="0" Grid.ColumnSpan="2" x:Name="frmWorking" Visibility="Collapsed">
+            <Frame.Background><SolidColorBrush Color="Black" Opacity="0.2"/></Frame.Background>
+        </Frame>
+    </Grid>
+</Window>

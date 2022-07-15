@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeMapper", "NodeMapper.csproj", "{7DEE2F5C-5B10-4040-9096-9884F04C44EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitD_FactionMapper", "BitD_FactionMapper\BitD_FactionMapper.csproj", "{14EC7F0F-354D-4A2E-8F51-B011B3B4EDEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{7DEE2F5C-5B10-4040-9096-9884F04C44EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DEE2F5C-5B10-4040-9096-9884F04C44EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DEE2F5C-5B10-4040-9096-9884F04C44EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14EC7F0F-354D-4A2E-8F51-B011B3B4EDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14EC7F0F-354D-4A2E-8F51-B011B3B4EDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14EC7F0F-354D-4A2E-8F51-B011B3B4EDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14EC7F0F-354D-4A2E-8F51-B011B3B4EDEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
