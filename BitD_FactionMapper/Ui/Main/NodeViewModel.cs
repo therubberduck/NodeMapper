@@ -55,15 +55,10 @@ namespace BitD_FactionMapper.Ui.Main
             get => _selectedNode;
             set
             {
-                if (_selectedNode != null)
-                {
-                    _selectedNode.FillColor = Color.White;
-                }
+                var oldSelectedNode = _selectedNode;
                 _selectedNode = value;
                 if (_selectedNode != null)
                 {
-                    _selectedNode.FillColor = Color.Aquamarine;
-                    
                     if (_selectedEdge != null && _selectedEdge.SourceNode != value && _selectedEdge.TargetNode != value)
                     {
                         SelectedEdge = null;
@@ -73,6 +68,7 @@ namespace BitD_FactionMapper.Ui.Main
                 {
                     SelectedEdge = null;
                 }
+                
                 OnNodeSelected(value);
             }
         }
@@ -82,15 +78,10 @@ namespace BitD_FactionMapper.Ui.Main
             get => _selectedEdge;
             set
             {
-                if (_selectedEdge != null)
-                {
-                    //_selectedEdge.Attr.Color = Color.Black;
-                }
                 _selectedEdge = value;
                 if (_selectedEdge != null)
                 {
                     OnEdgeSelected(value);
-                    //_selectedEdge.Attr.Color = Color.DarkGray;
                 }
                 else
                 {

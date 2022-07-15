@@ -1,4 +1,5 @@
-﻿using Microsoft.Msagl.Core.Routing;
+﻿using System.Linq;
+using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
 
@@ -44,6 +45,7 @@ namespace BitD_FactionMapper.Model
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId;
+                graphNode.Attr.Color = Color.Black;
                 graphNode.Label.Text = node.Title;
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
@@ -64,9 +66,10 @@ namespace BitD_FactionMapper.Model
             return graph;
         }
 
-        private void FillColorChanged(Node node, Color newFillColor)
+        public void MarkNodeSelected(string deSelectedId, string selectedId)
         {
-            
+            _graph.Nodes.First(n => n.Attr.Id == deSelectedId).Attr.Color = Color.Black;
+            _graph.Nodes.First(n => n.Attr.Id == selectedId).Attr.Color = Color.Red;
         }
     }
 }

@@ -7,7 +7,6 @@ namespace BitD_FactionMapper.Ui.Main
     public partial class NodeDetailPanel
     {
         private readonly NodeViewModel _nodeViewModel = NodeViewModel.Instance;
-        private readonly MsaglGraphProvider _graphProvider = MsaglGraphProvider.Instance;
 
         public NodeDetailPanel()
         {
@@ -66,6 +65,7 @@ namespace BitD_FactionMapper.Ui.Main
             if (selectedNode.Title != newText)
             {
                 selectedNode.Title = newText;
+                _nodeViewModel.UpdateGraph();
                 _graphProvider.ReloadGraph();
             }
         }
