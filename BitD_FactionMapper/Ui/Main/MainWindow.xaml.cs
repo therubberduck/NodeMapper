@@ -24,8 +24,10 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.EdgeSelected += edgeEditorPanel.OnEdgeSelected;
             _nodeDataManager.EdgeSelected += nodeEditorPanel.OnEdgeSelected;
             _nodeDataManager.EdgeSelected += nodeEditorPanel.UpdateNodeEdges;
+            _nodeDataManager.EdgeSelected += graphControl.UpdateGraph;
             
             _nodeDataManager.NodeSelected += nodeEditorPanel.OnNodeSelected;
+            _nodeDataManager.NodeSelected += graphControl.UpdateGraph;
             
             buttonPanel.ShowProgressOverlay += () =>
             {

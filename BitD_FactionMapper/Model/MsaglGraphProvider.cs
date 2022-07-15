@@ -45,7 +45,6 @@ namespace BitD_FactionMapper.Model
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId;
-                graphNode.Attr.Color = Color.Black;
                 graphNode.Label.Text = node.Title;
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
@@ -59,20 +58,34 @@ namespace BitD_FactionMapper.Model
 
             _graph = graph;
 
+            GetUpdatedGraph();
+
             return graph;
         }
 
         
         public Graph GetUpdatedGraph()
         {
-            // Update colors and such
-            throw new System.NotImplementedException();
-        }
+            if(_graph == null) return GetNewGraph();
+            
+            foreach (var node in _graph.Nodes)
+            {
+                node.Attr.Color = Color.Black;
+            }
+            
+            FindNode(_nodeDataManager.SelectedNode.NodeId).Attr.Color = Color.Red;
 
-        public void MarkNodeSelected(string deSelectedId, string selectedId)
-        {
-            _graph.Nodes.First(n => n.Attr.Id == deSelectedId).Attr.Color = Color.Black;
-            _graph.Nodes.First(n => n.Attr.Id == selectedId).Attr.Color = Color.Red;
+            foreach (var edge in _graph.Edges)
+            {
+                edge.Label.FontColor = Color.Black;
+            }
+
+            if (_nodeDataManager.SelectedEdge != null)
+            {
+                FindEdge(_nodeDataManager.SelectedEdge.EdgeId).Label.FontColor = Color.Red;                
+            }
+
+            return _graph;
         }
 
         public void SelectNode(string nodeId)
@@ -85,6 +98,16 @@ namespace BitD_FactionMapper.Model
         {
             var edge = _nodeDataManager.GetEdge(edgeId);
             _nodeDataManager.SelectedEdge = edge;
+        }
+
+        private Microsoft.Msagl.Drawing.Node FindNode(string nodeId)
+        {
+            return _graph.Nodes.First(n => n.Attr.Id == nodeId);
+        }
+
+        private Microsoft.Msagl.Drawing.Edge FindEdge(string edgeId)
+        {
+            return _graph.Edges.First(e => e.Attr.Id == edgeId);
         }
     }
 }
