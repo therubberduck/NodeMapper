@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
@@ -46,15 +47,43 @@ namespace BitD_FactionMapper.Model
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId.ToString();
-                graphNode.Label.Text = node.Title;
+                if (graph.Label != null)
+                {
+                    graphNode.Label.Text = node.Title;
+                }
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
             }
 
             foreach (var edge in _nodeDataManager.Edges)
             {
+                bool twoWay = false;
+                // If the target node already has an edge targeting our source
+                if (edge.TargetNode.Edges.Any(e => e.TargetNode.NodeId == edge.SourceId))
+                {
+                    var competingEdge = edge.TargetNode.Edges.First(e => e.TargetNode.NodeId == edge.SourceId);
+                    // If competing edge and our edge are basically identical, just in opposite directions
+                    if (competingEdge.LabelText == edge.LabelText && competingEdge.Relation == edge.Relation)
+                    {
+                        if (!graph.Edges.Any(e => e.Attr.Id == competingEdge.EdgeId.ToString()))
+                        {
+                            // If we have not already add one edge, make it two-way
+                            twoWay = true;
+                        }
+                        else
+                        {
+                            // If we have already added one edge, skip making this edge
+                            continue;
+                        }
+                    }
+                }
+                
                 var graphEdge = graph.AddEdge(edge.SourceId.ToString(), edge.LabelText, edge.TargetId.ToString());
                 graphEdge.Attr.Id = edge.EdgeId.ToString();
+                if (twoWay)
+                {
+                    graphEdge.Attr.ArrowheadAtSource = ArrowStyle.Normal;
+                }
                 switch (edge.Relation)
                 {
                     case Edge.Relationship.Ally:
@@ -102,7 +131,7 @@ namespace BitD_FactionMapper.Model
                 }
             }
 
-            if (_nodeDataManager.SelectedEdge != null)
+            if (_nodeDataManager.SelectedEdge != null && SelectedEdge().Label != null)
             {
                 SelectedEdge().Label.FontColor = Color.Red;                
             }

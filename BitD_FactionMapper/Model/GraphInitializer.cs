@@ -287,7 +287,6 @@ namespace BitD_FactionMapper.Model
                 new Edge(GetNextId(), Lost, CitizensOfDunlough, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Lost, CoalridgeWorkhouseLaborers, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Lost, CoalridgeWorkhouseForemen, "", Edge.Relationship.War),
-                new Edge(GetNextId(), Lost, CoalridgeWorkhouseLaborers, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Lost, Crows, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Lost, DeathlandsScavengers, "", Edge.Relationship.Friend),
                 
