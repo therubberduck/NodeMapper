@@ -137,6 +137,7 @@ namespace NodeMapper.SqliteDatabase
 
         public long Insert(string table, string column, string value)
         {
+            value = value.Replace("'", "''");
             string commandString = "INSERT INTO " + table + " ([" + column + "]) VALUES ('" + value + "')";
 
             long id = ExecuteInsertCommand(commandString);
@@ -152,7 +153,7 @@ namespace NodeMapper.SqliteDatabase
         public long Insert(string table, string[] columns, object[] values)
         {
             string columnsString = MakeColumnString(columns);
-            string valuesString = MakeValueString(values);
+            string valuesString = MakeValueString(CodeStringsInValues(values));
 
             string commandString = "INSERT INTO " + table + " (" + columnsString + ") VALUES (" + valuesString + ")";
 
@@ -184,6 +185,7 @@ namespace NodeMapper.SqliteDatabase
 
         public void Update(string table, string[] columns, object[] values, string[] whereColumns, object[] whereValues)
         {
+            values = CodeStringsInValues(values);
             string setString = "";
             List<SQLiteParameter> parameters = new List<SQLiteParameter>();
             for (int i = 0; i < columns.Length; i++)
@@ -208,6 +210,25 @@ namespace NodeMapper.SqliteDatabase
                 cmd.Parameters.Add(sqLiteParameter);
             }
             cmd.ExecuteNonQuery();
+        }
+
+        private object[] CodeStringsInValues(object[] values)
+        {
+            var codedValues = new object[values.Length];
+            var i = 0;
+            foreach (var value in values)
+            {
+                if (value is string s)
+                {
+                    codedValues[i++] = s.Replace("'", "''");                     
+                }
+                else
+                {
+                    codedValues[i++] = value;
+                }
+            }
+
+            return codedValues;
         }
 
         public void Delete(string table, string whereColumn, object whereValue)
