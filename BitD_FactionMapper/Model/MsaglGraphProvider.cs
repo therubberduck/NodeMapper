@@ -2,7 +2,10 @@
 using System.Linq;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
+using Microsoft.Msagl.Layout.Incremental;
+using Microsoft.Msagl.Layout.LargeGraphLayout;
 using Microsoft.Msagl.Layout.Layered;
+using Microsoft.Msagl.Layout.MDS;
 
 namespace BitD_FactionMapper.Model
 {
@@ -36,14 +39,23 @@ namespace BitD_FactionMapper.Model
             var nodes = _nodeDataManager.FilteredNodes;
             var edges = _nodeDataManager.FilteredEdges(nodes);
 
+            
+            
             var graph = new Graph();
-            var settings = new SugiyamaLayoutSettings();
-            settings.EdgeRoutingSettings = new EdgeRoutingSettings
-                { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
-            settings.RandomSeedForOrdering = _seed;
-            settings.RepetitionCoefficientForOrdering =  10;
+            // var settings = new SugiyamaLayoutSettings();
+            // settings.EdgeRoutingSettings = new EdgeRoutingSettings
+            //     { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
+            // settings.RandomSeedForOrdering = _seed;
+            // settings.RepetitionCoefficientForOrdering =  10;
+            var settings = new MdsLayoutSettings();
+            settings.IterationsWithMajorization = 50;
+            settings.AdjustScale = true;
+            // var settings = new FastIncrementalLayoutSettings();
+            // settings.RungeKuttaIntegration = true;
+            
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
+            
 
             foreach (var node in nodes)
             {
