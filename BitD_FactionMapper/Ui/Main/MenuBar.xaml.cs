@@ -14,6 +14,12 @@ namespace BitD_FactionMapper.Ui.Main
         public GraphControl.RedrawGraphDelegate RedrawGraph;
         public GraphControl.UpdateGraphDelegate UpdateGraph;
         
+        public delegate void ShowProgressOverlayDelegate();
+        public ShowProgressOverlayDelegate ShowProgressOverlay;
+        
+        public delegate void HideProgressOverlayDelegate();
+        public HideProgressOverlayDelegate HideProgressOverlay;
+
         public MenuBar()
         {
             InitializeComponent();
@@ -26,7 +32,11 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void SaveMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            ShowProgressOverlay();
+            
+            _nodeDataManager.SaveGraph();
+
+            HideProgressOverlay();
         }
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)

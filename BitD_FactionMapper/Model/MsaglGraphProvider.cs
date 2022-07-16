@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
@@ -24,10 +23,8 @@ namespace BitD_FactionMapper.Model
 
         private Graph _graph;
 
-        public Graph GetGraph()
-        {
-            return _graph ?? GetNewGraph();
-        }
+        private readonly Random _rand = new Random();
+        private int _seed = 1;
 
         public Graph GetNewGraph()
         {
@@ -43,6 +40,8 @@ namespace BitD_FactionMapper.Model
             var settings = new SugiyamaLayoutSettings();
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
                 { EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines };
+            settings.RandomSeedForOrdering = _seed;
+            settings.RepetitionCoefficientForOrdering =  10;
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
 
@@ -190,6 +189,12 @@ namespace BitD_FactionMapper.Model
         private Microsoft.Msagl.Drawing.Node SelectedNode()
         {
             return FindNode(_nodeDataManager.SelectedNode.NodeId.ToString());
+        }
+
+        public Graph Randomize()
+        {
+            _seed = _rand.Next();
+            return GetNewGraph();
         }
     }
 }

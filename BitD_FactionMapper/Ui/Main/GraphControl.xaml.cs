@@ -1,4 +1,5 @@
-﻿using BitD_FactionMapper.Model;
+﻿using System.Windows;
+using BitD_FactionMapper.Model;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using Edge = Microsoft.Msagl.Drawing.Edge;
@@ -20,6 +21,12 @@ namespace BitD_FactionMapper.Ui.Main
             _graphViewer.LayoutEditingEnabled = false;
             
             (_graphViewer as IViewer).MouseUp += OnMouseUp;
+        }
+
+        private void BtnRandomize_OnClick(object sender, RoutedEventArgs e)
+        {
+            _graphViewer.Graph = _provider.Randomize();
+            _graphViewer.Invalidate();
         }
 
         private void OnMouseUp(object sender, MsaglMouseEventArgs e)
@@ -51,6 +58,12 @@ namespace BitD_FactionMapper.Ui.Main
         public void UpdateGraph()
         {
             _graphViewer.Graph = _provider.GetUpdatedGraph();
+            _graphViewer.Invalidate();
+        }
+
+        public void RandomizeGraph()
+        {
+            _graphViewer.Graph = _provider.Randomize();
             _graphViewer.Invalidate();
         }
     }

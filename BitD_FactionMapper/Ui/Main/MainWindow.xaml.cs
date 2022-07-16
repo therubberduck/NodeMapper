@@ -17,6 +17,7 @@ namespace BitD_FactionMapper.Ui.Main
             menuBar.UpdateGraph += graphControl.UpdateGraph;
             buttonPanel.RedrawGraph += graphControl.RedrawGraph;
             buttonPanel.UpdateGraph += graphControl.UpdateGraph;
+            buttonPanel.RandomizeGraph += graphControl.RandomizeGraph;
             edgeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
             edgeEditorPanel.UpdateGraph += graphControl.UpdateGraph;
             nodeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
@@ -31,12 +32,12 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.NodeSelected += nodeEditorPanel.OnNodeSelected;
             _nodeDataManager.NodeSelected += graphControl.UpdateGraph;
             
-            buttonPanel.ShowProgressOverlay += () =>
+            menuBar.ShowProgressOverlay += () =>
             {
                 frmWorking.Visibility = Visibility.Visible;
                 AllowUIToUpdate();
             };
-            buttonPanel.HideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
+            menuBar.HideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
             
             _nodeDataManager.LoadData();

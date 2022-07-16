@@ -50,6 +50,8 @@ namespace BitD_FactionMapper.Ui.Main
             }
 
             btnAddEdge.Content = "Add Edge";
+            btnAddEdge.Click -= btnAddEdge_Click;
+            btnAddEdge.Click -= btnEditEdge_Click;
             btnAddEdge.Click += btnAddEdge_Click;
             btnRemoveEdge.Visibility = Visibility.Hidden;
 
@@ -185,6 +187,8 @@ namespace BitD_FactionMapper.Ui.Main
             SelectRelationshipInComboBox(_currentEdge.Relation);
 
             btnAddEdge.Content = "Edit Edge";
+            btnAddEdge.Click -= btnAddEdge_Click;
+            btnAddEdge.Click -= btnEditEdge_Click;
             btnAddEdge.Click += btnEditEdge_Click;
             btnRemoveEdge.Visibility = Visibility.Visible;
 

@@ -108,7 +108,7 @@ namespace BitD_FactionMapper.Model
             _nodeIds.AddRange(_nodes.Select(n => n.NodeId));
             _edgeIds.AddRange(_edges.Select(e => e.EdgeId));
             
-            SelectedNode = _nodes.First();
+            SelectedNode = _nodes.Last();
         }
 
         private void CreateNodes()

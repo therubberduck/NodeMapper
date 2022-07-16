@@ -9,12 +9,7 @@ namespace BitD_FactionMapper.Ui.Main
         
         public GraphControl.RedrawGraphDelegate RedrawGraph;
         public GraphControl.UpdateGraphDelegate UpdateGraph;
-        
-        public delegate void ShowProgressOverlayDelegate();
-        public ShowProgressOverlayDelegate ShowProgressOverlay;
-        
-        public delegate void HideProgressOverlayDelegate();
-        public HideProgressOverlayDelegate HideProgressOverlay;
+        public GraphControl.UpdateGraphDelegate RandomizeGraph;
         
         public EdgeEditorPanel EdgeEditorPanel { private get; set; }
         
@@ -68,18 +63,14 @@ namespace BitD_FactionMapper.Ui.Main
             UpdateGraph();
         }
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            ShowProgressOverlay();
-            
-            _nodeDataManager.SaveGraph();
-
-            HideProgressOverlay();
-        }
-
         private void btnAddEdge_Click(object sender, RoutedEventArgs e)
         {
             EdgeEditorPanel.ShowCreate();
+        }
+
+        private void BtnRandomize_OnClick(object sender, RoutedEventArgs e)
+        {
+            RandomizeGraph();
         }
     }
 }
