@@ -63,6 +63,7 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="Model\GraphInitializer.cs" />
+        <Compile Include="Model\NodeFilterManager.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />
         <Compile Include="SqliteDatabase\DbModule.cs" />
         <Compile Include="SqliteDatabase\DbObjectModule.cs" />
@@ -88,6 +89,9 @@
           <DependentUpon>MainWindow.xaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Include="Ui\Main\MenuBar.xaml.cs">
+          <DependentUpon>MenuBar.xaml</DependentUpon>
+        </Compile>
         <Compile Include="Ui\Main\NodeDetailPanel.xaml.cs">
           <DependentUpon>NodeDetailPanel.xaml</DependentUpon>
         </Compile>
@@ -111,6 +115,7 @@
           <Generator>MSBuild:Compile</Generator>
           <SubType>Designer</SubType>
         </Page>
+        <Page Include="Ui\Main\MenuBar.xaml" />
         <Page Include="Ui\Main\NodeDetailPanel.xaml" />
     </ItemGroup>
     <ItemGroup>

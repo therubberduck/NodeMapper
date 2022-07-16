@@ -122,7 +122,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void AddEdge()
         {
-            if (cmbEdgeEditFrom.SelectedItem != null && cmbEdgeEditTo.SelectedItem != null) return;
+            if (cmbEdgeEditFrom.SelectedItem == null || cmbEdgeEditTo.SelectedItem == null) return;
             
             var nodeFromId = (cmbEdgeEditFrom.SelectedItem as NodeItem).NodeId;
             var nodeToId = (cmbEdgeEditTo.SelectedItem as NodeItem).NodeId;

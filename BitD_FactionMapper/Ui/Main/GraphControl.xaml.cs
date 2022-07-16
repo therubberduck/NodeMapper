@@ -30,6 +30,7 @@ namespace BitD_FactionMapper.Ui.Main
             if (item is VNode node)
             {
                 _provider.SelectNode(node.Node.Attr.Id);
+                RedrawGraph();
             }
             else if (item is IViewerEdge edge)
             {

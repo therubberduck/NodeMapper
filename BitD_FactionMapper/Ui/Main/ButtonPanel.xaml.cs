@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using BitD_FactionMapper.Model;
 
 namespace BitD_FactionMapper.Ui.Main
@@ -42,7 +43,7 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.SelectedNode = newNode;
             _nodeDataManager.SelectedEdge = _nodeDataManager.FirstEdgeOf(newNode);
 
-            UpdateGraph();
+            RedrawGraph();
         }
 
         private void btnRemoveNode_Click(object sender, RoutedEventArgs e)
@@ -55,7 +56,14 @@ namespace BitD_FactionMapper.Ui.Main
 
             var neighbor = _nodeDataManager.GetNeighborNode(_nodeDataManager.SelectedNode);
             _nodeDataManager.RemoveNode(_nodeDataManager.SelectedNode);
-            _nodeDataManager.SelectedNode = neighbor;
+            if (neighbor != null)
+            {
+                _nodeDataManager.SelectedNode = neighbor;                
+            }
+            else
+            {
+                _nodeDataManager.SelectedNode = _nodeDataManager.AllNodes.First();
+            }
 
             UpdateGraph();
         }

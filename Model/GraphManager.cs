@@ -153,7 +153,7 @@ namespace NodeMapper.Model
 
         public IEnumerable<Edge> GetEdgesForNode(string nodeId)
         {
-            return _edges.FindAll(edge => Equals(edge.SourceNode.NodeId, nodeId) || Equals(edge.TargetNode.NodeId, nodeId));
+            return _edges.FindAll(edge => Equals(edge.SourceId, nodeId) || Equals(edge.TargetId, nodeId));
         }
 
         public Edge FirstEdgeOf(Node node)

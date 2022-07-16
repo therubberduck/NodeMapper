@@ -36,6 +36,9 @@ namespace BitD_FactionMapper.Model
                 _nodeDataManager = NodeDataManager.Instance;
             }
 
+            var nodes = _nodeDataManager.FilteredNodes;
+            var edges = _nodeDataManager.FilteredEdges(nodes);
+
             var graph = new Graph();
             var settings = new SugiyamaLayoutSettings();
             settings.EdgeRoutingSettings = new EdgeRoutingSettings
@@ -43,7 +46,7 @@ namespace BitD_FactionMapper.Model
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
 
-            foreach (var node in _nodeDataManager.AllNodes)
+            foreach (var node in nodes)
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId.ToString();
@@ -55,13 +58,15 @@ namespace BitD_FactionMapper.Model
                 graph.AddNode(graphNode);
             }
 
-            foreach (var edge in _nodeDataManager.Edges)
+            foreach (var edge in edges)
             {
                 bool twoWay = false;
                 // If the target node already has an edge targeting our source
-                if (edge.TargetNode.Edges.Any(e => e.TargetNode.NodeId == edge.SourceId))
+                var targetNode = edge.TargetNode;
+                var targetNodeEdges = targetNode.Edges;
+                if (targetNodeEdges.Any(e => e.TargetId == edge.SourceId))
                 {
-                    var competingEdge = edge.TargetNode.Edges.First(e => e.TargetNode.NodeId == edge.SourceId);
+                    var competingEdge = edge.TargetNode.Edges.First(e => e.TargetId == edge.SourceId);
                     // If competing edge and our edge are basically identical, just in opposite directions
                     if (competingEdge.LabelText == edge.LabelText && competingEdge.Relation == edge.Relation)
                     {
@@ -153,12 +158,28 @@ namespace BitD_FactionMapper.Model
 
         private Microsoft.Msagl.Drawing.Edge FindEdge(string edgeId)
         {
-            return _graph.Edges.First(e => e.Attr.Id == edgeId);
+            try
+            {
+                return _graph.Edges.First(e => e.Attr.Id == edgeId);
+            }
+            catch (InvalidOperationException)
+            {
+                GetNewGraph();
+                return _graph.Edges.First(e => e.Attr.Id == edgeId);
+            }
         }
 
         private Microsoft.Msagl.Drawing.Node FindNode(string nodeId)
         {
-            return _graph.Nodes.First(n => n.Attr.Id == nodeId);
+            try
+            {
+                return _graph.Nodes.First(n => n.Attr.Id == nodeId);
+            }
+            catch (InvalidOperationException)
+            {
+                GetNewGraph();
+                return _graph.Nodes.First(n => n.Attr.Id == nodeId);
+            }
         }
 
         private Microsoft.Msagl.Drawing.Edge SelectedEdge()

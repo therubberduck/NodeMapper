@@ -13,6 +13,8 @@ namespace BitD_FactionMapper.Ui.Main
         {
             InitializeComponent();
             
+            menuBar.RedrawGraph += graphControl.RedrawGraph;
+            menuBar.UpdateGraph += graphControl.UpdateGraph;
             buttonPanel.RedrawGraph += graphControl.RedrawGraph;
             buttonPanel.UpdateGraph += graphControl.UpdateGraph;
             edgeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
