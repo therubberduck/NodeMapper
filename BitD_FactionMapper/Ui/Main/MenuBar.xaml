@@ -12,11 +12,15 @@
         <MenuItem Header="_Exit" Click="ExitMenuItem_OnClick" />
     </MenuItem>
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="D::" />
+        <TextBlock Margin="0,0,4,0" Text="D:"/>
         <TextBox x:Name="txtDegrees" 
                  Width="30" 
                  Text="3"
                  PreviewTextInput="TxtDegrees_OnPreviewTextInput"
                  TextChanged="TxtDegrees_OnTextChanged" />
+        <TextBlock Margin="8,0,4,0" Text="IsSource:"/>
+        <CheckBox x:Name="chkIsSource" IsChecked="True" Checked ="ChkTwoWay_OnChecked" Unchecked="ChkTwoWay_OnChecked"/>
+        <TextBlock Margin="8,0,4,0" Text="IsTarget:"/>
+        <CheckBox x:Name="chkIsTarget" IsChecked="True" Checked ="ChkTwoWay_OnChecked" Unchecked="ChkTwoWay_OnChecked"/>
     </StackPanel>
 </Menu>

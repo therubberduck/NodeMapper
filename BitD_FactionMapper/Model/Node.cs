@@ -13,6 +13,8 @@ namespace BitD_FactionMapper.Model
         public IEnumerable<Edge> Edges => _nodeDataManager.GetEdgesForNode(NodeId);
 
         public IEnumerable<Node> Neighbors => _nodeDataManager.GetNeighborsForNode(this);
+        public IEnumerable<Node> NeighborsWhereNodeIsSource => _nodeDataManager.GetNeighborsForNode(this, false, true);
+        public IEnumerable<Node> NeighborsWhereNodeIsTarget => _nodeDataManager.GetNeighborsForNode(this, true, false);
 
         public int NodeId { get; }
         public Node(int nodeId, string title, string body)

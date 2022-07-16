@@ -159,21 +159,30 @@ namespace BitD_FactionMapper.Model
             return firstEdge.SourceNode == node ? firstEdge.TargetNode : firstEdge.SourceNode;
         }
 
-        public IEnumerable<Node> GetNeighborsForNode(Node node)
+        /// <summary>
+        /// Return neighboring nodes (nodes that have edges to the central node).
+        /// </summary>
+        /// <param name="node">Central node</param>
+        /// <param name="isTarget">Find neighbors where the central node is the target of the edge.</param>
+        /// <param name="isSource">Find neighbors where the central node is the source of the edge.</param>
+        public IEnumerable<Node> GetNeighborsForNode(Node node, bool isTarget = true, bool isSource = true)
         {
-            if (!node.Edges.Any()) return new List<Node>();
+            if (!node.Edges.Any() || (!isTarget && !isSource)) return new List<Node>();
 
             var neighbors = node.Edges.Select(e =>
             {
-                if (e.SourceId == node.NodeId)
+                Node neighborNode = null;
+                if (isSource && e.SourceId == node.NodeId)
                 {
-                    return e.TargetNode;
+                    neighborNode = e.TargetNode;
                 }
-                else
+                else if(isTarget)
                 {
-                    return e.SourceNode;
+                    neighborNode = e.SourceNode;
                 }
-            });
+
+                return neighborNode;
+            }).Where(e => e != null);
 
             return neighbors;
         }

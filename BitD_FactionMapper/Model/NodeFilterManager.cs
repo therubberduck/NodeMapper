@@ -20,6 +20,8 @@ namespace BitD_FactionMapper.Model
         }
 
         private int _degreesOfSeparation = 100;
+        private bool _isDegreesSource = true;
+        private bool _isDegreesTarget = true;
 
         public List<Node> FilterNodes(List<Node> nodes, Node selectedNode)
         {
@@ -42,7 +44,24 @@ namespace BitD_FactionMapper.Model
                 collector.Add(activeNode);
             }
 
-            var neighbors = activeNode.Neighbors;
+            IEnumerable<Node> neighbors;
+            if (_isDegreesSource && _isDegreesTarget)
+            {
+                neighbors = activeNode.Neighbors;
+            }
+            else if (_isDegreesSource)
+            {
+                neighbors = activeNode.NeighborsWhereNodeIsSource;
+            }
+            else if (_isDegreesTarget)
+            {
+                neighbors = activeNode.NeighborsWhereNodeIsTarget;
+            }
+            else
+            {
+                return new List<Node>();
+            }
+            
             neighbors = neighbors.Intersect(candidateNodes).ToList();
             collector.AddRange(neighbors);
             foreach (var neighbor in neighbors)
@@ -65,6 +84,18 @@ namespace BitD_FactionMapper.Model
             if (_degreesOfSeparation != degrees)
             {
                 _degreesOfSeparation = degrees;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool FilterTwoWay(bool isSource, bool isTarget)
+        {
+            if (_isDegreesSource != isSource || _isDegreesTarget != isTarget)
+            {
+                _isDegreesSource = isSource;
+                _isDegreesTarget = isTarget;
                 return true;
             }
 

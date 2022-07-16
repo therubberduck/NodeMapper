@@ -51,5 +51,28 @@ namespace BitD_FactionMapper.Ui.Main
             var regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+
+        private void ChkTwoWay_OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (chkIsSource.IsChecked == false && chkIsTarget.IsChecked == false)
+            {
+                if (e.Source == chkIsSource)
+                {
+                    chkIsTarget.IsChecked = true;
+                    return; // We return because setting IsChecked will call this event again.
+                }
+                else
+                {
+                    chkIsSource.IsChecked = true;
+                    return; // We return because setting IsChecked will call this event again.
+                }
+            }
+            
+            var success = _nodeFilterManager.FilterTwoWay(chkIsSource?.IsChecked ?? false, chkIsTarget?.IsChecked ?? false);
+            if (success)
+            {
+                RedrawGraph?.Invoke();
+            }
+        }
     }
 }
