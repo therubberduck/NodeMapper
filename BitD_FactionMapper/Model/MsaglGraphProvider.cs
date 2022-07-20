@@ -55,7 +55,7 @@ namespace BitD_FactionMapper.Model
             
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
-            
+            graph.Attr.BackgroundColor = Color.Beige;
 
             foreach (var node in nodes)
             {
@@ -64,6 +64,32 @@ namespace BitD_FactionMapper.Model
                 if (graph.Label != null)
                 {
                     graphNode.Label.Text = node.Title;
+                }
+
+                switch (node.FactionType)
+                {
+                    case FactionType.Fringe:
+                        graphNode.Attr.FillColor = Color.Purple;
+                        graphNode.Label.FontColor = Color.White;
+                        break;
+                    case FactionType.Institution:
+                        graphNode.Attr.FillColor = Color.LightBlue;
+                        graphNode.Label.FontColor = Color.Black;
+                        break;
+                    case FactionType.Labor:
+                        graphNode.Attr.FillColor = Color.Salmon;
+                        graphNode.Label.FontColor = Color.Black;
+                        break;
+                    case FactionType.Underworld:
+                        graphNode.Attr.FillColor = Color.Black;
+                        graphNode.Label.FontColor = Color.White;
+                        break;
+                    case FactionType.Other:
+                        graphNode.Attr.FillColor = Color.White;
+                        graphNode.Label.FontColor = Color.Black;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
@@ -104,18 +130,38 @@ namespace BitD_FactionMapper.Model
                 {
                     case Edge.Relationship.Ally:
                         graphEdge.Attr.Color = Color.DarkGreen;
+                        if (graphEdge.Label != null)
+                        {
+                            graphEdge.Label.FontColor = Color.DarkGreen;
+                        }
                         break;
                     case Edge.Relationship.Friend:
                         graphEdge.Attr.Color = Color.LightGreen;
+                        if (graphEdge.Label != null)
+                        {
+                            graphEdge.Label.FontColor = Color.LightGreen;
+                        }
                         break;
                     case Edge.Relationship.Enemy:
                         graphEdge.Attr.Color = Color.Orange;
+                        if (graphEdge.Label != null)
+                        {
+                            graphEdge.Label.FontColor = Color.Orange;
+                        }
                         break;
                     case Edge.Relationship.War:
                         graphEdge.Attr.Color = Color.Red;
+                        if (graphEdge.Label != null)
+                        {
+                            graphEdge.Label.FontColor = Color.Red;
+                        }
                         break;
                     default:
                         graphEdge.Attr.Color = Color.Black;
+                        if (graphEdge.Label != null)
+                        {
+                            graphEdge.Label.FontColor = Color.Black;
+                        }
                         break;
                 }
             }

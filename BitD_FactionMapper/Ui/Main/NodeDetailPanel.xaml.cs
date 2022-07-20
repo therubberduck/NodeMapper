@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Input;
 using BitD_FactionMapper.Model;
 
@@ -17,6 +19,25 @@ namespace BitD_FactionMapper.Ui.Main
 
             txtName.TextUpdated += UpDateName_OnTextUpdated;
             txtDescription.TextUpdated += UpDateDescription_OnTextUpdated;
+            
+            
+            cmbType.Items.Add(FactionType.Fringe);
+            cmbType.Items.Add(FactionType.Institution);
+            cmbType.Items.Add(FactionType.Labor);
+            cmbType.Items.Add(FactionType.Underworld);
+            cmbType.Items.Add(FactionType.Other);
+        }
+
+        private void CmbType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedNode = _nodeDataManager.SelectedNode;
+            var newFactionType = (FactionType)cmbType.SelectedItem;
+            
+            if (selectedNode.FactionType != newFactionType)
+            {
+                selectedNode.FactionType = newFactionType;
+                RedrawGraph();
+            }
         }
 
         public void OnNodeSelected()
@@ -25,6 +46,7 @@ namespace BitD_FactionMapper.Ui.Main
 
             txtName.Text = node.Title;
             txtDescription.Text = node.Body;
+            cmbType.SelectedItem = node.FactionType;
             UpdateNodeEdges();
         }
 

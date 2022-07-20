@@ -13,6 +13,9 @@
         <ui:EditableTextBlock x:Name="txtDescription"
                               Style="{StaticResource DefaultControl}"
                               LabelText="_Description:" />
+        <ComboBox x:Name="cmbType"
+                  Style="{StaticResource DefaultControl}"
+                  SelectionChanged="CmbType_OnSelectionChanged"/>
         <ListView Style="{StaticResource DefaultControl}" x:Name="lstEdges"
                   SelectionMode="Single"
                   SelectionChanged="LstEdges_OnSelectionChanged"

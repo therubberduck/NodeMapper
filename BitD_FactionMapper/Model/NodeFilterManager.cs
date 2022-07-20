@@ -19,7 +19,7 @@ namespace BitD_FactionMapper.Model
             }
         }
 
-        private int _degreesOfSeparation = 100;
+        private int _degreesOfSeparation = -1;
         private bool _isDegreesSource = true;
         private bool _isDegreesTarget = true;
 

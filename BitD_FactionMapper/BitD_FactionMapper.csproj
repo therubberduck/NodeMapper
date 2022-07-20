@@ -62,6 +62,7 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </ApplicationDefinition>
+        <Compile Include="Model\FactionType.cs" />
         <Compile Include="Model\GraphInitializer.cs" />
         <Compile Include="Model\NodeFilterManager.cs" />
         <Compile Include="SqliteDatabase\DbColumn.cs" />

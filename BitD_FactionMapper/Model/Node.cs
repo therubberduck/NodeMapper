@@ -9,6 +9,7 @@ namespace BitD_FactionMapper.Model
 
         public string Title { get; set; }
         public string Body { get; set; }
+        public FactionType FactionType { get; set; }
 
         public IEnumerable<Edge> Edges => _nodeDataManager.GetEdgesForNode(NodeId);
 
@@ -17,11 +18,12 @@ namespace BitD_FactionMapper.Model
         public IEnumerable<Node> NeighborsWhereNodeIsTarget => _nodeDataManager.GetNeighborsForNode(this, true, false);
 
         public int NodeId { get; }
-        public Node(int nodeId, string title, string body)
+        public Node(int nodeId, string title, string body, FactionType factionType)
         {
             NodeId = nodeId;
             Title = title;
             Body = body;
+            FactionType = factionType;
         }
     }
 }

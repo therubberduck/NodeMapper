@@ -15,7 +15,7 @@
         <TextBlock Margin="0,0,4,0" Text="D:"/>
         <TextBox x:Name="txtDegrees" 
                  Width="30" 
-                 Text="3"
+                 Text=""
                  PreviewTextInput="TxtDegrees_OnPreviewTextInput"
                  TextChanged="TxtDegrees_OnTextChanged" />
         <TextBlock Margin="8,0,4,0" Text="IsSource:"/>

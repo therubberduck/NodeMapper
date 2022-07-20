@@ -132,9 +132,9 @@ namespace BitD_FactionMapper.Model
             return newNode;
         }
 
-        public Node CreateNode(string title, string body = "")
+        public Node CreateNode(string title, string body = "", FactionType factionType = FactionType.Underworld)
         {
-            var newNode = new Node(GetNextNodeId(), title, body);
+            var newNode = new Node(GetNextNodeId(), title, body, factionType);
             _nodes.Add(newNode);
             return newNode;
         }
