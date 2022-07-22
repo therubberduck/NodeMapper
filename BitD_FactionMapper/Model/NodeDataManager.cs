@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BitD_FactionMapper.DataRepository;
 
@@ -98,7 +98,7 @@ namespace BitD_FactionMapper.Model
             
             if (!_nodes.Any())
             {
-                CreateNodes();
+                RebuildNodeGraph();
             }
             else
             {
@@ -111,7 +111,7 @@ namespace BitD_FactionMapper.Model
             SelectedNode = _nodes.Last();
         }
 
-        private void CreateNodes()
+        public void RebuildNodeGraph()
         {
             var initializer = new GraphInitializer();
             _nodes = initializer.CreateDuskvolFactions();

@@ -9,6 +9,8 @@
         <MenuItem Header="_Open" Click="OpenMenuItem_OnClick" />
         <MenuItem Header="_Save" Click="SaveMenuItem_OnClick" />
         <Separator />
+        <MenuItem Header="_Rebuild" Click="RebuildMenuItem_OnClick" />
+        <Separator />
         <MenuItem Header="_Exit" Click="ExitMenuItem_OnClick" />
     </MenuItem>
     <StackPanel Orientation="Horizontal">

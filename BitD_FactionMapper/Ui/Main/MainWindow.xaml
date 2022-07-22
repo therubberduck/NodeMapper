@@ -6,7 +6,7 @@
         xmlns:main="clr-namespace:BitD_FactionMapper.Ui.Main"
         mc:Ignorable="d"
         Loaded="MainWindow_OnLoaded"
-        Title="NodeMapper" Height="800" Width="800" WindowStartupLocation="CenterOwner">
+        Title="NodeMapper" Height="800" Width="1600" WindowState="Maximized" WindowStartupLocation="CenterOwner">
     <Grid>
         
         <Grid.ColumnDefinitions>

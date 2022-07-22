@@ -20,7 +20,6 @@ namespace BitD_FactionMapper.Ui.Main
             txtName.TextUpdated += UpDateName_OnTextUpdated;
             txtDescription.TextUpdated += UpDateDescription_OnTextUpdated;
             
-            
             cmbType.Items.Add(FactionType.Fringe);
             cmbType.Items.Add(FactionType.Institution);
             cmbType.Items.Add(FactionType.Labor);

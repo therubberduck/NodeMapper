@@ -27,7 +27,10 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void OpenMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            ShowProgressOverlay();
+            _nodeDataManager.LoadData();
+            RedrawGraph?.Invoke();
+            HideProgressOverlay();
         }
 
         private void SaveMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -37,6 +40,23 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.SaveGraph();
 
             HideProgressOverlay();
+        }
+
+        private void RebuildMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you wish to rebuild the graph? This will discard all changes that has been made.",
+                "Rebuild Graph",
+                MessageBoxButton.OKCancel
+                );
+            
+            if(result is MessageBoxResult.OK)
+            {
+                ShowProgressOverlay();
+                _nodeDataManager.RebuildNodeGraph();
+                RedrawGraph?.Invoke();
+                HideProgressOverlay();
+            }
         }
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)

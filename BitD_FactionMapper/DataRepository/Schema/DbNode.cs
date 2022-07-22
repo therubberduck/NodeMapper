@@ -40,7 +40,7 @@ namespace BitD_FactionMapper.DataRepository.Schema
             var nodeId = node.NodeId;
             var labelText = node.Title;
             var userData = node.Body;
-            var factionType = node.FactionType;
+            var factionType = node.FactionType.ToString();
         
             return Db.Insert(TableName, new[]
             {
