@@ -114,6 +114,26 @@ namespace BitD_FactionMapper.Model
                 _edges = _repo.LoadEdges().ToList();
             }
             
+            FinishLoad();
+        }
+
+        public void RebuildNodeGraph()
+        {
+            var initializer = new GraphInitializer();
+            _nodes = initializer.CreateDuskvolFactions();
+            _edges = initializer.CreateDuskvolRelations();
+        }
+
+        public void Load(string dialogFileNam)
+        {
+            var result = _repo.Load(dialogFileNam);
+            _nodes = result.Nodes;
+            _edges = result.Edges;
+            FinishLoad();
+        }
+
+        private void FinishLoad()
+        {
             _nodeIds.AddRange(_nodes.Select(n => n.NodeId));
             _edgeIds.AddRange(_edges.Select(e => e.EdgeId));
 
@@ -127,16 +147,14 @@ namespace BitD_FactionMapper.Model
             }
         }
 
-        public void RebuildNodeGraph()
-        {
-            var initializer = new GraphInitializer();
-            _nodes = initializer.CreateDuskvolFactions();
-            _edges = initializer.CreateDuskvolRelations();
-        }
-
         public void SaveGraph()
         {
             _repo.SaveGraph(_nodes, _edges);
+        }
+
+        public void SaveGraphAs(string dialogFileName)
+        {
+            _repo.SaveGraph(_nodes, _edges, dialogFileName);
         }
 
         public Node CreateNewNodeWithEdgeFrom(int nodeId)

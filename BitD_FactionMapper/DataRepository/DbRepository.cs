@@ -17,6 +17,14 @@ namespace BitD_FactionMapper.DataRepository
             #endif
         }
 
+        public DbNodeEdgesResult Load(string fileName)
+        {
+            var saveDb = DbInterface.GetSaveInterface(fileName);
+            var nodes = saveDb.Node.GetAll();
+            var edges = saveDb.Edge.GetAll();
+            return new DbNodeEdgesResult(nodes, edges);
+        }
+
         public List<Node> LoadNodes()
         {
             return _db.Node.GetAll();
@@ -33,6 +41,27 @@ namespace BitD_FactionMapper.DataRepository
             _db.Edge.ClearTable();
             _db.Node.InsertAll(nodes);
             _db.Edge.InsertAll(edges);
+        }
+        
+        public void SaveGraph(IEnumerable<Node> nodes, IEnumerable<Edge> edges, string fileName)
+        {
+            var saveDb = DbInterface.GetSaveInterface(fileName);
+            saveDb.Node.ClearTable();
+            saveDb.Edge.ClearTable();
+            saveDb.Node.InsertAll(nodes);
+            saveDb.Edge.InsertAll(edges);
+        }
+
+        public struct DbNodeEdgesResult
+        {
+            public readonly List<Node> Nodes;
+            public readonly List<Edge> Edges;
+
+            public DbNodeEdgesResult(List<Node> nodes, List<Edge> edges)
+            {
+                Nodes = nodes;
+                Edges = edges;
+            }
         }
     }
 }

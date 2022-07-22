@@ -19,6 +19,11 @@ namespace BitD_FactionMapper.DataRepository
             return new DbInterface("factionmapper_dev.sql", typeof(UpdateSchema));
         }
 
+        public static DbInterface GetSaveInterface(string path)
+        {
+            return new DbInterface(path, typeof(UpdateSchema));
+        }
+
         private DbInterface(string dbPath, Type updateSchemaClass) : base(dbPath, updateSchemaClass)
         {
         }

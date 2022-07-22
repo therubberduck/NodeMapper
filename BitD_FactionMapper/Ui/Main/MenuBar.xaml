@@ -6,9 +6,11 @@
       mc:Ignorable="d"
       d:DesignHeight="300" d:DesignWidth="300">
     <MenuItem Header="_File">
-        <MenuItem Header="_Open" Click="OpenMenuItem_OnClick" />
+        <MenuItem Header="_Load" Click="LoadMenuItem_OnClick" />
+        <MenuItem Header="_Archive" Click="SaveAsMenuItem_OnClick" />
         <MenuItem Header="_Save" Click="SaveMenuItem_OnClick" />
         <Separator />
+        <MenuItem Header="_Reload" Click="ReloadMenuItem_OnClick" />
         <MenuItem Header="_Rebuild" Click="RebuildMenuItem_OnClick" />
         <Separator />
         <MenuItem Header="_Exit" Click="ExitMenuItem_OnClick" />

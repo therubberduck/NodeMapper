@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using BitD_FactionMapper.Model;
+using Microsoft.Win32;
 
 namespace BitD_FactionMapper.Ui.Main
 {
@@ -25,12 +26,38 @@ namespace BitD_FactionMapper.Ui.Main
             InitializeComponent();
         }
 
-        private void OpenMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void LoadMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ShowProgressOverlay();
-            _nodeDataManager.LoadData();
-            RedrawGraph?.Invoke();
-            HideProgressOverlay();
+            var dialog = new OpenFileDialog()
+            {
+                InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory,
+                Filter = "Save File (*.sav)|*.sav",
+                AddExtension = true,
+                DefaultExt = "sav"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                ShowProgressOverlay();
+                _nodeDataManager.Load(dialog.FileName);
+                RedrawGraph?.Invoke();
+                HideProgressOverlay();
+            }
+        }
+
+        private void SaveAsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog
+            {
+                InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory,
+                OverwritePrompt = true,
+                Filter = "Save File (*.sav)|*.sav",
+                AddExtension = true,
+                DefaultExt = "sav"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                _nodeDataManager.SaveGraphAs(dialog.FileName);
+            }
         }
 
         private void SaveMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -42,10 +69,28 @@ namespace BitD_FactionMapper.Ui.Main
             HideProgressOverlay();
         }
 
+        private void ReloadMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+            var result = MessageBox.Show(
+                "Are you sure you wish to reload the graph? This will discard all changes that has been made since your last save.",
+                "Reload Graph",
+                MessageBoxButton.OKCancel
+            );
+
+            if (result is MessageBoxResult.OK)
+            {
+                ShowProgressOverlay();
+                _nodeDataManager.LoadData();
+                RedrawGraph?.Invoke();
+                HideProgressOverlay();
+            }
+        }
+
         private void RebuildMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(
-                "Are you sure you wish to rebuild the graph? This will discard all changes that has been made.",
+                "Are you sure you wish to rebuild the graph? This will discard all changes that has been made EVER.",
                 "Rebuild Graph",
                 MessageBoxButton.OKCancel
                 );
