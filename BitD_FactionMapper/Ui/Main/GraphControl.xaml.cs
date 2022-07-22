@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 using BitD_FactionMapper.Model;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
@@ -21,16 +24,17 @@ namespace BitD_FactionMapper.Ui.Main
             _graphViewer.LayoutEditingEnabled = false;
             
             (_graphViewer as IViewer).MouseUp += OnMouseUp;
+            _graphViewer.GraphCanvas.MouseWheel += GraphCanvasOnMouseWheel;
         }
 
-        private void BtnRandomize_OnClick(object sender, RoutedEventArgs e)
+        private void GraphCanvasOnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            _graphViewer.Graph = _provider.Randomize();
-            _graphViewer.Invalidate();
+            
         }
 
         private void OnMouseUp(object sender, MsaglMouseEventArgs e)
         {
+            var zoomFactor = _graphViewer.ZoomFactor;
             var item = _graphViewer.ObjectUnderMouseCursor;
             if (item == null) return;
             
@@ -51,8 +55,14 @@ namespace BitD_FactionMapper.Ui.Main
 
         public void RedrawGraph()
         {
+            var currentScale = _graphViewer.CurrentScale;
+            
             _graphViewer.Graph = _provider.GetNewGraph();
             _graphViewer.Invalidate();
+
+            // Recenter on selected node after redraw
+            var selectedNode = _graphViewer.Graph.Nodes.First(n => n.Attr.Id == Properties.Settings.Default.SelectedNode.ToString());
+            _graphViewer.NodeToCenterWithScale(selectedNode, currentScale);
         }
 
         public void UpdateGraph()
