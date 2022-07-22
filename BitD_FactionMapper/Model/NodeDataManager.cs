@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BitD_FactionMapper.DataRepository;
 
@@ -53,7 +53,15 @@ namespace BitD_FactionMapper.Model
             set
             {
                 PreviousSelectedNode = _selectedNode;
+                
+                // Set selected node
                 _selectedNode = value;
+                
+                // Save selected node for restart
+                Properties.Settings.Default.SelectedNode = _selectedNode.NodeId;
+                Properties.Settings.Default.Save();
+                
+                // Evaluate selected edge based on the newly selected node
                 if (_selectedNode != null)
                 {
                     // Only keep SelectedEdge if either end connects to the newly selected node
@@ -67,6 +75,7 @@ namespace BitD_FactionMapper.Model
                     SelectedEdge = null;
                 }
 
+                // Activate NodeSelected delegate
                 NodeSelected();
             }
         }
@@ -107,8 +116,15 @@ namespace BitD_FactionMapper.Model
             
             _nodeIds.AddRange(_nodes.Select(n => n.NodeId));
             _edgeIds.AddRange(_edges.Select(e => e.EdgeId));
-            
-            SelectedNode = _nodes.Last();
+
+            if (Properties.Settings.Default.SelectedNode != -1)
+            {
+                SelectedNode = GetNode(Properties.Settings.Default.SelectedNode);
+            }
+            else
+            {
+                SelectedNode = _nodes.First();                
+            }
         }
 
         public void RebuildNodeGraph()

@@ -34,42 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutomaticGraphLayout, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6baa2c1345e83b6e, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutomaticGraphLayout.1.1.12\lib\netstandard2.0\AutomaticGraphLayout.dll</HintPath>
-    </Reference>
-    <Reference Include="AutomaticGraphLayout.Drawing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6baa2c1345e83b6e, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutomaticGraphLayout.Drawing.1.1.12\lib\netstandard2.0\AutomaticGraphLayout.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Msagl.WpfGraphControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6baa2c1345e83b6e, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutomaticGraphLayout.WpfGraphControl.1.1.12\lib\net472\Microsoft.Msagl.WpfGraphControl.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.116.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\lib\net46\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Include="Model\FactionType.cs" />
     <Compile Include="Model\GraphInitializer.cs" />
     <Compile Include="Model\NodeFilterManager.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="SqliteDatabase\DbColumn.cs" />
     <Compile Include="SqliteDatabase\DbModule.cs" />
     <Compile Include="SqliteDatabase\DbObjectModule.cs" />
@@ -113,16 +82,6 @@
     <Compile Include="DataRepository\Schema\DbEdge.cs" />
     <Compile Include="DataRepository\Schema\DbNode.cs" />
     <Compile Include="DataRepository\UpdateSchema.cs" />
-    <Page Include="Ui\EditableTextBlock.xaml" />
-    <Page Include="Ui\Main\ButtonPanel.xaml" />
-    <Page Include="Ui\Main\EdgeEditorPanel.xaml" />
-    <Page Include="Ui\Main\GraphControl.xaml" />
-    <Page Include="Ui\Main\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Ui\Main\MenuBar.xaml" />
-    <Page Include="Ui\Main\NodeDetailPanel.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Edge.cs" />
@@ -145,10 +104,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="read.me" />
@@ -161,4 +116,32 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
   </Target>
+  <ItemGroup>
+    <ReferencePath Include="D:\Dropbox\Code Projects\Rider\NodeMapper\packages\AutomaticGraphLayout.1.1.12\lib\netstandard2.0\AutomaticGraphLayout.dll" />
+    <ReferencePath Include="D:\Dropbox\Code Projects\Rider\NodeMapper\packages\AutomaticGraphLayout.Drawing.1.1.12\lib\netstandard2.0\AutomaticGraphLayout.Drawing.dll" />
+    <ReferencePath Include="D:\Dropbox\Code Projects\Rider\NodeMapper\packages\AutomaticGraphLayout.WpfGraphControl.1.1.12\lib\net472\Microsoft.Msagl.WpfGraphControl.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="D:\Dropbox\Code Projects\Rider\NodeMapper\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\lib\net46\System.Data.SQLite.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\EditableTextBlock.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\ButtonPanel.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\EdgeEditorPanel.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\GraphControl.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\MainWindow.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\MenuBar.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\Ui\Main\NodeDetailPanel.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\App.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\BitD_FactionMapper_Content.g.cs" />
+    <Compile Include="D:\Dropbox\Code Projects\Rider\NodeMapper\BitD_FactionMapper\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
 </Project>
