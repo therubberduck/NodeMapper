@@ -61,7 +61,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void TxtDegrees_OnTextChanged(object sender, TextChangedEventArgs e)

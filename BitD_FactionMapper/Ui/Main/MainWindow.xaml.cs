@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using BitD_FactionMapper.Model;
@@ -30,13 +31,9 @@ namespace BitD_FactionMapper.Ui.Main
             _nodeDataManager.EdgeSelected += graphControl.UpdateGraph;
             
             _nodeDataManager.NodeSelected += nodeEditorPanel.OnNodeSelected;
-            
-            menuBar.ShowProgressOverlay += () =>
-            {
-                frmWorking.Visibility = Visibility.Visible;
-                AllowUIToUpdate();
-            };
-            menuBar.HideProgressOverlay += () => frmWorking.Visibility = Visibility.Collapsed;
+
+            menuBar.ShowProgressOverlay += ShowProgressOverlay;
+            menuBar.HideProgressOverlay += HideProgressOverlay; 
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
             
             _nodeDataManager.LoadData();
@@ -46,6 +43,35 @@ namespace BitD_FactionMapper.Ui.Main
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             graphControl.RedrawGraph();
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Do you wish to save your graph before leaving?",
+                "Exit FactionMapper",
+                MessageBoxButton.YesNo
+            );
+            
+            if(result is MessageBoxResult.Yes)
+            {
+                ShowProgressOverlay();
+            
+                _nodeDataManager.SaveGraph();
+
+                HideProgressOverlay();
+            }
+        }
+        
+        private void ShowProgressOverlay()
+        {
+            frmWorking.Visibility = Visibility.Visible;
+            AllowUIToUpdate();
+        }
+
+        private void HideProgressOverlay()
+        {
+            frmWorking.Visibility = Visibility.Collapsed;
         }
 
         private void AllowUIToUpdate()
