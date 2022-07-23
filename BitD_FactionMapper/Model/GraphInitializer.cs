@@ -182,6 +182,11 @@ namespace BitD_FactionMapper.Model
                 new Edge(GetNextId(), Billhooks, MinistryOfPreservation, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Billhooks, UlfIronborn, "", Edge.Relationship.Enemy),
                 
+                new Edge(GetNextId(), BlackDogs, Billhooks, "", Edge.Relationship.Enemy),
+                new Edge(GetNextId(), BlackDogs, Dockers, "", Edge.Relationship.Friend),
+                new Edge(GetNextId(), BlackDogs, Grinders, "", Edge.Relationship.Enemy),
+                new Edge(GetNextId(), BlackDogs, Sailors, "", Edge.Relationship.Friend),
+                
                 new Edge(GetNextId(), Bluecoats, Billhooks, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Bluecoats, CityCouncil, "", Edge.Relationship.Friend),
                 new Edge(GetNextId(), Bluecoats, Crows, "", Edge.Relationship.Friend),
