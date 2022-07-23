@@ -35,7 +35,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         public void ShowCreate()
         {
-            var nodes = UiItemMapper.Map(_nodeDataManager.AllNodes);
+            var nodes = UiItemMapper.Map(_nodeDataManager.Nodes);
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)
@@ -171,7 +171,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void EdgeSelected()
         {
-            var nodes = UiItemMapper.Map(_nodeDataManager.AllNodes);
+            var nodes = UiItemMapper.Map(_nodeDataManager.Nodes);
             cmbEdgeEditFrom.Items.Clear();
             cmbEdgeEditTo.Items.Clear();
             foreach (var nodeItem in nodes)

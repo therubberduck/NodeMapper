@@ -9,6 +9,7 @@ namespace BitD_FactionMapper.Ui.Main
     public partial class MainWindow
     {
         private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
+        private readonly NodeFileManager _nodeFileManager = NodeFileManager.Instance;
 
         public MainWindow()
         {
@@ -23,6 +24,8 @@ namespace BitD_FactionMapper.Ui.Main
             edgeEditorPanel.UpdateGraph += graphControl.UpdateGraph;
             nodeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
             nodeEditorPanel.UpdateGraph += graphControl.UpdateGraph;
+            _nodeFileManager.RedrawGraph += graphControl.RedrawGraph;
+            _nodeFileManager.UpdateGraph += graphControl.UpdateGraph;
 
             _nodeDataManager.EdgeSelected += buttonPanel.OnEdgeSelected;
             _nodeDataManager.EdgeSelected += edgeEditorPanel.OnEdgeSelected;
@@ -32,11 +35,12 @@ namespace BitD_FactionMapper.Ui.Main
             
             _nodeDataManager.NodeSelected += nodeEditorPanel.OnNodeSelected;
 
-            menuBar.ShowProgressOverlay += ShowProgressOverlay;
-            menuBar.HideProgressOverlay += HideProgressOverlay; 
+            _nodeFileManager.ShowProgressOverlay += ShowProgressOverlay;
+            _nodeFileManager.HideProgressOverlay += HideProgressOverlay; 
             buttonPanel.EdgeEditorPanel = edgeEditorPanel;
+
             
-            _nodeDataManager.LoadData();
+            _nodeFileManager.FirstLoad();
             graphControl.RedrawGraph();
         }
 
@@ -55,11 +59,7 @@ namespace BitD_FactionMapper.Ui.Main
             
             if(result is MessageBoxResult.Yes)
             {
-                ShowProgressOverlay();
-            
-                _nodeDataManager.SaveGraph();
-
-                HideProgressOverlay();
+                _nodeFileManager.Save();       
             }
         }
         

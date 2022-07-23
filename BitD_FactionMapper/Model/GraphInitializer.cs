@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BitD_FactionMapper.DataRepository;
 
 namespace BitD_FactionMapper.Model
 {
@@ -76,8 +77,15 @@ namespace BitD_FactionMapper.Model
         {
             return _id++;
         }
+
+        public NodeEdgesResult GetDuskvol()
+        {
+            var nodes = CreateDuskvolFactions();
+            var edges = CreateDuskvolRelations();
+            return new NodeEdgesResult(nodes, edges);
+        }
         
-        public List<Node> CreateDuskvolFactions()
+        private List<Node> CreateDuskvolFactions()
         {
             var factions = new List<Node>
             {
@@ -163,7 +171,7 @@ namespace BitD_FactionMapper.Model
             return factions;
         }
         
-        public List<Edge> CreateDuskvolRelations()
+        private List<Edge> CreateDuskvolRelations()
         {
             var edges = new List<Edge>
             {

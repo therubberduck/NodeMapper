@@ -7,32 +7,33 @@ namespace BitD_FactionMapper.DataRepository
     public class DbRepository
     {
         private DbInterface _db;
+        private string _filePath;
 
         public DbRepository()
         {
-            #if DEBUG
-                _db = DbInterface.GetDevInterface();
-            #else
-                _db = DbInterface.GetProdInterface();
-            #endif
+            _filePath = Properties.Settings.Default.SaveFile;
+            if (_filePath != "")
+            {
+                _db = DbInterface.GetSaveInterface(_filePath);
+            }
         }
 
-        public DbNodeEdgesResult Load(string fileName)
+        public bool RepoInitialized()
         {
-            var saveDb = DbInterface.GetSaveInterface(fileName);
-            var nodes = saveDb.Node.GetAll();
-            var edges = saveDb.Edge.GetAll();
-            return new DbNodeEdgesResult(nodes, edges);
+            return _filePath != "";
         }
 
-        public List<Node> LoadNodes()
+        public NodeEdgesResult Load(string fileName)
         {
-            return _db.Node.GetAll();
+            _db = DbInterface.GetSaveInterface(fileName);
+            return Load();
         }
 
-        public IEnumerable<Edge> LoadEdges()
+        public NodeEdgesResult Load()
         {
-            return _db.Edge.GetAll();
+            var nodes = _db.Node.GetAll();
+            var edges = _db.Edge.GetAll();
+            return new NodeEdgesResult(nodes, edges);
         }
 
         public void SaveGraph(IEnumerable<Node> nodes, IEnumerable<Edge> edges)
@@ -45,23 +46,8 @@ namespace BitD_FactionMapper.DataRepository
         
         public void SaveGraph(IEnumerable<Node> nodes, IEnumerable<Edge> edges, string fileName)
         {
-            var saveDb = DbInterface.GetSaveInterface(fileName);
-            saveDb.Node.ClearTable();
-            saveDb.Edge.ClearTable();
-            saveDb.Node.InsertAll(nodes);
-            saveDb.Edge.InsertAll(edges);
-        }
-
-        public struct DbNodeEdgesResult
-        {
-            public readonly List<Node> Nodes;
-            public readonly List<Edge> Edges;
-
-            public DbNodeEdgesResult(List<Node> nodes, List<Edge> edges)
-            {
-                Nodes = nodes;
-                Edges = edges;
-            }
+            _db = DbInterface.GetSaveInterface(fileName);
+            SaveGraph(nodes, edges);
         }
     }
 }

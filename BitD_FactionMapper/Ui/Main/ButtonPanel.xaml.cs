@@ -57,7 +57,7 @@ namespace BitD_FactionMapper.Ui.Main
             }
             else
             {
-                _nodeDataManager.SelectedNode = _nodeDataManager.AllNodes.First();
+                _nodeDataManager.SelectedNode = _nodeDataManager.Nodes.First();
             }
 
             UpdateGraph();

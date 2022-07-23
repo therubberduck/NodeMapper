@@ -9,16 +9,6 @@ namespace BitD_FactionMapper.DataRepository
         public DbEdge Edge;
         public DbNode Node;
 
-        public static DbInterface GetProdInterface()
-        {
-            return new DbInterface("factionmapper.sql", typeof(UpdateSchema));
-        }
-
-        public static DbInterface GetDevInterface()
-        {
-            return new DbInterface("factionmapper_dev.sql", typeof(UpdateSchema));
-        }
-
         public static DbInterface GetSaveInterface(string path)
         {
             return new DbInterface(path, typeof(UpdateSchema));

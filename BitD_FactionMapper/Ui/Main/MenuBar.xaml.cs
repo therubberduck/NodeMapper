@@ -10,16 +10,11 @@ namespace BitD_FactionMapper.Ui.Main
     public partial class MenuBar : Menu
     {
         private readonly NodeDataManager _nodeDataManager = NodeDataManager.Instance;
+        private readonly NodeFileManager _nodeFileManager = NodeFileManager.Instance;
         private readonly NodeFilterManager _nodeFilterManager = NodeFilterManager.Instance;
         
         public GraphControl.RedrawGraphDelegate RedrawGraph;
         public GraphControl.UpdateGraphDelegate UpdateGraph;
-        
-        public delegate void ShowProgressOverlayDelegate();
-        public ShowProgressOverlayDelegate ShowProgressOverlay;
-        
-        public delegate void HideProgressOverlayDelegate();
-        public HideProgressOverlayDelegate HideProgressOverlay;
 
         public MenuBar()
         {
@@ -28,50 +23,21 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void LoadMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog()
-            {
-                InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory,
-                Filter = "Save File (*.sav)|*.sav",
-                AddExtension = true,
-                DefaultExt = "sav"
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                ShowProgressOverlay();
-                _nodeDataManager.Load(dialog.FileName);
-                RedrawGraph?.Invoke();
-                HideProgressOverlay();
-            }
+            _nodeFileManager.OpenDialog();
         }
 
         private void SaveAsMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new SaveFileDialog
-            {
-                InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory,
-                OverwritePrompt = true,
-                Filter = "Save File (*.sav)|*.sav",
-                AddExtension = true,
-                DefaultExt = "sav"
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                _nodeDataManager.SaveGraphAs(dialog.FileName);
-            }
+            _nodeFileManager.SaveDialog();
         }
 
         private void SaveMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ShowProgressOverlay();
-            
-            _nodeDataManager.SaveGraph();
-
-            HideProgressOverlay();
+            _nodeFileManager.Save();
         }
 
         private void ReloadMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            
+        {   
             var result = MessageBox.Show(
                 "Are you sure you wish to reload the graph? This will discard all changes that has been made since your last save.",
                 "Reload Graph",
@@ -80,10 +46,7 @@ namespace BitD_FactionMapper.Ui.Main
 
             if (result is MessageBoxResult.OK)
             {
-                ShowProgressOverlay();
-                _nodeDataManager.LoadData();
-                RedrawGraph?.Invoke();
-                HideProgressOverlay();
+                _nodeFileManager.Reopen();
             }
         }
 
@@ -97,10 +60,7 @@ namespace BitD_FactionMapper.Ui.Main
             
             if(result is MessageBoxResult.OK)
             {
-                ShowProgressOverlay();
-                _nodeDataManager.RebuildNodeGraph();
-                RedrawGraph?.Invoke();
-                HideProgressOverlay();
+                _nodeFileManager.Rebuild();
             }
         }
 

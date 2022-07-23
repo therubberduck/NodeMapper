@@ -26,11 +26,9 @@ namespace BitD_FactionMapper.Model
         public delegate void NodeSelectionDelegate();
         public NodeSelectionDelegate NodeSelected;
 
-        private readonly DbRepository _repo = new DbRepository();
-
         private readonly List<int> _nodeIds = new List<int>();
         private List<Node> _nodes;
-        public IEnumerable<Node> AllNodes =>_nodes;
+        public IEnumerable<Node> Nodes =>_nodes;
         public int NodeCount => _nodes.Count;
 
         private readonly List<int> _edgeIds = new List<int>();
@@ -101,39 +99,11 @@ namespace BitD_FactionMapper.Model
             }
         }
 
-        public void LoadData()
+        public void LoadData(NodeEdgesResult result)
         {
-            _nodes = _repo.LoadNodes();
-            
-            if (!_nodes.Any())
-            {
-                RebuildNodeGraph();
-            }
-            else
-            {
-                _edges = _repo.LoadEdges().ToList();
-            }
-            
-            FinishLoad();
-        }
-
-        public void RebuildNodeGraph()
-        {
-            var initializer = new GraphInitializer();
-            _nodes = initializer.CreateDuskvolFactions();
-            _edges = initializer.CreateDuskvolRelations();
-        }
-
-        public void Load(string dialogFileNam)
-        {
-            var result = _repo.Load(dialogFileNam);
             _nodes = result.Nodes;
             _edges = result.Edges;
-            FinishLoad();
-        }
-
-        private void FinishLoad()
-        {
+            
             _nodeIds.AddRange(_nodes.Select(n => n.NodeId));
             _edgeIds.AddRange(_edges.Select(e => e.EdgeId));
 
@@ -145,16 +115,6 @@ namespace BitD_FactionMapper.Model
             {
                 SelectedNode = _nodes.First();                
             }
-        }
-
-        public void SaveGraph()
-        {
-            _repo.SaveGraph(_nodes, _edges);
-        }
-
-        public void SaveGraphAs(string dialogFileName)
-        {
-            _repo.SaveGraph(_nodes, _edges, dialogFileName);
         }
 
         public Node CreateNewNodeWithEdgeFrom(int nodeId)

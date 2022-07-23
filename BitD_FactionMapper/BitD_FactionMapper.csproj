@@ -62,8 +62,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataRepository\NodeEdgesResult.cs" />
     <Compile Include="Model\FactionType.cs" />
     <Compile Include="Model\GraphInitializer.cs" />
+    <Compile Include="Model\NodeFileManager.cs" />
     <Compile Include="Model\NodeFilterManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
