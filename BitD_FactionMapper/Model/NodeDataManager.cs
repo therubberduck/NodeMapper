@@ -109,7 +109,15 @@ namespace BitD_FactionMapper.Model
 
             if (Properties.Settings.Default.SelectedNode != -1)
             {
-                SelectedNode = GetNode(Properties.Settings.Default.SelectedNode);
+                var node = GetNode(Properties.Settings.Default.SelectedNode);
+                if (node != null)
+                {
+                    SelectedNode = node;
+                }
+                else
+                {
+                    SelectedNode = _nodes.First();
+                }
             }
             else
             {
