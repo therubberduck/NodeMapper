@@ -13,7 +13,12 @@ namespace BitD_FactionMapper.Ui.Main
         
         public static IEnumerable<NodeItem> Map(IEnumerable<Node> nodes)
         {
-            return nodes.Select(n => new NodeItem(n));
+            return nodes.Select(Map);
+        }
+        
+        public static NodeItem Map(Node node)
+        {
+            return new NodeItem(node);
         }
     }
 }

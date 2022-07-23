@@ -209,11 +209,15 @@ namespace BitD_FactionMapper.Model
 
         private Microsoft.Msagl.Drawing.Edge FindEdge(string edgeId)
         {
-            try
+            if (_graph.Edges.Any(e => e.Attr.Id == edgeId))
             {
-                return _graph.Edges.First(e => e.Attr.Id == edgeId);
+                return _graph.Edges.First(e => e.Attr.Id == edgeId);                    
             }
-            catch (InvalidOperationException)
+            else if (_graph.Edges.Any())
+            {
+                throw new ArgumentException("No edge with id " + edgeId + " exists in graph");
+            }
+            else
             {
                 GetNewGraph();
                 return _graph.Edges.First(e => e.Attr.Id == edgeId);

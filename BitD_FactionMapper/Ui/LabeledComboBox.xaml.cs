@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace BitD_FactionMapper.Ui
 {
@@ -50,6 +51,41 @@ namespace BitD_FactionMapper.Ui
         public void AddItem(object newItem)
         {
             comboBox.Items.Add(newItem);
+        }
+
+        public void SetItems(IEnumerable<object> values)
+        {
+            comboBox.Items.Clear();
+            foreach (var value in values)
+            {
+                comboBox.Items.Add(value);
+            }
+        }
+
+        public void SetItems(params object[] values)
+        {
+            comboBox.Items.Clear();
+            foreach (var value in values)
+            {
+                comboBox.Items.Add(value);
+            }
+        }
+
+        public void ClearItems()
+        {
+            comboBox.Items.Clear();
+        }
+
+        public void SelectItem<T>(Func<T, bool> selector) where T : class
+        {
+            foreach (T item in comboBox.Items)
+            {
+                if (selector.Invoke(item))
+                {
+                    comboBox.SelectedItem = item;
+                    break;
+                }
+            }
         }
     }
 }

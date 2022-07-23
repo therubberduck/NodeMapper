@@ -14,41 +14,28 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <ui:LabeledComboBox Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="cmbRelation"
+    <ui:LabeledComboBox Grid.Row="0" Grid.Column="0" x:Name="cmbRelation"
                         SelectionChanged="cmbRelation_SelectionChanged"
                         Style="{StaticResource DefaultControl}"
                         LabelText="Relation" />
-    <!-- <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Relation" -->
-    <!--        Target="{Binding ElementName=cmbRelation}"/> -->
-    <!-- <ComboBox Grid.Row="1" Grid.Column="0" x:Name="cmbRelation" -->
-    <!--           Style="{StaticResource DefaultControl}"/> -->
-    <ui:EditableTextBlock Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="txtEdgeName"
+    <ui:EditableTextBlock Grid.Row="0" Grid.Column="1" x:Name="txtEdgeName"
                           Style="{StaticResource DefaultControl}"
                           LabelText="_Name:" />
-    <Label Grid.Row="2" Grid.Column="0" Content="From Node"
-           Target="{Binding ElementName=cmbEdgeEditFrom}"/>
-    <ComboBox Grid.Row="3" Grid.Column="0" x:Name="cmbEdgeEditFrom"
-              SelectionChanged="CmbEdgeEditFrom_OnSelectionChanged"
-              Style="{StaticResource DefaultControl}"/>
-    <Label Grid.Row="2" Grid.Column="1" Content="To Node"
-           Target="{Binding ElementName=cmbEdgeEditTo}"/>
-    <ComboBox Grid.Row="3" Grid.Column="1" x:Name="cmbEdgeEditTo"
-              SelectionChanged="CmbEdgeEditTo_OnSelectionChanged"
-              Style="{StaticResource DefaultControl}"/>
-    <!-- <Button Grid.Row="4" Grid.Column="0" x:Name="btnAddEdge" -->
-    <!--         Click="btnAddEdge_Click" -->
-    <!--         Style="{StaticResource DefaultControl}"> -->
-    <!--     Add New Edge -->
-    <!-- </Button> -->
-    <Button Grid.Row="4" Grid.Column="0" x:Name="btnRemoveEdge"
+    <ui:LabeledComboBox Grid.Row="1" Grid.Column="0" x:Name="cmbEdgeEditFrom"
+                        SelectionChanged="cmbRelation_SelectionChanged"
+                        Style="{StaticResource DefaultControl}"
+                        LabelText="From Node" />
+    <ui:LabeledComboBox Grid.Row="1" Grid.Column="1" x:Name="cmbEdgeEditTo"
+                        SelectionChanged="cmbRelation_SelectionChanged"
+                        Style="{StaticResource DefaultControl}"
+                        LabelText="To Node" />
+    <Button Grid.Row="2" Grid.Column="0"
             Click="BtnRemoveEdge_Click"
             Style="{StaticResource DefaultControl}">
         Remove Edge
     </Button>
-    <Button Grid.Row="4" Grid.Column="1" x:Name="btnCancel"
+    <Button Grid.Row="2" Grid.Column="1"
             Click="btnCancel_Click"
             Style="{StaticResource DefaultControl}">
         Cancel

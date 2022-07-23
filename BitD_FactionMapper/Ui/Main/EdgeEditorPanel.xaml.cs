@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BitD_FactionMapper.Model;
@@ -110,18 +111,9 @@ namespace BitD_FactionMapper.Ui.Main
         public void ShowCreate()
         {
             var nodes = UiItemMapper.Map(_nodeDataManager.Nodes);
-            cmbEdgeEditFrom.Items.Clear();
-            cmbEdgeEditTo.Items.Clear();
-            foreach (var nodeItem in nodes)
-            {
-                cmbEdgeEditFrom.Items.Add(nodeItem);
-                cmbEdgeEditTo.Items.Add(nodeItem);
-
-                if (nodeItem.NodeId == _nodeDataManager.SelectedNode.NodeId)
-                {
-                    cmbEdgeEditFrom.SelectedItem = nodeItem;
-                }
-            }
+            cmbEdgeEditFrom.SetItems(nodes);
+            cmbEdgeEditTo.SetItems(nodes);
+            SelectNodeInComboBox(cmbEdgeEditFrom, _nodeDataManager.SelectedNode);
 
             Visibility = Visibility.Visible;
         }
@@ -176,13 +168,8 @@ namespace BitD_FactionMapper.Ui.Main
         private void EdgeSelected()
         {
             var nodes = UiItemMapper.Map(_nodeDataManager.Nodes);
-            cmbEdgeEditFrom.Items.Clear();
-            cmbEdgeEditTo.Items.Clear();
-            foreach (var nodeItem in nodes)
-            {
-                cmbEdgeEditFrom.Items.Add(nodeItem);
-                cmbEdgeEditTo.Items.Add(nodeItem);
-            }
+            cmbEdgeEditFrom.SetItems(nodes);
+            cmbEdgeEditTo.SetItems(nodes);
 
             txtEdgeName.Text = _currentEdge.LabelText;
 
@@ -193,16 +180,9 @@ namespace BitD_FactionMapper.Ui.Main
             Visibility = Visibility.Visible;
         }
 
-        private void SelectNodeInComboBox(ComboBox comboBox, Node node)
+        private void SelectNodeInComboBox(LabeledComboBox comboBox, Node node)
         {
-            foreach (NodeItem item in comboBox.Items)
-            {
-                if (item.NodeId == node.NodeId)
-                {
-                    comboBox.SelectedItem = item;
-                    break;
-                }
-            }
+            comboBox.SelectItem<NodeItem>(cmbItem => cmbItem.NodeId == node.NodeId);
         }
 
         private void SelectRelationshipInComboBox(Edge.Relationship relation)
@@ -232,8 +212,6 @@ namespace BitD_FactionMapper.Ui.Main
             Visibility = Visibility.Collapsed;
 
             txtEdgeName.Text = "";
-            cmbEdgeEditFrom.Items.Clear();
-            cmbEdgeEditTo.Items.Clear();
         }
     }
 }
