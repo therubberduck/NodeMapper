@@ -215,7 +215,8 @@ namespace BitD_FactionMapper.Model
             }
             else if (_graph.Edges.Any())
             {
-                throw new ArgumentException("No edge with id " + edgeId + " exists in graph");
+                var oppositeEdgeId = _nodeDataManager.FindOppositeEdgeId(int.Parse(edgeId));
+                return _graph.Edges.First(e => e.Attr.Id == oppositeEdgeId.ToString());
             }
             else
             {
@@ -251,11 +252,15 @@ namespace BitD_FactionMapper.Model
                 return null;
             }
             
-            var modelSelectedEdgeId = _nodeDataManager.SelectedEdge.EdgeId;
-            if (_selectedEdgeId != modelSelectedEdgeId)
+            var selectedEdgeId = _nodeDataManager.SelectedEdge.EdgeId;
+            if (_selectedEdgeId != selectedEdgeId)
             {
-                _selectedEdge = FindEdge(modelSelectedEdgeId.ToString());
-                _selectedEdgeId = modelSelectedEdgeId;
+                _selectedEdgeId = selectedEdgeId;
+                if(_graph.Edges.All(e => e.Attr.Id != selectedEdgeId.ToString()))
+                {
+                    selectedEdgeId = _nodeDataManager.FindOppositeEdgeId(selectedEdgeId);
+                }
+                _selectedEdge = FindEdge(selectedEdgeId.ToString());
             }
 
             return _selectedEdge;

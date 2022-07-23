@@ -234,5 +234,12 @@ namespace BitD_FactionMapper.Model
             _edgeIds.Add(nextId);
             return nextId;
         }
+
+        public int FindOppositeEdgeId(int edgeId)
+        {
+            var selectedEdge = GetEdge(edgeId);
+            var oppositeEdge = _edges.Find(e => e.SourceId == selectedEdge.TargetId && e.TargetId == selectedEdge.SourceId);
+            return oppositeEdge.EdgeId;
+        }
     }
 }
