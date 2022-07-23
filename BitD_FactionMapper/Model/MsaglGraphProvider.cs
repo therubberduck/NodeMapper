@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.Drawing;
-using Microsoft.Msagl.Layout.Incremental;
-using Microsoft.Msagl.Layout.LargeGraphLayout;
-using Microsoft.Msagl.Layout.Layered;
 using Microsoft.Msagl.Layout.MDS;
 
 namespace BitD_FactionMapper.Model
@@ -15,14 +11,6 @@ namespace BitD_FactionMapper.Model
         public static MsaglGraphProvider Instance => _instance ?? (_instance = new MsaglGraphProvider());
 
         private NodeDataManager _nodeDataManager;
-
-        public delegate void ReloadGraphDelegate();
-
-        public ReloadGraphDelegate ReloadGraph;
-
-        public delegate void InvalidateGraphDelegate();
-
-        public InvalidateGraphDelegate InvalidateGraph;
 
         private Graph _graph;
 
@@ -39,8 +27,7 @@ namespace BitD_FactionMapper.Model
             var nodes = _nodeDataManager.FilteredNodes;
             var edges = _nodeDataManager.FilteredEdges(nodes);
 
-            
-            
+
             var graph = new Graph();
             // var settings = new SugiyamaLayoutSettings();
             // settings.EdgeRoutingSettings = new EdgeRoutingSettings
@@ -52,7 +39,7 @@ namespace BitD_FactionMapper.Model
             settings.AdjustScale = true;
             // var settings = new FastIncrementalLayoutSettings();
             // settings.RungeKuttaIntegration = true;
-            
+
             graph.LayoutAlgorithmSettings = settings;
             graph.Attr.LayerDirection = LayerDirection.TB;
             graph.Attr.BackgroundColor = Color.Beige;
@@ -61,36 +48,7 @@ namespace BitD_FactionMapper.Model
             {
                 var graphNode = new Microsoft.Msagl.Drawing.Node(node.Title);
                 graphNode.Attr.Id = node.NodeId.ToString();
-                if (graph.Label != null)
-                {
-                    graphNode.Label.Text = node.Title;
-                }
 
-                switch (node.FactionType)
-                {
-                    case FactionType.Fringe:
-                        graphNode.Attr.FillColor = Color.Purple;
-                        graphNode.Label.FontColor = Color.White;
-                        break;
-                    case FactionType.Institution:
-                        graphNode.Attr.FillColor = Color.LightBlue;
-                        graphNode.Label.FontColor = Color.Black;
-                        break;
-                    case FactionType.Labor:
-                        graphNode.Attr.FillColor = Color.Salmon;
-                        graphNode.Label.FontColor = Color.Black;
-                        break;
-                    case FactionType.Underworld:
-                        graphNode.Attr.FillColor = Color.Black;
-                        graphNode.Label.FontColor = Color.White;
-                        break;
-                    case FactionType.Other:
-                        graphNode.Attr.FillColor = Color.White;
-                        graphNode.Label.FontColor = Color.Black;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
                 graphNode.UserData = node.Body;
                 graph.AddNode(graphNode);
             }
@@ -119,50 +77,12 @@ namespace BitD_FactionMapper.Model
                         }
                     }
                 }
-                
+
                 var graphEdge = graph.AddEdge(edge.SourceId.ToString(), edge.LabelText, edge.TargetId.ToString());
                 graphEdge.Attr.Id = edge.EdgeId.ToString();
                 if (twoWay)
                 {
                     graphEdge.Attr.ArrowheadAtSource = ArrowStyle.Normal;
-                }
-                switch (edge.Relation)
-                {
-                    case Edge.Relationship.Ally:
-                        graphEdge.Attr.Color = Color.DarkGreen;
-                        if (graphEdge.Label != null)
-                        {
-                            graphEdge.Label.FontColor = Color.DarkGreen;
-                        }
-                        break;
-                    case Edge.Relationship.Friend:
-                        graphEdge.Attr.Color = Color.LightGreen;
-                        if (graphEdge.Label != null)
-                        {
-                            graphEdge.Label.FontColor = Color.LightGreen;
-                        }
-                        break;
-                    case Edge.Relationship.Enemy:
-                        graphEdge.Attr.Color = Color.Orange;
-                        if (graphEdge.Label != null)
-                        {
-                            graphEdge.Label.FontColor = Color.Orange;
-                        }
-                        break;
-                    case Edge.Relationship.War:
-                        graphEdge.Attr.Color = Color.Red;
-                        if (graphEdge.Label != null)
-                        {
-                            graphEdge.Label.FontColor = Color.Red;
-                        }
-                        break;
-                    default:
-                        graphEdge.Attr.Color = Color.Black;
-                        if (graphEdge.Label != null)
-                        {
-                            graphEdge.Label.FontColor = Color.Black;
-                        }
-                        break;
                 }
             }
 
@@ -173,32 +93,106 @@ namespace BitD_FactionMapper.Model
             return graph;
         }
 
-        
+
         public Graph GetUpdatedGraph()
         {
-            if(_graph == null) return GetNewGraph();
-            
-            foreach (var node in _graph.Nodes)
-            {
-                node.Attr.Color = Color.Black;
-            }
-            
-            SelectedNode().Attr.Color = Color.Red;
+            if (_graph == null) return GetNewGraph();
 
-            foreach (var edge in _graph.Edges)
+            foreach (var graphNode in _graph.Nodes)
             {
-                if (edge.Label != null)
-                {
-                    edge.Label.FontColor = Color.Black;
-                }
+                UpdateGraphNode(int.Parse(graphNode.Attr.Id), graphNode);
             }
 
-            if (_nodeDataManager.SelectedEdge != null && SelectedEdge().Label != null)
+            foreach (var graphEdge in _graph.Edges)
             {
-                SelectedEdge().Label.FontColor = Color.Red;                
+                UpdateGraphEdge(int.Parse(graphEdge.Attr.Id), graphEdge);
             }
 
             return _graph;
+        }
+
+        public Graph GetUpdatedGraphEdge(int edgeId)
+        {
+            UpdateGraphEdge(edgeId, FindEdge(edgeId.ToString()));
+            return _graph;
+        }
+
+        public Graph GetUpdatedGraphNode(int nodeId)
+        {
+            UpdateGraphNode(nodeId, FindNode(nodeId.ToString()));
+            return _graph;
+        }
+
+        private void UpdateGraphEdge(int edgeId, Microsoft.Msagl.Drawing.Edge graphEdge)
+        {
+            var edge = _nodeDataManager.GetEdge(edgeId);
+            
+            graphEdge.Attr.LineWidth = EdgeIsSelected(edgeId) ? 3 : 1;
+            
+            if (graphEdge.Label == null)
+            {
+                graphEdge.Label = new Label();
+            }
+            graphEdge.LabelText = edge.LabelText;       
+
+            switch (edge.Relation)
+            {
+                case Edge.Relationship.Ally:
+                    graphEdge.Attr.Color = Color.DarkGreen;
+                    graphEdge.Label.FontColor = Color.DarkGreen;
+                    break;
+                case Edge.Relationship.Friend:
+                    graphEdge.Attr.Color = Color.LightGreen;
+                    graphEdge.Label.FontColor = Color.LightGreen;
+                    break;
+                case Edge.Relationship.Enemy:
+                    graphEdge.Attr.Color = Color.Orange;
+                    graphEdge.Label.FontColor = Color.Orange;
+                    break;
+                case Edge.Relationship.War:
+                    graphEdge.Attr.Color = Color.Red;
+                    graphEdge.Label.FontColor = Color.Red;
+                    break;
+                default:
+                    graphEdge.Attr.Color = Color.Black;
+                    graphEdge.Label.FontColor = Color.Black;
+                    break;
+            }
+        }
+
+        private void UpdateGraphNode(int nodeId, Microsoft.Msagl.Drawing.Node graphNode)
+        {
+            var node = _nodeDataManager.GetNode(nodeId);
+
+            graphNode.Attr.Color = NodeIsSelected(nodeId) ? Color.Red : Color.Black;
+            
+            graphNode.Label.Text = node.Title;
+            
+            switch (node.FactionType)
+            {
+                case FactionType.Fringe:
+                    graphNode.Attr.FillColor = Color.Purple;
+                    graphNode.Label.FontColor = Color.White;
+                    break;
+                case FactionType.Institution:
+                    graphNode.Attr.FillColor = Color.LightBlue;
+                    graphNode.Label.FontColor = Color.Black;
+                    break;
+                case FactionType.Labor:
+                    graphNode.Attr.FillColor = Color.Salmon;
+                    graphNode.Label.FontColor = Color.Black;
+                    break;
+                case FactionType.Underworld:
+                    graphNode.Attr.FillColor = Color.Black;
+                    graphNode.Label.FontColor = Color.White;
+                    break;
+                case FactionType.Other:
+                    graphNode.Attr.FillColor = Color.White;
+                    graphNode.Label.FontColor = Color.Black;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void SelectNode(string nodeId)
@@ -239,14 +233,52 @@ namespace BitD_FactionMapper.Model
             }
         }
 
+        private bool EdgeIsSelected(int edgeId)
+        {
+            return edgeId.ToString() == SelectedEdge()?.Attr?.Id;
+        }
+        
+        private int _selectedEdgeId = -1;
+        private Microsoft.Msagl.Drawing.Edge _selectedEdge;
         private Microsoft.Msagl.Drawing.Edge SelectedEdge()
         {
-            return FindEdge(_nodeDataManager.SelectedEdge.EdgeId.ToString());
+            if (_nodeDataManager.SelectedEdge == null)
+            {
+                return null;
+            }
+            
+            var modelSelectedEdgeId = _nodeDataManager.SelectedEdge.EdgeId;
+            if (_selectedEdgeId != modelSelectedEdgeId)
+            {
+                _selectedEdge = FindEdge(modelSelectedEdgeId.ToString());
+                _selectedEdgeId = modelSelectedEdgeId;
+            }
+
+            return _selectedEdge;
         }
 
+        private bool NodeIsSelected(int nodedId)
+        {
+            return nodedId.ToString() == SelectedNode()?.Attr?.Id;
+        }
+
+        private int _selectedNodeId = -1;
+        private Microsoft.Msagl.Drawing.Node _selectedNode;
         private Microsoft.Msagl.Drawing.Node SelectedNode()
         {
-            return FindNode(_nodeDataManager.SelectedNode.NodeId.ToString());
+            if (_nodeDataManager.SelectedNode == null)
+            {
+                return null;
+            }
+            
+            var modelSelectedNodeId = _nodeDataManager.SelectedNode.NodeId;
+            if (_selectedNodeId != modelSelectedNodeId)
+            {
+                _selectedNode = FindNode(modelSelectedNodeId.ToString());
+                _selectedNodeId = modelSelectedNodeId;
+            }
+
+            return _selectedNode;
         }
 
         public Graph Randomize()

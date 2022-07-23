@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using BitD_FactionMapper.Model;
 
@@ -10,6 +11,7 @@ namespace BitD_FactionMapper.Ui.Main
 
         public GraphControl.RedrawGraphDelegate RedrawGraph;
         public GraphControl.UpdateGraphDelegate UpdateGraph;
+        public GraphControl.UpdateEdgeDelegate UpdateEdge;
 
         private const string Ally = "Ally";
         private const string Friend = "Friend";
@@ -22,15 +24,87 @@ namespace BitD_FactionMapper.Ui.Main
         public EdgeEditorPanel()
         {
             InitializeComponent();
+            
+            cmbRelation.AddItems(Ally, Friend, Neutral, Enemy, War);
+            
+            txtEdgeName.TextUpdated += txtEdgeName_TextUpdated;
+        }
 
-            cmbRelation.Items.Add(Ally);
-            cmbRelation.Items.Add(Friend);
-            cmbRelation.Items.Add(Neutral);
-            cmbRelation.Items.Add(Enemy);
-            cmbRelation.Items.Add(War);
+        private void cmbRelation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedEdge = _nodeDataManager.SelectedEdge;
+            if (cmbRelation.SelectedItem != null)
+            {
+                var relationship = MapRelationship(cmbRelation.SelectedItem as string);
+                if (selectedEdge.Relation != relationship)
+                {
+                    selectedEdge.Relation = relationship;
+                    UpdateEdge(selectedEdge.EdgeId);
+                }
+            }
+        }
 
-            btnRemoveEdge.Click += BtnRemoveEdge_Click;
-            btnCancel.Click += btnCancel_Click;
+        private void txtEdgeName_TextUpdated(string newtext)
+        {
+            var selectedEdge = _nodeDataManager.SelectedEdge;
+            if (selectedEdge.LabelText != txtEdgeName.Text)
+            {
+                selectedEdge.LabelText = txtEdgeName.Text;
+                UpdateEdge(selectedEdge.EdgeId);
+            }
+        }
+
+        private void CmbEdgeEditFrom_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedEdge = _nodeDataManager.SelectedEdge;
+            if (cmbEdgeEditFrom.SelectedItem != null)
+            {
+                var edgeFrom = cmbEdgeEditFrom.SelectedItem as NodeItem;
+                if (edgeFrom != null && selectedEdge.SourceId != edgeFrom.NodeId)
+                {
+                    selectedEdge.SourceId = edgeFrom.NodeId;
+
+                    RedrawGraph();
+                }
+            }
+        }
+
+        private void CmbEdgeEditTo_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedEdge = _nodeDataManager.SelectedEdge;
+            if (cmbEdgeEditTo.SelectedItem != null)
+            {
+                var edgeTarget = cmbEdgeEditTo.SelectedItem as NodeItem;
+                if (edgeTarget != null && selectedEdge.TargetId != edgeTarget.NodeId)
+                {
+                    selectedEdge.TargetId = edgeTarget.NodeId;
+
+                    RedrawGraph();
+                }
+            }
+        }
+
+        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
+        {
+            if (cmbRelation.SelectedItem == null ||
+                cmbEdgeEditFrom.SelectedItem == null ||
+                cmbEdgeEditTo.SelectedItem == null) return;
+            AddEdge();
+        }
+
+        private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
+        {
+            _nodeDataManager.RemoveEdge(_nodeDataManager.SelectedEdge.EdgeId);
+            _nodeDataManager.SelectedEdge = null;
+
+            RedrawGraph();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedEdge = _nodeDataManager.SelectedEdge; 
+            _nodeDataManager.SelectedEdge = null;
+            UpdateEdge(selectedEdge.EdgeId);
         }
 
         public void ShowCreate()
@@ -49,77 +123,7 @@ namespace BitD_FactionMapper.Ui.Main
                 }
             }
 
-            btnAddEdge.Content = "Add Edge";
-            btnAddEdge.Click -= btnAddEdge_Click;
-            btnAddEdge.Click -= btnEditEdge_Click;
-            btnAddEdge.Click += btnAddEdge_Click;
-            btnRemoveEdge.Visibility = Visibility.Hidden;
-
             Visibility = Visibility.Visible;
-        }
-
-        private void btnAddEdge_Click(object sender, RoutedEventArgs e)
-        {
-            if (cmbRelation.SelectedItem == null ||
-                cmbEdgeEditFrom.SelectedItem == null ||
-                cmbEdgeEditTo.SelectedItem == null) return;
-            AddEdge();
-        }
-
-        private void btnEditEdge_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedEdge = _nodeDataManager.SelectedEdge;
-
-            if (selectedEdge == null) return;
-
-            if (selectedEdge.LabelText != txtEdgeName.Text)
-            {
-                selectedEdge.LabelText = txtEdgeName.Text;
-            }
-
-            if (cmbEdgeEditFrom.SelectedItem != null)
-            {
-                var edgeFrom = cmbEdgeEditFrom.SelectedItem as NodeItem;
-                if (edgeFrom != null && selectedEdge.SourceId != edgeFrom.NodeId)
-                {
-                    selectedEdge.SourceId = edgeFrom.NodeId;
-                }
-            }
-
-            if (cmbEdgeEditTo.SelectedItem != null)
-            {
-                var edgeTarget = cmbEdgeEditTo.SelectedItem as NodeItem;
-                if (edgeTarget != null && selectedEdge.TargetId != edgeTarget.NodeId)
-                {
-                    selectedEdge.TargetId = edgeTarget.NodeId;
-                }
-            }
-
-            if (cmbRelation.SelectedItem != null)
-            {
-                var relationship = MapRelationship(cmbRelation.SelectedItem as string);
-                if (selectedEdge.Relation != relationship)
-                {
-                    selectedEdge.Relation = relationship;
-                }
-            }
-
-            RedrawGraph();
-        }
-
-        private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
-        {
-            _nodeDataManager.RemoveEdge(_nodeDataManager.SelectedEdge.EdgeId);
-            _nodeDataManager.SelectedEdge = null;
-
-            RedrawGraph();
-        }
-
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            _nodeDataManager.SelectedEdge = null;
-
-            RedrawGraph();
         }
 
         private void AddEdge()
@@ -185,13 +189,7 @@ namespace BitD_FactionMapper.Ui.Main
             SelectNodeInComboBox(cmbEdgeEditFrom, _currentEdge.SourceNode);
             SelectNodeInComboBox(cmbEdgeEditTo, _currentEdge.TargetNode);
             SelectRelationshipInComboBox(_currentEdge.Relation);
-
-            btnAddEdge.Content = "Edit Edge";
-            btnAddEdge.Click -= btnAddEdge_Click;
-            btnAddEdge.Click -= btnEditEdge_Click;
-            btnAddEdge.Click += btnEditEdge_Click;
-            btnRemoveEdge.Visibility = Visibility.Visible;
-
+            
             Visibility = Visibility.Visible;
         }
 

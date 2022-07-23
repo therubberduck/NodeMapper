@@ -83,6 +83,9 @@
     <Compile Include="Ui\EditableTextBlock.xaml.cs">
       <DependentUpon>EditableTextBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\LabeledComboBox.xaml.cs">
+      <DependentUpon>LabeledComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Main\ButtonPanel.xaml.cs">
       <DependentUpon>ButtonPanel.xaml</DependentUpon>
     </Compile>
@@ -116,6 +119,7 @@
     <Compile Include="DataRepository\Schema\DbNode.cs" />
     <Compile Include="DataRepository\UpdateSchema.cs" />
     <Page Include="Ui\EditableTextBlock.xaml" />
+    <Page Include="Ui\LabeledComboBox.xaml" />
     <Page Include="Ui\Main\ButtonPanel.xaml" />
     <Page Include="Ui\Main\EdgeEditorPanel.xaml" />
     <Page Include="Ui\Main\GraphControl.xaml" />

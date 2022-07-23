@@ -22,6 +22,7 @@ namespace BitD_FactionMapper.Ui.Main
             buttonPanel.RandomizeGraph += graphControl.RandomizeGraph;
             edgeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
             edgeEditorPanel.UpdateGraph += graphControl.UpdateGraph;
+            edgeEditorPanel.UpdateEdge += graphControl.UpdateEdge;
             nodeEditorPanel.RedrawGraph += graphControl.RedrawGraph;
             nodeEditorPanel.UpdateGraph += graphControl.UpdateGraph;
             _nodeFileManager.RedrawGraph += graphControl.RedrawGraph;

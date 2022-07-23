@@ -13,6 +13,8 @@ namespace BitD_FactionMapper.Ui.Main
     {
         public delegate void RedrawGraphDelegate();
         public delegate void UpdateGraphDelegate();
+        public delegate void UpdateEdgeDelegate(int edgeId);
+        public delegate void UpdateNodeDelegate(int nodeId);
         
         private readonly GraphViewer _graphViewer = new GraphViewer();
         private readonly MsaglGraphProvider _provider = MsaglGraphProvider.Instance;
@@ -68,6 +70,18 @@ namespace BitD_FactionMapper.Ui.Main
         public void UpdateGraph()
         {
             _graphViewer.Graph = _provider.GetUpdatedGraph();
+            _graphViewer.Invalidate();
+        }
+
+        public void UpdateEdge(int edgeId)
+        {
+            _graphViewer.Graph = _provider.GetUpdatedGraphEdge(edgeId);
+            _graphViewer.Invalidate();
+        }
+
+        public void UpdateNode(int nodeId)
+        {
+            _graphViewer.Graph = _provider.GetUpdatedGraphNode(nodeId);
             _graphViewer.Invalidate();
         }
 
