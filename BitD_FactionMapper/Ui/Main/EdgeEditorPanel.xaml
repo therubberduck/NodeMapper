@@ -30,8 +30,13 @@
                         SelectionChanged="cmbRelation_SelectionChanged"
                         Style="{StaticResource DefaultControl}"
                         LabelText="To Node" />
-    <Button Grid.Row="2" Grid.Column="0"
-            Click="BtnRemoveEdge_Click"
+    <Button Grid.Row="2" Grid.Column="0" x:Name="btnAddEdge"
+            Click="btnAddEdge_Click"
+            Style="{StaticResource DefaultControl}">
+        Create Edge
+    </Button>
+    <Button Grid.Row="2" Grid.Column="0" x:Name="btnRemoveEdge"
+            Click="btnRemoveEdge_Click"
             Style="{StaticResource DefaultControl}">
         Remove Edge
     </Button>

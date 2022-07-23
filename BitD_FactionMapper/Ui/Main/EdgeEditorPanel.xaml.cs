@@ -34,7 +34,7 @@ namespace BitD_FactionMapper.Ui.Main
         private void cmbRelation_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedEdge = _nodeDataManager.SelectedEdge;
-            if (cmbRelation.SelectedItem != null)
+            if (cmbRelation.SelectedItem != null && selectedEdge != null)
             {
                 var relationship = MapRelationship(cmbRelation.SelectedItem as string);
                 if (selectedEdge.Relation != relationship)
@@ -93,7 +93,7 @@ namespace BitD_FactionMapper.Ui.Main
             AddEdge();
         }
 
-        private void BtnRemoveEdge_Click(object sender, RoutedEventArgs e)
+        private void btnRemoveEdge_Click(object sender, RoutedEventArgs e)
         {
             _nodeDataManager.RemoveEdge(_nodeDataManager.SelectedEdge.EdgeId);
             _nodeDataManager.SelectedEdge = null;
@@ -103,9 +103,14 @@ namespace BitD_FactionMapper.Ui.Main
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            var selectedEdge = _nodeDataManager.SelectedEdge; 
+            var previousSelectedEdge = _nodeDataManager.SelectedEdge; 
             _nodeDataManager.SelectedEdge = null;
-            UpdateEdge(selectedEdge.EdgeId);
+            EdgeDeselected();
+            
+            if (previousSelectedEdge != null) // If we are making a new edge and cancel
+            {
+                UpdateEdge(previousSelectedEdge.EdgeId);                
+            }
         }
 
         public void ShowCreate()
@@ -115,6 +120,9 @@ namespace BitD_FactionMapper.Ui.Main
             cmbEdgeEditTo.SetItems(nodes);
             SelectNodeInComboBox(cmbEdgeEditFrom, _nodeDataManager.SelectedNode);
 
+            btnAddEdge.Visibility = Visibility.Visible;
+            btnRemoveEdge.Visibility = Visibility.Collapsed;
+            
             Visibility = Visibility.Visible;
         }
 
@@ -127,8 +135,9 @@ namespace BitD_FactionMapper.Ui.Main
             var relation = MapRelationship(cmbRelation.SelectedItem as string);
             var newEdge = _nodeDataManager.AddEdge(nodeFromId, txtEdgeName.Text, nodeToId, relation);
 
-            _nodeDataManager.SelectedEdge = newEdge;
             RedrawGraph();
+            _nodeDataManager.SelectedEdge = newEdge;
+            EdgeSelected();
         }
 
         private static Edge.Relationship MapRelationship(string text)
@@ -176,6 +185,9 @@ namespace BitD_FactionMapper.Ui.Main
             SelectNodeInComboBox(cmbEdgeEditFrom, _currentEdge.SourceNode);
             SelectNodeInComboBox(cmbEdgeEditTo, _currentEdge.TargetNode);
             SelectRelationshipInComboBox(_currentEdge.Relation);
+            
+            btnAddEdge.Visibility = Visibility.Collapsed;
+            btnRemoveEdge.Visibility = Visibility.Visible;
             
             Visibility = Visibility.Visible;
         }

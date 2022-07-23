@@ -19,7 +19,7 @@
         <Button Grid.Column="0" Grid.Row="1" x:Name="btnAddEdge"
                 Style="{StaticResource DefaultControl}"
                 Click="btnAddEdge_Click">
-            Add Edge
+            Add New Edge
         </Button>
         <Button Grid.Column="0" Grid.Row="2"
                 Style="{StaticResource DefaultControl}"
